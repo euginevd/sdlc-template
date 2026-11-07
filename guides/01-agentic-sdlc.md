@@ -1,6 +1,12 @@
 # Secure agentic SDLC
 
-How projects from this template are built, with coding agents doing most of the coding and security built into every stage. It starts with where the name comes from and the idea, then walks through each stage, and ends with reference tables.
+**The secure agentic SDLC is the software development lifecycle with AI coding agents as developers and security built into every stage.**
+
+- **People** own the what and the why: the spec, the plan approval, and the merge and deploy decisions.
+- **Agents** own the how: they plan, write, test and review the code, inside written rules.
+- **Controls** check every change before it ships: the pre-push scan, CI checks, an independent review and an approval gate.
+
+This guide starts with where the name comes from and the idea, then walks through each stage, and ends with reference tables.
 
 ## 1. Where the name comes from
 
