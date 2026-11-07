@@ -37,3 +37,9 @@ Key decisions, newest last. Never delete one; supersede it with a new entry.
 
 **Why:** keeps the AWS account ID out of the repo, so the code can be made public safely.
 **Instead of:** the bucket name written in each unit's `versions.tf`.
+
+## 7. `AGENTS.md` only, no `CLAUDE.md`
+2026-11-08 · Accepted
+
+**Why:** one set of agent instructions that Claude Code, Codex, OpenCode, Copilot and Cursor all read. Claude Code reads `AGENTS.md` natively from v2.1.277, and skips it when a `CLAUDE.md` exists.
+**Instead of:** a `CLAUDE.md` alongside it. If Claude-only extras are ever needed, add a `CLAUDE.md` whose first line is `@AGENTS.md`.
