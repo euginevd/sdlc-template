@@ -12,7 +12,7 @@
 
 **Agentic software development** is the industry's emerging term (Forrester's *ASD*, Gartner's *agentic engineering*); there's no single standard yet. This lifecycle is the **secure agentic SDLC**: keeping "SDLC" says existing security controls still apply. It draws on AWS's [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering) (AI plans, people approve), spec-driven development (GitHub Spec Kit), [AGENTS.md](https://agents.md), DevSecOps, and NIST SSDF (section 6.1).
 
-Not to be confused with ADLC, which can also mean building AI agents as a product (the Agent Development Lifecycle).
+> **Note:** not to be confused with ADLC, which can also mean building AI agents as a product (the Agent Development Lifecycle).
 
 ## 3. Five habits that make it work
 
