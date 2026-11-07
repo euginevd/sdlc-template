@@ -18,7 +18,7 @@ IMPORTANT: read these in full before you plan, change or answer questions about 
 4. `docs/PROCESS.md`: how to plan, build, review and ship, stage by stage
 5. `docs/STATUS.md`: what's built and what's next
 6. `docs/DECISIONS.md`: what's settled and why; don't reopen it unasked
-7. `guides/findings.md`: what the account or tools do that we didn't expect
+7. `guides/03-findings.md`: what the account or tools do that we didn't expect
 
 Add these only when needed, and list them above once they exist:
 
@@ -26,7 +26,7 @@ Add these only when needed, and list them above once they exist:
 - `docs/SECURITY.md`: threat model and controls, once there are users, data or secrets to protect
 - `docs/FINOPS.md`: one row per cost-bearing resource, once there are several
 - `docs/DESIGN.md`: UX decisions and look, once there's a UI
-- `guides/<topic>.md`: how-tos and reference for people
+- `guides/<NN>-<topic>.md`: how-tos and reference for people
 
 ## Your role
 
@@ -53,7 +53,7 @@ Add these only when needed, and list them above once they exist:
 - `.lefthook/`, `lefthook.yml`: the pre-push scan
 - `scripts/`: one-time `setup.sh`, and `scan.sh`, the scan the pre-push hook runs
 - `docs/`: the documents the agent builds from
-- `guides/`: reference for people, such as findings and how-tos
+- `guides/`: reference for people, such as findings and how-tos, named `<NN>-<topic>.md` (`01`, `02`, …) so they sort in reading order
 - `local/`: personal scratch, not in git
 
 ## Repo layout

@@ -120,7 +120,7 @@ For each phase the agent runs the checks (lint, types, tests, `terraform validat
 
 ### 5.5 Release
 
-The agent pushes the branch. The **pre-push scan** (gitleaks and Trivy) checks it for secrets, misconfigurations and vulnerable packages before it leaves your machine: [git-hooks.md](git-hooks.md). Then it opens a PR, and merges once every check passes.
+The agent pushes the branch. The **pre-push scan** (gitleaks and Trivy) checks it for secrets, misconfigurations and vulnerable packages before it leaves your machine: [02-git-hooks.md](02-git-hooks.md). Then it opens a PR, and merges once every check passes.
 
 ### 5.6 Deploy
 
@@ -128,7 +128,7 @@ The `aws` workflow plans each changed Terraform unit on the PR, with a read-only
 
 ### 5.7 Operate and 5.8 Monitor
 
-When the plan's last phase is done, the agent reviews the whole branch, then updates `docs/STATUS.md` and `docs/DECISIONS.md` and deletes the plan. Anything surprising goes in [findings.md](findings.md). What you learn here feeds the next Plan.
+When the plan's last phase is done, the agent reviews the whole branch, then updates `docs/STATUS.md` and `docs/DECISIONS.md` and deletes the plan. Anything surprising goes in [03-findings.md](03-findings.md). What you learn here feeds the next Plan.
 
 ## 6. A day with the agent
 
@@ -168,7 +168,7 @@ NIST SP 800-218 groups secure development into Prepare the Organization (PO), Pr
 | 5 | Release | PO.4 criteria for security checks, PS.2 release integrity | Checks required to merge, the plan artifact applied exactly |
 | 6 | Deploy | PO.5 secure environments, PW.9 secure defaults | OIDC, least-privilege roles, permissions boundary, approval gate |
 | 7 | Operate | PS.3 archive releases, RV.1 find vulnerabilities | Git history and versioned state, re-running the scans |
-| 8 | Monitor | RV.2 remediate, RV.3 root causes | `findings.md`, `DECISIONS.md`, findings feed the next Plan |
+| 8 | Monitor | RV.2 remediate, RV.3 root causes | `03-findings.md`, `DECISIONS.md`, findings feed the next Plan |
 
 For IRAP, map the same evidence to ISM controls in the project's SSP. For agents in `apps/`, add the OWASP GenAI Security Project's guidance on LLM and agentic application risks.
 

@@ -40,7 +40,7 @@ The checks show the code works, not that it's fit to merge. Every change gets a 
 
 When a plan's last phase is done, review the whole branch against `main` the same way, then report what was built, what the reviews found and what you changed. Then update `docs/STATUS.md` and `docs/DECISIONS.md`, and delete the plan and its line in `AGENTS.md`; git history keeps it.
 
-Anything unexpected from the account, the pipeline or the tools goes in `guides/findings.md`. Cost-bearing resources go in `docs/FINOPS.md` once there are several.
+Anything unexpected from the account, the pipeline or the tools goes in `guides/03-findings.md`. Cost-bearing resources go in `docs/FINOPS.md` once there are several.
 
 ## Rules
 
