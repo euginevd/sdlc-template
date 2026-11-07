@@ -19,7 +19,7 @@ What exists in late 2026 are a few named methods and conventions that this templ
 
 ### 1.2 The two meanings of ADLC
 
-It has two meanings, which is confusing:
+"ADLC" has two meanings, which is confusing:
 
 | | 1. Building *code with* agents | 2. Building *agents with* code |
 |---|---|---|
