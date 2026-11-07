@@ -2,51 +2,45 @@
 
 **The secure agentic SDLC is the software development lifecycle with AI coding agents as developers and security built into every stage.**
 
-- **People** own the what and the why: the spec, the plan approval, and the merge and deploy decisions.
+- **People** own the what and the why: the spec, the plan approval and the deploy approval.
 - **Agents** own the how: they plan, write, test and review the code, inside written rules.
 - **Controls** check every change before it ships: the pre-push scan, CI checks, an independent review and an approval gate.
 
-This guide starts with where the name comes from and the idea, then walks through each stage, and ends with reference tables.
-
 ## 1. Where the name comes from
 
-**Agentic software development** is the industry's emerging name for building software with AI agents doing much of the work. Forrester calls it *Agentic Software Development (ASD)*, now a vendor category; Gartner calls it *agentic engineering*, part of *AI-native* software engineering. You'll also see *agentic SDLC*, *AI-SDLC* and *AI-native SDLC*. Nobody coined these; they grew out of practitioner, vendor and analyst use from about 2025.
-
-**This guide's lifecycle is the *secure agentic SDLC*:** the familiar SDLC with DevSecOps controls, where coding agents are some of the developers. Keeping "SDLC" in the name says existing security controls still apply, and section 7.2 maps each stage to NIST SSDF.
+**Agentic software development** is the industry's emerging name for building software with AI agents doing much of the work: Forrester's *Agentic Software Development (ASD)*, Gartner's *agentic engineering*. Variants such as *agentic SDLC* and *AI-native SDLC* grew out of use from about 2025; nobody coined them. Keeping "SDLC" in the name says existing security controls still apply.
 
 ### 1.1 No single standard yet
 
-What exists in late 2026 are a few named methods and conventions that this template draws on:
+The template draws on these named methods and conventions:
 
 | Name | What it is | Here |
 |------|------------|------|
-| [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering) | AWS's named AI-Driven Development Life Cycle (July 2025): AI plans and builds, people approve at each step | The plan-then-approve loop |
-| Spec-driven development | Write the spec first, then let agents plan and build against it; GitHub's Spec Kit is the best-known toolkit | `docs/SPEC.md` and `docs/PLAN_<NAME>.md` |
-| [AGENTS.md](https://agents.md) | An open, tool-agnostic file of instructions for coding agents, now under the Linux Foundation | `AGENTS.md` |
-| DevSecOps | Security built into every stage of delivery | The eight stages in section 5 |
-| NIST SSDF (SP 800-218) | The US secure software development framework, in four groups: prepare, protect, produce, respond | The stage mapping in section 7.2 |
+| [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering) | AWS's method (July 2025): AI plans and builds, people approve each step | The plan-then-approve loop |
+| Spec-driven development | Spec first, then agents plan and build from it; GitHub Spec Kit | `docs/SPEC.md` and `docs/PLAN_<NAME>.md` |
+| [AGENTS.md](https://agents.md) | Open, tool-agnostic agent instructions, under the Linux Foundation | `AGENTS.md` |
+| DevSecOps | Security built into every stage of delivery | The eight stages in section 4 |
+| NIST SSDF (SP 800-218) | The US secure software development framework | The stage mapping in section 5.1 |
 
 ### 1.2 The two meanings of ADLC
-
-"ADLC" has two meanings, which is confusing:
 
 | | 1. Building *code with* agents | 2. Building *agents with* code |
 |---|---|---|
 | Stands for | AI-Driven or Agentic Development Lifecycle | Agent Development Lifecycle |
-| The agent is | The developer: a coding agent like Claude Code writes your software | The product: the agent is what you ship |
-| Main concern | Staying accountable for code the agent writes: specs, plans, reviews, checks and approvals | Risks and controls, evaluations, observability, adoption and maintenance, because an agent can answer the same input differently, and drifts when its model, prompts, tools or data change |
+| The agent is | The developer, writing your software | The product you ship |
+| Main concern | Accountability for its code: specs, plans, reviews, checks, approvals | Evaluations, observability and controls, because agents vary and drift |
 | Who uses it | AWS (AI-DLC), GitHub Spec Kit (spec-driven development) | LangChain, Microsoft Foundry, [IBM](https://www.ibm.com/think/topics/agent-development-lifecycle-adlc), [Salesforce](https://architect.salesforce.com/fundamentals/agent-development-lifecycle) |
 
-This guide is the first meaning: the lifecycle for building any software with coding agents, which is why it's called the agentic SDLC here. When an app in `apps/` is itself an AI agent, add the second meaning on top of it: evaluations in Test, and behaviour, cost and drift monitoring in Monitor.
+This guide is meaning 1. When an app in `apps/` is an AI agent, add meaning 2: evaluations in Test, drift and cost monitoring in Monitor.
 
 ### 1.3 Harness, Harden, Humans
 
-Three layers of the agentic lifecycle: a handy way to see what's settled and what isn't (Ed Donner, AI FDE course, 2026):
+What's settled and what isn't (Ed Donner, AI FDE course, 2026):
 
 | Layer | What | Covers | State | In this template |
 |-------|------|--------|-------|------------------|
 | **Harness** | The agent | State and memory, skills and integrations, subagents | Mostly settled | `AGENTS.md`, `docs/`, the fresh-subagent review |
-| **Harden** | The environment | Hooks, linters, CI/CD, sandboxes, tests and evaluations | Partly settled | Pre-push scan, checks, `aws.yml`, approvals |
+| **Harden** | The environment | Hooks, linters, CI/CD, sandboxes, tests and evaluations | Partly settled | Pre-push scan, checks, `aws.yml` |
 | **Humans** | You | Named accountability, meaningful review, the end-to-end process | Mostly open | You approve plans and applies; the PR carries your name |
 
 ### 1.4 Terms to use and avoid
@@ -61,124 +55,83 @@ Three layers of the agentic lifecycle: a handy way to see what's settled and wha
 | ~~AI-SDLC~~ | Avoid in formal writing: also means the lifecycle of ML models |
 | ~~Vibe coding~~ | Avoid: means not reading the code, the opposite of this guide |
 
-## 2. The idea in one line
+## 2. Five habits that make it work
 
-**The person owns *what* and *why*. The agent owns *how*, inside written rules.**
+- **Context in files, not chat.** The agent knows only what `AGENTS.md` and `docs/` say; anything that should last goes in a doc.
+- **Verify, don't trust.** Checks and an independent review catch what the author missed; never weaken a check to pass.
+- **Small steps.** One phase, one diff, one review; stop and ask when unclear.
+- **People hold the keys.** The agent never changes cloud resources or deploys without your approval.
+- **Be the boss.** The PR carries your name, so never push slop; make the agent show evidence.
 
-You decide what to build and approve each plan. The agent plans, codes, tests and reviews. Rules in files, checks and approvals keep the agent safe.
+## 3. Where the agent finds its rules
 
-## 3. Five habits that make it work
+The agent starts at `AGENTS.md`, which lists these docs in reading order. Each maps to an older document:
 
-Everything else in this guide builds on these.
+| Doc | Answers | Older equivalent |
+|-----|---------|------------------|
+| `docs/SPEC.md` | What are we building, and what does done mean? | PRD (product requirements) |
+| `docs/TECH_STACK.md` | What tools, what checks, how does it deploy? | Architecture doc |
+| `docs/CODE_STANDARDS.md` | How should the code be written? | CONTRIBUTING |
+| `docs/PROCESS.md` | What happens at each stage? | Definition of done |
+| `docs/STATUS.md` | What's built, and what's next? | Progress file; agents forget between sessions |
+| `docs/DECISIONS.md` | What's settled, so it isn't reopened? | ADRs |
 
-- **Context in files, not chat.** The agent knows only what `AGENTS.md` and `docs/` tell it. Anything said in chat that should last goes in a doc.
-- **Verify, don't trust.** Checks and an independent review catch what the author missed. Never weaken a check to get a green run.
-- **Small steps.** One phase, one diff, one review. Stop and ask when stuck or unclear.
-- **People hold the keys.** The agent never changes cloud resources, and never deploys without your approval.
-- **Be the boss.** You own the code you ship, and the PR carries your name, so never push slop. Make the agent show evidence: the test run, the diff, a screenshot.
+Other tools use other names (Spec Kit, Kiro), but the pattern is the same: **spec → plan → tasks → progress**. Claude Code, Codex, OpenCode, Copilot and Cursor all read `AGENTS.md`.
 
-## 4. Where the agent finds its rules
+> **No `CLAUDE.md`.** Claude Code reads `AGENTS.md` natively from v2.1.277, and skips it if a `CLAUDE.md` exists. For Claude-only extras, add a `CLAUDE.md` starting with `@AGENTS.md`.
 
-The agent starts at `AGENTS.md`, which lists the docs to read in order:
+## 4. The stages
 
-| Doc | Answers |
-|-----|---------|
-| `docs/SPEC.md` | What are we building, and what does done mean? |
-| `docs/TECH_STACK.md` | What tools, what checks, how does it deploy? |
-| `docs/CODE_STANDARDS.md` | How should the code be written? |
-| `docs/PROCESS.md` | What happens at each stage? |
-| `docs/STATUS.md` | What's built, and what's next? |
-| `docs/DECISIONS.md` | What's settled, so it isn't reopened? |
+Eight DevSecOps stages, each with an owner and a security check (side by side in 5.1).
 
-The same files work for any coding agent, because they're plain Markdown. That's why there's only `AGENTS.md`, with no tool-specific copies. Claude Code, Codex, OpenCode, Copilot and Cursor all read it.
+### 4.1 Plan
 
-> **No `CLAUDE.md`.** Claude Code reads `AGENTS.md` natively from v2.1.277, and a `CLAUDE.md` in the project makes it skip `AGENTS.md`. If you ever need Claude-only extras, add a `CLAUDE.md` whose first line is `@AGENTS.md`. Don't symlink on Windows.
+You write `docs/SPEC.md`, then ask: *"Please plan <the work> in docs/PLAN_<NAME>.md"*. The agent writes the design, security risks and phases with checkbox criteria, and no code. **You approve or redirect the plan**: the cheapest place to catch a mistake.
 
-These docs are new names for old documents, so they're easy to explain to a team:
+### 4.2 Code
 
-| Doc here | Older equivalent |
-|----------|------------------|
-| `SPEC.md` | PRD (product requirements) |
-| `TECH_STACK.md` | Architecture doc |
-| `DECISIONS.md` | ADRs |
-| `CODE_STANDARDS.md`, `PROCESS.md` | CONTRIBUTING, definition of done |
-| `STATUS.md` | Progress file, needed because agents forget between sessions |
+Ask: *"Please implement the plan for <the work>"*. The agent builds one phase at a time and reports after each. Secrets stay in `.env` locally and in GitHub or AWS secrets, never in code.
 
-Tools name them differently (Spec Kit: constitution, spec, plan, tasks; Kiro: requirements, design, tasks), but the pattern is the same: **spec → plan → tasks → progress**.
+### 4.3 Build and 4.4 Test
 
-## 5. The stages
+Per phase: run the checks (lint, types, tests, `terraform validate`), have a **fresh subagent** review the diff, fix what it blocks, update `docs/STATUS.md`, tick off the plan, commit.
 
-Work moves through the eight DevSecOps stages. Each one has an owner, an output and its own security check.
+### 4.5 Release
 
-### 5.1 Plan
+The agent pushes; the **pre-push scan** (gitleaks, Trivy) blocks secrets, misconfigurations and vulnerable packages first ([02-git-hooks.md](02-git-hooks.md)). It opens a PR, merges once checks pass and deletes the branch.
 
-You write `docs/SPEC.md`: the problem, the goal, success criteria and what's out. Then ask the agent: *"Please plan <the work> in docs/PLAN_<NAME>.md"*.
+### 4.6 Deploy
 
-The agent writes the design, the security risks and the phases, each with checkbox criteria. It writes no code. **You review the plan** and approve or redirect it. This is the cheapest place to catch a mistake.
+The `aws` workflow plans changed Terraform units on the PR with a read-only role. After the merge, the apply waits for **your approval**, then applies exactly that plan. OIDC means no access keys.
 
-### 5.2 Code
+### 4.7 Operate and 4.8 Monitor
 
-Ask: *"Please implement the plan for <the work>"*. The agent builds one phase at a time, to the code standards. Secrets never go in code; they live in `.env` locally and in GitHub or AWS secrets otherwise.
-
-### 5.3 Build and 5.4 Test
-
-For each phase the agent runs the checks (lint, types, tests, `terraform validate`), then hands the diff to a **fresh subagent** that didn't write it, as a strict reviewer. It fixes what the review blocks on, updates `docs/STATUS.md`, ticks off the plan and commits.
-
-### 5.5 Release
-
-The agent pushes the branch. The **pre-push scan** (gitleaks and Trivy) checks it for secrets, misconfigurations and vulnerable packages before it leaves your machine: [02-git-hooks.md](02-git-hooks.md). Then it opens a PR, and merges once every check passes.
-
-### 5.6 Deploy
-
-The `aws` workflow plans each changed Terraform unit on the PR, with a read-only role. After the merge, the apply waits for **your approval** in the `aws-<target>-apply` environment, then applies exactly the reviewed plan. GitHub reaches AWS through OIDC, so there are no access keys to leak.
-
-### 5.7 Operate and 5.8 Monitor
-
-When the plan's last phase is done, the agent reviews the whole branch, then updates `docs/STATUS.md` and `docs/DECISIONS.md` and deletes the plan. Anything surprising goes in [03-findings.md](03-findings.md). What you learn here feeds the next Plan.
-
-## 6. A day with the agent
-
-1. Write or update `docs/SPEC.md`.
-2. "Please plan the login page in `docs/PLAN_LOGIN.md`." Read the plan; ask for changes until it's right.
-3. "Please implement the plan for the login page." The agent works phase by phase and reports after each.
-4. The agent pushes, opens the PR and merges once checks pass.
-5. Approve the apply in GitHub when the plan looks right.
+After the last phase, the agent reviews the whole branch, updates `STATUS.md` and `DECISIONS.md`, and deletes the plan. Runbooks go in `guides/`, costs in `docs/FINOPS.md`, surprises in [03-findings.md](03-findings.md), and all of it feeds the next Plan.
 
 ---
 
-## 7. Reference
+## 5. Reference
 
-### 7.1 Stages at a glance
+### 5.1 Stages mapped to NIST SSDF
 
-| # | Stage | Who | Output | Security |
-|:-:|-------|-----|--------|----------|
-| 1 | Plan | Person, then agent | Spec, then `docs/PLAN_<NAME>.md` | Threat model in `docs/SECURITY.md` |
-| 2 | Code | Agent | One phase at a time | No secrets in code |
-| 3 | Build | Pipeline | Lint, types, `terraform validate` | Pinned dependencies |
-| 4 | Test | Agent and pipeline | Tests, fresh-subagent review | Stubs for models and cloud |
-| 5 | Release | Agent | PR merged, branch deleted | Pre-push scan; actions pinned to a SHA |
-| 6 | Deploy | Pipeline | Plan on PR, apply after approval | OIDC, least-privilege roles |
-| 7 | Operate | Person | Runbooks, `docs/FINOPS.md` | Patching, key rotation |
-| 8 | Monitor | Person and pipeline | Status and decisions updated | Findings feed the next Plan |
+NIST SP 800-218 groups secure development into Prepare the Organization (PO), Protect the Software (PS), Produce Well-Secured Software (PW) and Respond to Vulnerabilities (RV).
 
-### 7.2 Stages mapped to NIST SSDF
-
-NIST SP 800-218 groups secure development into Prepare the Organization (PO), Protect the Software (PS), Produce Well-Secured Software (PW) and Respond to Vulnerabilities (RV). Each stage here meets these practices:
-
-| # | Stage | SSDF practices | How |
-|:-:|-------|----------------|-----|
-| 1 | Plan | PO.1 security requirements, PO.2 roles, PW.1 secure design, PW.2 design review | `SPEC.md` rules, threat model in `SECURITY.md`, the person approves the plan |
-| 2 | Code | PW.5 secure coding, PS.1 protect the code | `CODE_STANDARDS.md`, no secrets in code, PRs only on `main` |
-| 3 | Build | PO.3 toolchains, PW.4 well-secured components, PW.6 build settings | Pinned dependencies and actions, lock files, checks |
-| 4 | Test | PW.7 code review and analysis, PW.8 testing | Fresh-subagent review, tests, pre-push scan |
-| 5 | Release | PO.4 criteria for security checks, PS.2 release integrity | Checks required to merge, the plan artifact applied exactly |
-| 6 | Deploy | PO.5 secure environments, PW.9 secure defaults | OIDC, least-privilege roles, permissions boundary, approval gate |
-| 7 | Operate | PS.3 archive releases, RV.1 find vulnerabilities | Git history and versioned state, re-running the scans |
-| 8 | Monitor | RV.2 remediate, RV.3 root causes | `03-findings.md`, `DECISIONS.md`, findings feed the next Plan |
+| # | Stage | Who | SSDF practices | Evidence here |
+|:-:|-------|-----|----------------|---------------|
+| 1 | Plan | Person, then agent | PO.1 security requirements, PO.2 roles, PW.1 secure design, PW.2 design review | `SPEC.md` rules, threat model in `docs/SECURITY.md`, the person approves the plan |
+| 2 | Code | Agent | PW.5 secure coding, PS.1 protect the code | `CODE_STANDARDS.md`, no secrets in code, changes reach `main` only by PR |
+| 3 | Build | Pipeline | PO.3 toolchains, PW.4 well-secured components, PW.6 build settings | Pinned dependencies and actions, lock files, checks |
+| 4 | Test | Agent and pipeline | PW.7 code review and analysis, PW.8 testing | Fresh-subagent review, tests with stubs for models and cloud, pre-push scan |
+| 5 | Release | Agent | PO.4 criteria for security checks, PS.2 release integrity | Checks before merge (required by a `main` ruleset *(planned)*), the plan artifact applied exactly |
+| 6 | Deploy | Pipeline, after your approval | PO.5 secure environments, PW.9 secure defaults | OIDC, least-privilege roles, permissions boundary, approval gate |
+| 7 | Operate | Person | PS.3 archive releases, RV.1 find vulnerabilities | Git history and versioned state, re-running the scans, patching and key rotation |
+| 8 | Monitor | Person and pipeline | RV.2 remediate, RV.3 root causes | `03-findings.md`, `DECISIONS.md`, findings feed the next Plan |
 
 For IRAP, map the same evidence to ISM controls in the project's SSP. For agents in `apps/`, add the OWASP GenAI Security Project's guidance on LLM and agentic application risks.
 
-### 7.3 Layout and what to change in a new project
+### 5.2 Layout and what to change in a new project
+
+The repo's shape (one repo per product, one workflow per folder, one Terraform state per unit) is set out in `AGENTS.md` → Repo layout.
 
 | Path | For | In a new project |
 |------|-----|------------------|
@@ -190,18 +143,10 @@ For IRAP, map the same evidence to ISM controls in the project's SSP. For agents
 | `aws/` | Terraform units, `_template/`, `bootstrap/` | Copy `_template/` per unit |
 | `.github/workflows/aws.yml` | Plan and apply | As-is |
 | `lefthook.yml`, `.lefthook/`, `scripts/` | Pre-push scan and setup | As-is |
-| `guides/` | Reference for people | Add per project |
+| `guides/` | Reference for people, numbered `<NN>-<topic>.md` | Add per project |
 | `local/` | Personal scratch | Gitignored |
 
-### 7.4 Repo shape
-
-- One repo per product; a top-level folder per kind of deployable part (`apps/`, `aws/`).
-- One workflow per folder, triggered by its path. Environments `<cloud>-<target>-plan` and `<cloud>-<target>-apply`; only `-apply` needs approval.
-- One Terraform root and state per deployable unit. Plan on the PR; apply the reviewed plan.
-- OIDC from CI to cloud, scoped to repo and environment. No access keys.
-- Separate repos only when owners, access or release cycles differ.
-
-### 7.5 Rules of thumb for docs
+### 5.3 Rules of thumb for docs
 
 - Each fact lives in one place; everywhere else links to it.
 - Keep docs short: tables and one-line rules.
