@@ -1,6 +1,30 @@
 # AI-SDLC: building with coding agents
 
-How projects from this template are built, with coding agents doing most of the coding and security built into every stage. It starts with the idea, then walks through each stage, and ends with reference tables.
+How projects from this template are built, with coding agents doing most of the coding and security built into every stage. It starts with where the name comes from and the idea, then walks through each stage, and ends with reference tables.
+
+## Where the name comes from
+
+**AI-SDLC** is the software development lifecycle (SDLC) redesigned around AI coding agents. Nobody coined it; it grew out of practitioner and vendor use from about 2025, and is also called the *agentic SDLC* or *AI-native SDLC*.
+
+**There's no single standard yet.** What exists in late 2026 are a few named methods and conventions that this template draws on:
+
+| Name | What it is | Here |
+|------|------------|------|
+| [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering) | AWS's named AI-Driven Development Life Cycle (July 2025): AI plans and builds, people approve at each step | The plan-then-approve loop |
+| Spec-driven development | Write the spec first, then let agents plan and build against it; GitHub's Spec Kit is the best-known toolkit | `docs/SPEC.md` and `docs/PLAN_<NAME>.md` |
+| [AGENTS.md](https://agents.md) | An open, tool-agnostic file of instructions for coding agents, now under the Linux Foundation | `AGENTS.md` |
+| DevSecOps | Security built into every stage of delivery | The eight stages in section 4 |
+
+**Watch out for "ADLC".** It means two different things:
+
+| | ADLC for *coding with* agents | ADLC for *building* agents |
+|---|---|---|
+| Stands for | Agentic development lifecycle | Agent development lifecycle |
+| The agent is | The developer: it writes your code | The product: it's what you ship |
+| Main concern | Plans, reviews, checks and approvals on code the agent writes | Evaluations, guardrails and monitoring, because an agent can answer the same input differently, and drifts when its model, prompts, tools or data change |
+| Who uses the term | Some practitioners; not settled | [IBM](https://www.ibm.com/think/topics/agent-development-lifecycle-adlc), [Salesforce](https://architect.salesforce.com/fundamentals/agent-development-lifecycle) and other vendors; the more common meaning |
+
+This guide is the first kind: the lifecycle for building any software with coding agents, which is why it's called AI-SDLC. When an app in `apps/` is itself an AI agent, add the second kind on top: evaluations in Test, and behaviour and cost monitoring in Monitor.
 
 ## 1. The idea in one line
 
