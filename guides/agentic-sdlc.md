@@ -1,10 +1,12 @@
-# AI-SDLC: building with coding agents
+# Secure agentic SDLC
 
 How projects from this template are built, with coding agents doing most of the coding and security built into every stage. It starts with where the name comes from and the idea, then walks through each stage, and ends with reference tables.
 
 ## 1. Where the name comes from
 
-**AI-SDLC** is the software development lifecycle (SDLC) redesigned around AI coding agents. Nobody coined it; it grew out of practitioner and vendor use from about 2025, and is also called the *agentic SDLC* or *AI-native SDLC*.
+**Agentic software development** is the industry's emerging name for building software with AI agents doing much of the work. Forrester calls it *Agentic Software Development (ASD)*, now a vendor category; Gartner calls it *agentic engineering*, part of *AI-native* software engineering. You'll also see *agentic SDLC*, *AI-SDLC* and *AI-native SDLC*. Nobody coined these; they grew out of practitioner, vendor and analyst use from about 2025.
+
+**This guide's lifecycle is the *secure agentic SDLC*:** the familiar SDLC with DevSecOps controls, where coding agents are some of the developers. Keeping "SDLC" in the name says existing security controls still apply, and section 7.2 maps each stage to NIST SSDF.
 
 ### 1.1 No single standard yet
 
@@ -16,6 +18,7 @@ What exists in late 2026 are a few named methods and conventions that this templ
 | Spec-driven development | Write the spec first, then let agents plan and build against it; GitHub's Spec Kit is the best-known toolkit | `docs/SPEC.md` and `docs/PLAN_<NAME>.md` |
 | [AGENTS.md](https://agents.md) | An open, tool-agnostic file of instructions for coding agents, now under the Linux Foundation | `AGENTS.md` |
 | DevSecOps | Security built into every stage of delivery | The eight stages in section 5 |
+| NIST SSDF (SP 800-218) | The US secure software development framework, in four groups: prepare, protect, produce, respond | The stage mapping in section 7.2 |
 
 ### 1.2 The two meanings of ADLC
 
@@ -28,7 +31,7 @@ What exists in late 2026 are a few named methods and conventions that this templ
 | Main concern | Staying accountable for code the agent writes: specs, plans, reviews, checks and approvals | Risks and controls, evaluations, observability, adoption and maintenance, because an agent can answer the same input differently, and drifts when its model, prompts, tools or data change |
 | Who uses it | AWS (AI-DLC), GitHub Spec Kit (spec-driven development) | LangChain, Microsoft Foundry, [IBM](https://www.ibm.com/think/topics/agent-development-lifecycle-adlc), [Salesforce](https://architect.salesforce.com/fundamentals/agent-development-lifecycle) |
 
-This guide is the first meaning: the lifecycle for building any software with coding agents, which is why it's called AI-SDLC here. When an app in `apps/` is itself an AI agent, add the second meaning on top of it: evaluations in Test, and behaviour, cost and drift monitoring in Monitor.
+This guide is the first meaning: the lifecycle for building any software with coding agents, which is why it's called the agentic SDLC here. When an app in `apps/` is itself an AI agent, add the second meaning on top of it: evaluations in Test, and behaviour, cost and drift monitoring in Monitor.
 
 ### 1.3 Harness, Harden, Humans
 
@@ -39,6 +42,18 @@ Three layers of the agentic lifecycle: a handy way to see what's settled and wha
 | **Harness** | The agent | State and memory, skills and integrations, subagents | Mostly settled | `AGENTS.md`, `docs/`, the fresh-subagent review |
 | **Harden** | The environment | Hooks, linters, CI/CD, sandboxes, tests and evaluations | Partly settled | Pre-push scan, checks, `aws.yml`, approvals |
 | **Humans** | You | Named accountability, meaningful review, the end-to-end process | Mostly open | You approve plans and applies; the PR carries your name |
+
+### 1.4 Terms to use and avoid
+
+| Term | Use it for |
+|------|------------|
+| **Agentic software development** | The industry practice, with executives and analysts |
+| **Secure agentic SDLC** | This lifecycle, with security, audit and IRAP reviewers |
+| Spec-driven development, harness engineering | The practices inside it |
+| AI-DLC | Only AWS's named method |
+| ~~ADLC~~ | Avoid: two meanings (1.2) |
+| ~~AI-SDLC~~ | Avoid in formal writing: also means the lifecycle of ML models |
+| ~~Vibe coding~~ | Avoid: means not reading the code, the opposite of this guide |
 
 ## 2. The idea in one line
 
@@ -140,7 +155,24 @@ When the plan's last phase is done, the agent reviews the whole branch, then upd
 | 7 | Operate | Person | Runbooks, `docs/FINOPS.md` | Patching, key rotation |
 | 8 | Monitor | Person and pipeline | Status and decisions updated | Findings feed the next Plan |
 
-### 7.2 Layout and what to change in a new project
+### 7.2 Stages mapped to NIST SSDF
+
+NIST SP 800-218 groups secure development into Prepare the Organization (PO), Protect the Software (PS), Produce Well-Secured Software (PW) and Respond to Vulnerabilities (RV). Each stage here meets these practices:
+
+| # | Stage | SSDF practices | How |
+|:-:|-------|----------------|-----|
+| 1 | Plan | PO.1 security requirements, PO.2 roles, PW.1 secure design, PW.2 design review | `SPEC.md` rules, threat model in `SECURITY.md`, the person approves the plan |
+| 2 | Code | PW.5 secure coding, PS.1 protect the code | `CODE_STANDARDS.md`, no secrets in code, PRs only on `main` |
+| 3 | Build | PO.3 toolchains, PW.4 well-secured components, PW.6 build settings | Pinned dependencies and actions, lock files, checks |
+| 4 | Test | PW.7 code review and analysis, PW.8 testing | Fresh-subagent review, tests, pre-push scan |
+| 5 | Release | PO.4 criteria for security checks, PS.2 release integrity | Checks required to merge, the plan artifact applied exactly |
+| 6 | Deploy | PO.5 secure environments, PW.9 secure defaults | OIDC, least-privilege roles, permissions boundary, approval gate |
+| 7 | Operate | PS.3 archive releases, RV.1 find vulnerabilities | Git history and versioned state, re-running the scans |
+| 8 | Monitor | RV.2 remediate, RV.3 root causes | `findings.md`, `DECISIONS.md`, findings feed the next Plan |
+
+For IRAP, map the same evidence to ISM controls in the project's SSP. For agents in `apps/`, add the OWASP GenAI Security Project's guidance on LLM and agentic application risks.
+
+### 7.3 Layout and what to change in a new project
 
 | Path | For | In a new project |
 |------|-----|------------------|
@@ -155,7 +187,7 @@ When the plan's last phase is done, the agent reviews the whole branch, then upd
 | `guides/` | Reference for people | Add per project |
 | `local/` | Personal scratch | Gitignored |
 
-### 7.3 Repo shape
+### 7.4 Repo shape
 
 - One repo per product; a top-level folder per kind of deployable part (`apps/`, `aws/`).
 - One workflow per folder, triggered by its path. Environments `<cloud>-<target>-plan` and `<cloud>-<target>-apply`; only `-apply` needs approval.
@@ -163,7 +195,7 @@ When the plan's last phase is done, the agent reviews the whole branch, then upd
 - OIDC from CI to cloud, scoped to repo and environment. No access keys.
 - Separate repos only when owners, access or release cycles differ.
 
-### 7.4 Rules of thumb for docs
+### 7.5 Rules of thumb for docs
 
 - Each fact lives in one place; everywhere else links to it.
 - Keep docs short: tables and one-line rules.
