@@ -1,0 +1,10 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+tfplan
+*.tfvars
+.env
+.venv/
+node_modules/
+dist/
+local/
