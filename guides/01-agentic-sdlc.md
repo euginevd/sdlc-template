@@ -19,8 +19,6 @@
 | Spec-driven development, harness engineering | Practices inside it |
 | AI-DLC | Only AWS's named method |
 | ~~ADLC~~ | Avoid: it means both building code *with* agents (this guide) and building agents *as the product* (LangChain, Microsoft Foundry). For an agent app in `apps/`, add the second's evaluations and drift monitoring |
-| ~~AI-SDLC~~ | Avoid in formal writing: also means the ML model lifecycle |
-| ~~Vibe coding~~ | Avoid: means not reading the code |
 
 ## 3. Five habits that make it work
 
