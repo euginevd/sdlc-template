@@ -16,7 +16,7 @@ In each changed unit: `terraform fmt -recursive`, `terraform init -backend=false
 
 *(Per app: the lint, type check and test commands.)*
 
-On the developer workstation, a lefthook pre-push hook runs gitleaks and Trivy over the pushed commits and blocks on findings, for humans and coding agents alike. `scripts/setup.sh` installs them: `guides/git-hooks.md`.
+On the developer workstation, a lefthook pre-push hook runs gitleaks and Trivy over the pushed commits and blocks on findings, for humans and coding agents alike. `scripts/setup.sh` installs them: `guides/02-git-hooks.md`.
 
 ## Deployment
 

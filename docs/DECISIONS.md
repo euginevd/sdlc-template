@@ -30,7 +30,7 @@ Key decisions, newest last. Never delete one; supersede it with a new entry.
 2026-11-08 · Accepted
 
 **Why:** catches secrets, IaC misconfigurations and vulnerable packages before they leave the workstation, for people and agents alike, with free tools that need no account. Pre-push, not pre-commit, so agents committing often aren't slowed down.
-**Instead of:** Wiz (needs a licensed tenant), pre-commit (slow on every commit), or no workstation scan. `guides/git-hooks.md` compares them.
+**Instead of:** Wiz (needs a licensed tenant), pre-commit (slow on every commit), or no workstation scan. `guides/02-git-hooks.md` compares them.
 
 ## 6. The state bucket passed at `terraform init`
 2026-11-08 · Accepted

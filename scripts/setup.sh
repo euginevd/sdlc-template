@@ -15,7 +15,7 @@ install() {
   elif command -v brew >/dev/null; then
     brew install "$brew_name" || return 1
   else
-    echo "Install $cmd by hand (guides/git-hooks.md), then run this again."
+    echo "Install $cmd by hand (guides/02-git-hooks.md), then run this again."
     return 1
   fi
   command -v "$cmd" >/dev/null || { echo "$cmd installed: open a new terminal, then run this again."; return 1; }

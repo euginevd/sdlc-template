@@ -27,8 +27,8 @@ gh repo create <project> --template euginevd/sdlc-template --private --clone
 Then:
 
 1. Replace `<project>` everywhere, the README's title and tagline, and the Context section of [AGENTS.md](AGENTS.md).
-2. Run `bash scripts/setup.sh` for the pre-push scan ([git-hooks](guides/git-hooks.md)).
-3. Write [docs/SPEC.md](docs/SPEC.md), then ask the agent to plan. How it all fits: [guides/agentic-sdlc.md](guides/agentic-sdlc.md).
+2. Run `bash scripts/setup.sh` for the pre-push scan ([git-hooks](guides/02-git-hooks.md)).
+3. Write [docs/SPEC.md](docs/SPEC.md), then ask the agent to plan. How it all fits: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md).
 
 ## 🔁 Lifecycle
 
@@ -62,7 +62,7 @@ DevSecOps: security is built into every stage, not added at the end. The person 
 | [.github/workflows/](.github/workflows/) | `aws.yml`: plans changed units on a PR, applies after approval |
 | [scripts/](scripts/), `lefthook.yml`, `.lefthook/`, `.vscode/` | Developer workstation guardrails: one-time setup, the gitleaks and Trivy pre-push scan, recommended extensions |
 | [AGENTS.md](AGENTS.md), [docs/](docs/) | Spec, tech stack, standards, process, status and decisions, for people and coding agents |
-| [guides/](guides/) | Reference: [secure agentic SDLC](guides/agentic-sdlc.md), [git hooks](guides/git-hooks.md), [findings](guides/findings.md) |
+| [guides/](guides/) | Reference: [secure agentic SDLC](guides/01-agentic-sdlc.md), [git hooks](guides/02-git-hooks.md), [findings](guides/03-findings.md) |
 
 ## 🚀 Bootstrap
 
