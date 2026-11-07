@@ -10,52 +10,17 @@
 
 ## 2. Where the name comes from
 
-**Agentic software development** is the industry's emerging name for building software with AI agents doing much of the work: Forrester's *Agentic Software Development (ASD)*, Gartner's *agentic engineering*. Variants such as *agentic SDLC* and *AI-native SDLC* grew out of use from about 2025; nobody coined them. Keeping "SDLC" in the name says existing security controls still apply.
-
-### 2.1 No single standard yet
-
-The template draws on these named methods and conventions:
-
-| Name | What it is | Here |
-|------|------------|------|
-| [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering) | AWS's method (July 2025): AI plans and builds, people approve each step | The plan-then-approve loop |
-| Spec-driven development | Spec first, then agents plan and build from it; GitHub Spec Kit | `docs/SPEC.md` and `docs/PLAN_<NAME>.md` |
-| [AGENTS.md](https://agents.md) | Open, tool-agnostic agent instructions, under the Linux Foundation | `AGENTS.md` |
-| DevSecOps | Security built into every stage of delivery | The eight stages in section 5 |
-| NIST SSDF (SP 800-218) | The US secure software development framework | The stage mapping in section 6.1 |
-
-### 2.2 The two meanings of ADLC
-
-| | 1. Building *code with* agents | 2. Building *agents with* code |
-|---|---|---|
-| Stands for | AI-Driven or Agentic Development Lifecycle | Agent Development Lifecycle |
-| The agent is | The developer, writing your software | The product you ship |
-| Main concern | Accountability for its code: specs, plans, reviews, checks, approvals | Evaluations, observability and controls, because agents vary and drift |
-| Who uses it | AWS (AI-DLC), GitHub Spec Kit (spec-driven development) | LangChain, Microsoft Foundry, [IBM](https://www.ibm.com/think/topics/agent-development-lifecycle-adlc), [Salesforce](https://architect.salesforce.com/fundamentals/agent-development-lifecycle) |
-
-This guide is meaning 1. When an app in `apps/` is an AI agent, add meaning 2: evaluations in Test, drift and cost monitoring in Monitor.
-
-### 2.3 Harness, Harden, Humans
-
-What's settled and what isn't (Ed Donner, AI FDE course, 2026):
-
-| Layer | What | Covers | State | In this template |
-|-------|------|--------|-------|------------------|
-| **Harness** | The agent | State and memory, skills and integrations, subagents | Mostly settled | `AGENTS.md`, `docs/`, the fresh-subagent review |
-| **Harden** | The environment | Hooks, linters, CI/CD, sandboxes, tests and evaluations | Partly settled | Pre-push scan, checks, `aws.yml` |
-| **Humans** | You | Named accountability, meaningful review, the end-to-end process | Mostly open | You approve plans and applies; the PR carries your name |
-
-### 2.4 Terms to use and avoid
+**Agentic software development** is the industry's emerging term (Forrester's *ASD*, Gartner's *agentic engineering*); there's no single standard yet. This lifecycle is the **secure agentic SDLC**: keeping "SDLC" says existing security controls still apply. It draws on AWS's [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering) (AI plans, people approve), spec-driven development (GitHub Spec Kit), [AGENTS.md](https://agents.md), DevSecOps, and NIST SSDF (section 6.1).
 
 | Term | Use it for |
 |------|------------|
 | **Agentic software development** | The industry practice, with executives and analysts |
 | **Secure agentic SDLC** | This lifecycle, with security, audit and IRAP reviewers |
-| Spec-driven development, harness engineering | The practices inside it |
+| Spec-driven development, harness engineering | Practices inside it |
 | AI-DLC | Only AWS's named method |
-| ~~ADLC~~ | Avoid: two meanings (2.2) |
-| ~~AI-SDLC~~ | Avoid in formal writing: also means the lifecycle of ML models |
-| ~~Vibe coding~~ | Avoid: means not reading the code, the opposite of this guide |
+| ~~ADLC~~ | Avoid: it means both building code *with* agents (this guide) and building agents *as the product* (LangChain, Microsoft Foundry). For an agent app in `apps/`, add the second's evaluations and drift monitoring |
+| ~~AI-SDLC~~ | Avoid in formal writing: also means the ML model lifecycle |
+| ~~Vibe coding~~ | Avoid: means not reading the code |
 
 ## 3. Five habits that make it work
 
