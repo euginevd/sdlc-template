@@ -24,7 +24,11 @@ One repo per product. Apps go in `apps/`, each one self-contained. Cloud infrast
 gh repo create <project> --template euginevd/sdlc-template --private --clone
 ```
 
-Then replace the placeholders: this README's title and tagline, the Context section of [AGENTS.md](AGENTS.md), and [docs/SPEC.md](docs/SPEC.md).
+Then:
+
+1. Replace `<project>` everywhere, the README's title and tagline, and the Context section of [AGENTS.md](AGENTS.md).
+2. Run `bash scripts/setup.sh` for the pre-push scan ([git-hooks](guides/git-hooks.md)).
+3. Write [docs/SPEC.md](docs/SPEC.md), then ask the agent to plan. How it all fits: [guides/ai-sdlc.md](guides/ai-sdlc.md).
 
 ## 🔁 Lifecycle
 
@@ -53,27 +57,30 @@ DevSecOps: security is built into every stage, not added at the end. The person 
 |------|------|
 | [apps/](apps/) | One folder per app (web, API, agent), each self-contained with its own tests |
 | [aws/](aws/) | Terraform, one folder and state per deployable unit |
-| [aws/bootstrap/](aws/bootstrap/) | OIDC provider, state bucket, plan and deploy roles *(planned)* |
-| [.github/workflows/](.github/workflows/) | One workflow per folder, triggered by its path: checks on a PR, apply after approval *(planned)* |
-| [scripts/](scripts/) | One-time setup and helper scripts |
+| [aws/_template/](aws/_template/) | Starting files for a new unit; copy to `aws/<unit>/` |
+| [aws/bootstrap/](aws/bootstrap/) | CloudFormation stack: OIDC provider, state bucket, plan and deploy roles, permissions boundary |
+| [.github/workflows/](.github/workflows/) | `aws.yml`: plans changed units on a PR, applies after approval |
+| [scripts/](scripts/), `lefthook.yml`, `.lefthook/`, `.vscode/` | Developer workstation guardrails: one-time setup, the gitleaks and Trivy pre-push scan, recommended extensions |
 | [AGENTS.md](AGENTS.md), [docs/](docs/) | Spec, tech stack, standards, process, status and decisions, for people and coding agents |
-| [guides/](guides/) | Reference and how-tos for people |
+| [guides/](guides/) | Reference: [AI-SDLC](guides/ai-sdlc.md), [git hooks](guides/git-hooks.md), [findings](guides/findings.md) |
 
 ## 🚀 Bootstrap
 
-Once per project, before the first deploy.
+Once per project, before the first deploy, as an admin in the project's AWS account.
 
 | # | Where | Step |
 |:-:|-------|------|
-| 1 | **AWS Console** | Deploy the bootstrap stack from [aws/bootstrap/](aws/bootstrap/) *(planned)* |
+| 1 | **AWS Console** | CloudFormation → Create stack → Upload [bootstrap.yaml](aws/bootstrap/bootstrap.yaml) → name `<project>-bootstrap` → fill in the parameters (`CreateOidcProvider` false if the account already has GitHub's) → acknowledge IAM resources → Submit |
 | 2 | **GitHub** | Settings → Environments: create `aws-<target>-plan`, and `aws-<target>-apply` with yourself as required reviewer |
-| 3 | **GitHub** | Settings → Secrets and variables → Actions → Variables: `AWS_PLAN_ROLE_ARN` and `AWS_DEPLOY_ROLE_ARN` from the stack's outputs |
+| 3 | **GitHub** | Settings → Secrets and variables → Actions → Variables: `AWS_PLAN_ROLE_ARN`, `AWS_DEPLOY_ROLE_ARN` and `TF_STATE_BUCKET` from the stack's outputs; `AWS_TARGET` if it isn't `dev` |
+
+A new AWS service: add its permissions to the template, then CloudFormation → `<project>-bootstrap` → Update → Replace existing template.
 
 ## 🧹 Cleanup
 
 | # | Where | Step |
 |:-:|-------|------|
-| 1 | **GitHub** | Destroy every Terraform root first, or its resources are orphaned |
+| 1 | **GitHub** | Destroy every unit first (Actions → `aws` → Run workflow → `all`, `destroy`), or its resources are orphaned |
 | 2 | **AWS Console** | Empty the state bucket, then delete the bootstrap stack |
 | 3 | **GitHub** | Settings → Environments: delete the plan and apply environments |
 
@@ -81,8 +88,7 @@ Once per project, before the first deploy.
 
 | # | Next | Detail |
 |:-:|------|--------|
-| 1 | **Docs** | Fill in the generic process, code standards and decision format |
-| 2 | **Bootstrap** | OIDC, state bucket and plan and deploy roles for AWS |
-| 3 | **Workflows** | Reusable CI for Terraform, Python and TypeScript |
-| 4 | **Workstation guardrails** | Pre-push secret and IaC scan through lefthook |
-| 5 | **Agent commands** | Shared plan, build, review and ship commands, as a plugin |
+| 1 | **Pipeline scans** | `tflint`, Trivy and gitleaks in CI, so the PR re-checks what the pre-push hook can skip |
+| 2 | **App workflows** | CI for Python and TypeScript apps in `apps/` |
+| 3 | **Branch protection** | `main` ruleset: PRs only, squash merge, checks required |
+| 4 | **Agent commands** | Shared plan, build, review and ship commands, as a plugin |
