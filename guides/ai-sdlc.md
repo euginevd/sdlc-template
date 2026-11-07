@@ -15,16 +15,24 @@ How projects from this template are built, with coding agents doing most of the 
 | [AGENTS.md](https://agents.md) | An open, tool-agnostic file of instructions for coding agents, now under the Linux Foundation | `AGENTS.md` |
 | DevSecOps | Security built into every stage of delivery | The eight stages in section 4 |
 
-**Watch out for "ADLC".** It means two different things:
+**Watch out for "ADLC".** It has two meanings, which is confusing:
 
-| | ADLC for *coding with* agents | ADLC for *building* agents |
+| | 1. Building *code with* agents | 2. Building *agents with* code |
 |---|---|---|
-| Stands for | Agentic development lifecycle | Agent development lifecycle |
-| The agent is | The developer: it writes your code | The product: it's what you ship |
-| Main concern | Plans, reviews, checks and approvals on code the agent writes | Evaluations, guardrails and monitoring, because an agent can answer the same input differently, and drifts when its model, prompts, tools or data change |
-| Who uses the term | Some practitioners; not settled | [IBM](https://www.ibm.com/think/topics/agent-development-lifecycle-adlc), [Salesforce](https://architect.salesforce.com/fundamentals/agent-development-lifecycle) and other vendors; the more common meaning |
+| Stands for | AI-Driven or Agentic Development Lifecycle | Agent Development Lifecycle |
+| The agent is | The developer: a coding agent like Claude Code writes your software | The product: the agent is what you ship |
+| Main concern | Staying accountable for code the agent writes: specs, plans, reviews, checks and approvals | Risks and controls, evaluations, observability, adoption and maintenance, because an agent can answer the same input differently, and drifts when its model, prompts, tools or data change |
+| Who uses it | AWS (AI-DLC), GitHub Spec Kit (spec-driven development) | LangChain, Microsoft Foundry, [IBM](https://www.ibm.com/think/topics/agent-development-lifecycle-adlc), [Salesforce](https://architect.salesforce.com/fundamentals/agent-development-lifecycle) |
 
-This guide is the first kind: the lifecycle for building any software with coding agents, which is why it's called AI-SDLC. When an app in `apps/` is itself an AI agent, add the second kind on top: evaluations in Test, and behaviour and cost monitoring in Monitor.
+This guide is the first meaning: the lifecycle for building any software with coding agents, which is why it's called AI-SDLC here. When an app in `apps/` is itself an AI agent, add the second meaning on top of it: evaluations in Test, and behaviour, cost and drift monitoring in Monitor.
+
+**Three layers of the agentic lifecycle.** A handy way to see what's settled and what isn't (Ed Donner, AI FDE course, 2026):
+
+| Layer | What | Covers | State | In this template |
+|-------|------|--------|-------|------------------|
+| **Harness** | The agent | State and memory, skills and integrations, subagents | Mostly settled | `AGENTS.md`, `docs/`, the fresh-subagent review |
+| **Harden** | The environment | Hooks, linters, CI/CD, sandboxes, tests and evaluations | Partly settled | Pre-push scan, checks, `aws.yml`, approvals |
+| **Humans** | You | Named accountability, meaningful review, the end-to-end process | Mostly open | You approve plans and applies; the PR carries your name |
 
 ## 1. The idea in one line
 
@@ -32,7 +40,7 @@ This guide is the first kind: the lifecycle for building any software with codin
 
 You decide what to build and approve each plan. The agent plans, codes, tests and reviews. Rules in files, checks and approvals keep the agent safe.
 
-## 2. Four habits that make it work
+## 2. Five habits that make it work
 
 Everything else in this guide builds on these.
 
@@ -40,6 +48,7 @@ Everything else in this guide builds on these.
 - **Verify, don't trust.** Checks and an independent review catch what the author missed. Never weaken a check to get a green run.
 - **Small steps.** One phase, one diff, one review. Stop and ask when stuck or unclear.
 - **People hold the keys.** The agent never changes cloud resources, and never deploys without your approval.
+- **Be the boss.** You own the code you ship, and the PR carries your name, so never push slop. Make the agent show evidence: the test run, the diff, a screenshot.
 
 ## 3. Where the agent finds its rules
 
@@ -54,7 +63,21 @@ The agent starts at `AGENTS.md`, which lists the docs to read in order:
 | `docs/STATUS.md` | What's built, and what's next? |
 | `docs/DECISIONS.md` | What's settled, so it isn't reopened? |
 
-The same files work for any coding agent, because they're plain Markdown. That's why there's only `AGENTS.md`, with no tool-specific copies.
+The same files work for any coding agent, because they're plain Markdown. That's why there's only `AGENTS.md`, with no tool-specific copies. Claude Code, Codex, OpenCode, Copilot and Cursor all read it.
+
+> **No `CLAUDE.md`.** Claude Code reads `AGENTS.md` natively from v2.1.277, and a `CLAUDE.md` in the project makes it skip `AGENTS.md`. If you ever need Claude-only extras, add a `CLAUDE.md` whose first line is `@AGENTS.md`. Don't symlink on Windows.
+
+These docs are new names for old documents, so they're easy to explain to a team:
+
+| Doc here | Older equivalent |
+|----------|------------------|
+| `SPEC.md` | PRD (product requirements) |
+| `TECH_STACK.md` | Architecture doc |
+| `DECISIONS.md` | ADRs |
+| `CODE_STANDARDS.md`, `PROCESS.md` | CONTRIBUTING, definition of done |
+| `STATUS.md` | Progress file, needed because agents forget between sessions |
+
+Tools name them differently (Spec Kit: constitution, spec, plan, tasks; Kiro: requirements, design, tasks), but the pattern is the same: **spec → plan → tasks → progress**.
 
 ## 4. The stages
 
