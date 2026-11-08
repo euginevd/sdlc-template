@@ -18,17 +18,17 @@ The end-to-end flow, through the stages in section 3, for both a new project and
 
 | # | Stage | Who | Step |
 |:-:|-------|-----|------|
-| 1 | Plan | Dev | **Create the repo (new project only):** `gh repo create travel-claims --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` |
-| 2 | Plan | Dev, agent | **Update the spec:** *"Update spec"*. ↺ Review and correct it until it says what you want |
-| 3 | Plan | Dev, agent | **Prompt:** *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks, phases and PR groups, and drafts or updates `threat-model.md` if the work touches users, data, auth or endpoints; no code |
-| 4 | Plan | Dev | **Review the plan and threat model:** ↺ ask for changes until they're right, then approve |
-| 5 | Code | Dev | **Prompt:** *"Implement the plan for <the work>"* |
-| 6 | Code | Agent | **Build each phase:** code, local checks, fresh-subagent review, docs, local commit |
-| 7 | Code | Agent | **Push:** the pre-push scan runs (Gitleaks, Trivy). ↺ The agent fixes any finding and pushes again, then opens a PR |
-| 8 | Build and test | Pipeline, agent | **PR checks:** the security scans and the Terraform plan run on every PR (app checks *(planned)*). ↺ The agent fixes any finding on the same PR |
-| 9 | Release | Dev, agent | **Review and merge:** you review the diff and the plan and approve; the agent squash-merges and deletes the branch |
-| 10 | Deploy | Dev, pipeline | **Apply:** you read the Terraform plan and approve; Terraform applies exactly that plan through OIDC. A merge deploys to `dev`; a manual run with target `prod` promotes it |
-| 11 | Operate and monitor | Agent, dev | **Close the loop:** the agent updates `status.md` and `decisions.md` and deletes the plan; findings and alerts become the next spec (back to 2) |
+| 1 | Plan | Dev | **Create the repo:** from the template, then run `bash scripts/setup.sh` (new project only) |
+| 2 | Plan | Dev, agent | **Update the spec:** *"Update spec"*. ↺ Correct it until it says what you want |
+| 3 | Plan | Dev, agent | **Plan:** *"Plan <the work>"*. The agent writes the plan and threat model; no code |
+| 4 | Plan | Dev | **Review the plan:** ↺ ask for changes to the plan and threat model, then approve |
+| 5 | Code | Dev | **Implement:** *"Implement the plan"*. The agent works through the phases |
+| 6 | Code | Agent | **Build each phase:** code, checks, subagent review, docs, then a local commit |
+| 7 | Code | Agent | **Push:** the pre-push scan runs. ↺ The agent fixes findings, then opens a PR |
+| 8 | Build and test | Pipeline, agent | **PR checks:** security scans and the Terraform plan. ↺ The agent fixes findings |
+| 9 | Release | Dev, agent | **Merge:** you review and approve; the agent squash-merges and deletes the branch |
+| 10 | Deploy | Dev, pipeline | **Apply:** you approve the Terraform plan; merges deploy `dev`, a manual run `prod` |
+| 11 | Operate and monitor | Agent, dev | **Close the loop:** the agent updates status and decisions; findings feed step 2 |
 
 ## 3. The stages
 
