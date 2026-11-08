@@ -16,18 +16,18 @@
 
 ## 3. The stages
 
-The eight DevSecOps stages, who does each, the core security activities, and the open-source tools most teams reach for.
+The eight DevSecOps stages, the core security activities in each, and the open-source tools most teams reach for. Who does what is in the workflow (section 4).
 
-| # | Stage | Who | Core components | Open-source tools |
-|:-:|-------|-----|-----------------|-------------------|
-| 1 | Plan | You, then agent | Data classification · threat modelling · security requirements and architecture | OWASP Threat Dragon |
-| 2 | Code | Agent | Secrets detection · static analysis (SAST, SCA, IaC) · repo hardening and code review | Gitleaks · Semgrep |
-| 3 | Build | Pipeline | Image scanning and build gates · SBOM and signing · CI pipeline hardening | Trivy · Cosign |
-| 4 | Test | Agent and pipeline | DAST, API and pen testing · security regression tests · AI security testing | OWASP ZAP · promptfoo |
-| 5 | Release | Agent | Artifact re-scan and promotion by digest · infrastructure plan review · release approval | Checkov · Trivy |
-| 6 | Deploy | Pipeline, after your approval | Admission control · GitOps deployment · secure workload configuration | Argo CD · Kyverno |
-| 7 | Operate | You | Posture management · vulnerability management · AI posture management | Prowler · Trivy Operator |
-| 8 | Monitor | You and pipeline | Threat detection and logging · incident response · AI monitoring | Falco · Wazuh |
+| # | Stage | Core components | Open-source tools |
+|:-:|-------|-----------------|-------------------|
+| 1 | Plan | Data classification · threat modelling · security requirements and architecture | OWASP Threat Dragon |
+| 2 | Code | Secrets detection · static analysis (SAST, SCA, IaC) · repo hardening and code review | Gitleaks · Semgrep |
+| 3 | Build | Image scanning and build gates · SBOM and signing · CI pipeline hardening | Trivy · Cosign |
+| 4 | Test | DAST, API and pen testing · security regression tests · AI security testing | OWASP ZAP · promptfoo |
+| 5 | Release | Artifact re-scan and promotion by digest · infrastructure plan review · release approval | Checkov · Trivy |
+| 6 | Deploy | Admission control · GitOps deployment · secure workload configuration | Argo CD · Kyverno |
+| 7 | Operate | Posture management · vulnerability management · AI posture management | Prowler · Trivy Operator |
+| 8 | Monitor | Threat detection and logging · incident response · AI monitoring | Falco · Wazuh |
 
 ## 4. Workflow: spec-driven development
 
@@ -35,28 +35,26 @@ The end-to-end flow, stage by stage, for both a new project and each change afte
 
 | # | Stage | Step | Who |
 |:-:|-------|------|-----|
-| 1 | Plan | **Create the repo (new project only):** `gh repo create <project> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` | You |
-| 2 | Plan | **Update the spec docs:** for a new project, `spec.md`, `tech-stack.md` and `AGENTS.md` → Context, plus `threat-model.md` and `costs.md` if needed; for a change, the parts of `spec.md` it affects | You |
-| 3 | Plan | **Prompt:** *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks, phases and PR groups; no code | You, then agent |
-| 4 | Plan | **Review the plan:** ↺ ask for changes until it's right, then approve | You |
-| 5 | Code | **Prompt:** *"Implement the plan for <the work>"* | You |
-| 6 | Code | **Build each phase:** code, local checks, fresh-subagent review, docs, local commit | Agent |
-| 7 | Code | **Push:** the pre-push scan runs (Gitleaks, Trivy). ↺ The agent fixes any finding and pushes again, then opens a PR | Agent |
-| 8 | Build and test | **PR checks:** the workflows run the checks and the Terraform plan. ↺ The agent fixes any finding on the same PR | Pipeline, then agent |
+| 1 | Plan | You |
+| 2 | Plan | You |
+| 3 | Plan | You, then agent |
+| 4 | Plan | You |
+| 5 | Code | You |
+| 6 | Code | Agent |
+| 7 | Code | Agent |
+| 8 | Build and test | **PR checks:** the workflows run the checks and the Terraform plan (app checks *(planned)*). ↺ The agent fixes any finding on the same PR | Pipeline, then agent |
 | 9 | Release | **Review and merge:** you review the diff and the plan and approve; the agent squash-merges and deletes the branch | You, then agent |
 | 10 | Deploy | **Apply:** you read the Terraform plan and approve; Terraform applies exactly that plan through OIDC | You, then pipeline |
 | 11 | Operate and monitor | **Close the loop:** the agent updates `status.md` and `decisions.md` and deletes the plan; findings and alerts become the next spec (back to 2) | Agent and you |
 
 ## 5. The template repo
 
-New projects start from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template): `gh repo create <project> --template euginevd/sdlc-template --private --clone`.
-
-Listed in order of importance:
+What step 1 creates from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template), in order of importance:
 
 ```
 sdlc-template/
 ├── AGENTS.md              01 the agent's rules; every agent reads this first
-├── README.md              02 front page: what it is, how to start, the lifecycle
+├── README.md              02 front page: what it is and how to start
 ├── docs/                  03 what the agent builds from, in reading order:
 │   ├── spec.md               what we're building and what done means
 │   ├── tech-stack.md         tools, checks and how it deploys
