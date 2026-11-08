@@ -36,7 +36,7 @@ The eight DevSecOps stages, the core security activities in each, and the open-s
 
 | # | Stage | Core components | Open-source tools |
 |:-:|-------|-----------------|-------------------|
-| 1 | Plan | Data classification · threat modelling · security requirements and architecture | Mermaid (data flow diagram) · OWASP Threat Dragon · OWASP ASVS |
+| 1 | Plan | Data classification · threat modelling · security requirements and architecture | Mermaid · Threat Dragon · ASVS |
 | 2 | Code | Secrets detection · static analysis (SAST, SCA, IaC) · repo hardening and code review | Gitleaks · Semgrep |
 | 3 | Build | Image scanning and build gates · SBOM and signing · CI pipeline hardening | Trivy · Cosign |
 | 4 | Test | DAST, API and pen testing · security regression tests · AI security testing | OWASP ZAP · promptfoo |
