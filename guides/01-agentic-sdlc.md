@@ -93,4 +93,3 @@ travel-claims/
 | `docs/decisions.md` | Key decisions with why and the alternative; superseded, never deleted | Sometimes |
 | `docs/threat-model.md` | Data classification, trust boundaries, threats and controls, compliance. Optional | Sometimes |
 | `docs/costs.md` | One row per resource that costs money, budget and alerts. Optional | Sometimes |
-| `docs/plan-<name>.md` | The current plan: design, risks, phases, PR groups. Deleted when done | Temporary |
