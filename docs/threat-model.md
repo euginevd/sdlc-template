@@ -11,6 +11,7 @@ flowchart LR
     handler[Handler]
   end
   subgraph aws ["AWS account, ap-southeast-2"]
+    cognito[Cognito]
     web((web))
     api((api))
     db[(Claims database)]
@@ -20,12 +21,12 @@ flowchart LR
     end
   end
   subgraph third ["External services"]
-    okta[Okta]
     bedrock[Bedrock, AU profile]
     bank[Bank API]
   end
   claimant -- "4: claim, receipts" --> web
-  handler -- "6: sign-in" --> okta
+  claimant -- "4: sign-in" --> cognito
+  handler -- "4: sign-in" --> cognito
   handler -- "review, sign-off" --> web
   web -- "HTTPS, token" --> api
   api --> db
@@ -48,9 +49,9 @@ Rectangles are external entities, circles processes, cylinders data stores, red 
 
 ## Trust boundaries
 
-4. Internet to AWS: everything claimants and handlers send is untrusted, receipts included.
+4. Internet to AWS: claimants and handlers sign in through Amazon Cognito (business 6); everything they send is untrusted, receipts included.
 5. Agent to the `api`: model output is untrusted; code checks the decision before it can drive a payment.
-6. AWS to external services: handlers sign in through Okta (business 6), payments go to the bank API, and model calls stay in Australia.
+6. AWS to external services: payments go to the bank API, and model calls stay in Australia.
 
 ## Top risks
 
