@@ -6,16 +6,39 @@ A worked example: `travel-claims`. STRIDE on the data flow below; each risk maps
 
 ```mermaid
 flowchart LR
-  claimant([Claimant]) -- "4: claim, receipts" --> web
-  handler([Handler]) -- "6: sign-in" --> entra[Entra ID]
-  subgraph aws [AWS account, ap-southeast-2]
-    web[web] --> api[api]
-    api --> db[(Claims database)]
-    api -- claim --> agent[agent]
-    agent --> bedrock[Bedrock, AU profile]
+  subgraph internet ["Internet: untrusted"]
+    claimant[Claimant]
+    handler[Handler]
   end
-  api -- "5: payment" --> bank[Bank API]
+  subgraph aws ["AWS account, ap-southeast-2"]
+    web((web))
+    api((api))
+    db[(Claims database)]
+    bucket[(Receipt bucket)]
+    subgraph agentzone ["Agent: output untrusted"]
+      agent((agent))
+    end
+  end
+  subgraph third ["External services"]
+    entra[Entra ID]
+    bedrock[Bedrock, AU profile]
+    bank[Bank API]
+  end
+  claimant -- "4: claim, receipts" --> web
+  handler -- "6: sign-in" --> entra
+  handler -- "review, sign-off" --> web
+  web -- "HTTPS, token" --> api
+  api --> db
+  api --> bucket
+  api -- "claim as data" --> agent
+  agent -- prompt --> bedrock
+  agent -- "5: decision, schema-checked" --> api
+  api -- "6: payment under the limit" --> bank
+  classDef boundary fill:none,stroke:#d33,stroke-width:2px,stroke-dasharray:6 4
+  class internet,aws,agentzone,third boundary
 ```
+
+Rectangles are external entities, circles processes, cylinders data stores, red dashed boxes trust boundaries; numbers are the boundaries below.
 
 | # | Data | Class | Where |
 |:-:|------|-------|-------|
@@ -25,9 +48,9 @@ flowchart LR
 
 ## Trust boundaries
 
-4. Receipts and claim text from claimants enter the agent: untrusted input.
-5. The agent's decision drives the payment code: model output leading to a real action.
-6. Handlers sign in through Microsoft Entra ID (business 6); claimants sign in to the web app.
+4. Internet to AWS: everything claimants and handlers send is untrusted, receipts included.
+5. Agent to the `api`: model output is untrusted; code checks the decision before it can drive a payment.
+6. AWS to external services: handlers sign in through Microsoft Entra ID (business 6), payments go to the bank API, and model calls stay in Australia.
 
 ## Top risks
 
