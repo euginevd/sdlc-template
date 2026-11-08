@@ -43,7 +43,7 @@ A worked example built from [sdlc-template](https://github.com/euginevd/sdlc-tem
 Once per AWS account (`dev`, then `prod`), as an admin:
 
 1. **AWS Console:** CloudFormation → upload [bootstrap.yaml](aws/bootstrap/bootstrap.yaml) as `travel-claims-bootstrap`, with `ProjectName` `travel-claims` and `Target` `dev` or `prod` (`CreateOidcProvider` false if the account already has GitHub's).
-2. **GitHub:** Settings → Environments: `aws-<target>-plan`, and `aws-<target>-apply` with yourself as required reviewer.
+2. **GitHub:** Settings → Environments: `aws-<target>-plan`, and `aws-<target>-apply` with yourself as required reviewer and deployment branches limited to `main`.
 3. **GitHub:** Settings → Variables: `PROJECT_NAME` (`travel-claims`) for the repo. Then on each environment, from that account's stack outputs: `AWS_PLAN_ROLE_ARN` on `-plan`, `AWS_DEPLOY_ROLE_ARN` on `-apply`, and `TF_STATE_BUCKET` on both.
 4. **GitHub,** once the repo is public: Settings → Security → turn on Private vulnerability reporting.
 
