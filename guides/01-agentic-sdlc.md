@@ -85,12 +85,12 @@ travel-claims/
 
 | File | What's in it | Changes |
 |------|--------------|---------|
-| `AGENTS.md` | Rules for every coding agent: what to read, commands, workflow, boundaries, known mistakes. Generic, so the same in every project | Rarely; agents add known mistakes |
-| `docs/business-context.md` | The business: who it is, its regulators, data rules, risk appetite, systems, owners and tone. The same for every project for that business | Only when the business changes |
-| `docs/spec.md` | The project (name, problem, goal, users, AWS), its stack, what done means, rules, what's out. The one file to fill in: the agent drafts it, you approve it | Per project, then per change |
-| `docs/code-standards.md` | Numbered coding rules: general, security, tests, Terraform, languages, AI, docs | Rarely, after asking |
-| `docs/status.md` | What's built, how to run it, known gaps, what's next | Every commit that changes something |
-| `docs/decisions.md` | Key decisions with why and the alternative; superseded, never deleted | When a key decision is made |
-| `docs/threat-model.md` | Data classification, trust boundaries, threats and controls, compliance. Optional | When users, data or endpoints change |
-| `docs/costs.md` | One row per resource that costs money, budget and alerts. Optional | When something adds cost |
-| `docs/plan-<name>.md` | The current plan: design, risks, phases, PR groups | Per plan; deleted when done |
+| `AGENTS.md` | Numbered rules for every coding agent: what to read, commands, workflow, boundaries, known mistakes. The same in every project | Rarely |
+| `docs/business-context.md` | The business: who it is, regulators, data rules, risk appetite, systems, owners and tone. The same for every project for that business | Rarely |
+| `docs/spec.md` | The project: name, problem, goal, users, AWS, stack, what done means, rules and what's out. The agent drafts it, you approve it | Often |
+| `docs/code-standards.md` | Numbered coding rules the pipeline can't check: general, errors and logs, safe by design, tests, Terraform, languages, AI, docs | Rarely |
+| `docs/status.md` | What's built, how to run it, known gaps, what's next | Always |
+| `docs/decisions.md` | Key decisions with why and the alternative; superseded, never deleted | Sometimes |
+| `docs/threat-model.md` | Data classification, trust boundaries, threats and controls, compliance. Optional | Sometimes |
+| `docs/costs.md` | One row per resource that costs money, budget and alerts. Optional | Sometimes |
+| `docs/plan-<name>.md` | The current plan: design, risks, phases, PR groups. Deleted when done | Temporary |
