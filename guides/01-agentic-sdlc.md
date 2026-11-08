@@ -59,7 +59,7 @@ travel-claims/
 │   ├── code-standards.md     how to write the code
 │   ├── status.md             what's built and what's next
 │   ├── decisions.md          what's settled and why
-│   ├── threat-model.md       data classification, threats and controls
+│   ├── threat-model.md       data flow, top risks (STRIDE, OWASP)
 │   ├── costs.md              what costs money, budget and alerts
 │   └── plan-<name>.md        the plan being built (per plan; deleted when done)
 ├── apps/                  04 the product: one folder per app
@@ -93,5 +93,5 @@ travel-claims/
 | `docs/code-standards.md` | Numbered coding rules the pipeline can't check: general, errors and logs, safe by design, tests, Terraform, languages, AI, docs | Rarely |
 | `docs/status.md` | What's built, how to run it, known gaps, what's next | Always |
 | `docs/decisions.md` | Key decisions with why and the alternative; superseded, never deleted | Sometimes |
-| `docs/threat-model.md` | Data classification, data flow diagram, threats and controls, compliance. Optional | Sometimes |
+| `docs/threat-model.md` | Data flow, data classes, top risks mapped to STRIDE and OWASP, compliance. Optional | Sometimes |
 | `docs/costs.md` | One row per resource that costs money, budget and alerts. Optional | Sometimes |
