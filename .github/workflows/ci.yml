@@ -1,0 +1,49 @@
+name: ci
+
+# Each app's checks on every PR and main, in pinned images; a job's checks run only once its apps exist.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container: python:3.13.17-slim-bookworm@sha256:e32be0e55814a08977501ca863271d9bd02443710db8f2afaf8372e2c4508530
+    env:
+      UV_PYTHON_DOWNLOADS: never
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Format, lint, types and tests
+        if: hashFiles('pyproject.toml') != ''
+        run: |
+          pip install --no-cache-dir --root-user-action ignore uv==0.13.6
+          uv sync --frozen
+          uv run ruff format --check
+          uv run ruff check
+          uv run pyright
+          uv run pytest -q
+
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container: node:24.22.1-bookworm-slim@sha256:be8204d4bd327363357f532187b752ff62759c31bedf98e9e18fc08c9cbd605c
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Lint, types, tests and build
+        if: hashFiles('apps/web/package-lock.json') != ''
+        working-directory: apps/web
+        run: |
+          npm ci
+          npm run lint
+          npm run typecheck
+          npm test
+          npm run build
