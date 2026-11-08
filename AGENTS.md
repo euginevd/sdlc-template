@@ -23,6 +23,7 @@ The project is described in [docs/spec.md](docs/spec.md). These rules are the sa
 - Each phase: build with tests, run the checks, have a fresh subagent review the diff against `code-standards.md`, fix what it blocks, update `docs/status.md`, commit locally.
 - Each PR group: push, open one PR, fix every scan and check finding on it, ask for review only when checks pass, squash-merge once approved, then delete the branch locally and on GitHub. Only `main` remains.
 - After the last phase: review the whole branch, report what was built and what the reviews found, update `docs/decisions.md`, delete the plan.
+- Draft or update `docs/spec.md` only when asked, and show the change for the user to approve before planning from it.
 - Build only what the spec or plan lists, and suggest the rest. Small follow-ups go in the next PR.
 - Report what passed, failed and was skipped. Ask when something is unclear or two docs conflict.
 - Before adding a package, check it's real and maintained, and pin its version.
