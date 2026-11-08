@@ -1,87 +1,60 @@
 <div align="center">
 
-# sdlc-template
+# travel-claims
 
-**A starting point for new projects: AI and web apps on AWS, built by coding agents through one development lifecycle, with Terraform and GitHub Actions as standard.**
+**An AI agent decides routine travel insurance claims in minutes, so handlers spend their time only on claims that need judgement.**
 
 ![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-OIDC-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-Cloud-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
 
-[Use it](#-use-it) · [Lifecycle](#-lifecycle) · [Apps](#-apps) · [Repo](#-repo) · [Bootstrap](#-bootstrap) · [Cleanup](#-cleanup) · [Roadmap](#-roadmap)
+[Apps](#-apps) · [Docs](#-docs) · [Bootstrap](#-bootstrap) · [Cleanup](#-cleanup) · [New project](#-new-project)
 
 </div>
 
 ---
 
-## ⚡ At a glance
-
-One repo per product. Apps go in `apps/`, each one self-contained. Cloud infrastructure goes in `aws/` as Terraform, one root and state per deployable unit, planned on a PR and applied after approval. Coding agents start at [AGENTS.md](AGENTS.md) and build from [docs/](docs/).
-
-## 🧰 Use it
-
-```
-gh repo create travel-claims --template euginevd/sdlc-template --private --clone
-```
-
-Then:
-
-1. Replace the worked example, `travel-claims`, with your own: [docs/business-context.md](docs/business-context.md) once per business and [docs/spec.md](docs/spec.md) per project, by hand or by asking the agent to draft them from your notes. Then the README's title and tagline. `AGENTS.md` stays as it is: it holds no project details.
-2. Run `bash scripts/setup.sh` for the pre-push scan ([git-hooks](guides/02-git-hooks.md)), and `bash scripts/protect-main.sh` for the `main` ruleset (needs a public repo or a paid plan).
-3. Clear the example from `status.md` and `guides/03-findings.md`. In `decisions.md`, keep decisions 1–6 and replace the project ones. Keep `threat-model.md` and `costs.md` only if required, rewritten for your project. Keep `code-standards.md`, the workflow and the scripts as they are.
-4. Keep, adapt or delete the sample Terraform unit, `aws/api`. For a new unit, copy it.
-5. Ask the agent to plan. How it all fits: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md).
-
-## 🔁 Lifecycle
-
-Eight DevSecOps stages, with security built into each, and the flow of a change from spec to deploy: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md).
+A worked example built from [sdlc-template](https://github.com/euginevd/sdlc-template), the starting point for every project. How it's built: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md).
 
 ## 🧪 Apps
 
-| App | What | Stack | Deploys to |
-|-----|------|-------|------------|
-| *(none yet: `apps/` starts empty; the docs describe the worked example's `web`, `api` and `agent`)* | | | |
+| App | What | Runs on |
+|-----|------|---------|
+| `web` | Claimants submit and track claims; handlers review them | S3 and CloudFront |
+| `api` | Claims, receipts, decisions and payments | Lambda behind an HTTP API |
+| `agent` | Decides each claim against the policy wording | Lambda, Claude on Bedrock |
 
-## 📦 Repo
+`apps/` starts empty in the template; the docs describe these three.
 
-| Path | What |
+## 📚 Docs
+
+| File | What |
 |------|------|
-| [apps/](apps/) | One folder per app (web, API, agent), each self-contained with its own tests |
-| [aws/](aws/) | Terraform, one folder and state per deployable unit |
-| [aws/api/](aws/api/) | Sample unit: a Lambda behind an HTTP API, with logs |
-| [aws/bootstrap/](aws/bootstrap/) | CloudFormation stack: OIDC provider, state bucket, plan and deploy roles, permissions boundary |
-| [.github/workflows/](.github/workflows/) | `aws.yml`: plans changed units on a PR, applies after approval |
-| [scripts/](scripts/), `lefthook.yml`, `.lefthook/`, `.vscode/` | Developer workstation guardrails: one-time setup, the Gitleaks and Trivy pre-push scan, recommended extensions |
-| [AGENTS.md](AGENTS.md), [docs/](docs/) | Agent rules, then business context, spec, code standards, status, decisions, threat model and costs: a worked example for people and coding agents |
-| [SECURITY.md](SECURITY.md) | How to report a vulnerability |
-| [guides/](guides/) | Reference: [secure agentic SDLC](guides/01-agentic-sdlc.md), [git hooks](guides/02-git-hooks.md), [findings](guides/03-findings.md) |
+| [AGENTS.md](AGENTS.md) | Rules for every coding agent |
+| [business-context.md](docs/business-context.md) | The business: Wattle Travel Insurance (fictional) |
+| [spec.md](docs/spec.md) | The project and what done means |
+| [status.md](docs/status.md) | What's built and what's next |
+| [decisions.md](docs/decisions.md) | Key decisions and why |
+| [threat-model.md](docs/threat-model.md), [costs.md](docs/costs.md) | Threats and controls; what it costs |
 
 ## 🚀 Bootstrap
 
-Once per project, before the first deploy, as an admin in the project's AWS account.
+Once per AWS account, as an admin:
 
-| # | Where | Step |
-|:-:|-------|------|
-| 1 | **AWS Console** | CloudFormation → Create stack → Upload [bootstrap.yaml](aws/bootstrap/bootstrap.yaml) → name `travel-claims-bootstrap` → fill in the parameters (`CreateOidcProvider` false if the account already has GitHub's) → acknowledge IAM resources → Submit |
-| 2 | **GitHub** | Settings → Environments: create `aws-<target>-plan`, and `aws-<target>-apply` with yourself as required reviewer |
-| 3 | **GitHub** | Settings → Secrets and variables → Actions → Variables: `PROJECT_NAME` (the stack's `ProjectName`), and `AWS_PLAN_ROLE_ARN`, `AWS_DEPLOY_ROLE_ARN` and `TF_STATE_BUCKET` from the stack's outputs; `AWS_TARGET` if it isn't `dev` |
-| 4 | **GitHub** | When the repo goes public: Settings → Security → turn on Private vulnerability reporting, which [SECURITY.md](SECURITY.md) points to |
-
-A new AWS service: add its permissions to the template, then CloudFormation → `travel-claims-bootstrap` → Update → Replace existing template.
+1. **AWS Console:** CloudFormation → upload [bootstrap.yaml](aws/bootstrap/bootstrap.yaml) as `travel-claims-bootstrap`, with `ProjectName` `travel-claims` and `Target` `dev` or `prod` (`CreateOidcProvider` false if the account already has GitHub's).
+2. **GitHub:** Settings → Environments: `aws-<target>-plan`, and `aws-<target>-apply` with yourself as required reviewer.
+3. **GitHub:** Settings → Variables: `PROJECT_NAME` (`travel-claims`), and `AWS_PLAN_ROLE_ARN`, `AWS_DEPLOY_ROLE_ARN` and `TF_STATE_BUCKET` from the stack's outputs.
+4. **GitHub,** once the repo is public: Settings → Security → turn on Private vulnerability reporting.
 
 ## 🧹 Cleanup
 
-| # | Where | Step |
-|:-:|-------|------|
-| 1 | **GitHub** | Destroy every unit first (Actions → `aws` → Run workflow → `all`, `destroy`), or its resources are orphaned |
-| 2 | **AWS Console** | Empty the state bucket, then delete the bootstrap stack |
-| 3 | **GitHub** | Settings → Environments: delete the plan and apply environments |
+1. **GitHub:** Actions → `aws` → Run workflow → `all`, `destroy`.
+2. **AWS Console:** empty the state bucket, then delete the bootstrap stack.
+3. **GitHub:** delete the plan and apply environments.
 
-## 🎯 Roadmap
+## 🆕 New project
 
-| # | Next | Detail |
-|:-:|------|--------|
-| 1 | **Pipeline scans** | `tflint`, Trivy and gitleaks in CI, so the PR re-checks what the pre-push hook can skip |
-| 2 | **App workflows** | CI for Python and TypeScript apps in `apps/` |
-| 3 | **Required checks** | Add each project's CI checks to the `main` ruleset once they exist |
-| 4 | **Agent commands** | Shared plan, build, review and ship commands, as a plugin |
+1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh`.
+2. Replace the worked example: `business-context.md` per business; `spec.md`, `status.md`, `guides/03-findings.md` and this README per project; decisions after 6. Keep `threat-model.md` and `costs.md` only if needed.
+3. Keep `AGENTS.md`, `code-standards.md`, the workflow and the scripts as they are.
+4. Ask the agent to plan. The full flow: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md), section 2.
