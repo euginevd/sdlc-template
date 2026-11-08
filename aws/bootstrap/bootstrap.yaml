@@ -40,8 +40,14 @@ Resources:
         - { Key: ManagedBy, Value: CloudFormation }
 
   # Deleted with the stack; empty it first (versions included) or the delete fails.
+  # trivy:ignore:AWS-0132 S3-managed encryption is enough for state; the bucket is private and TLS-only
   StateBucket:
     Type: AWS::S3::Bucket
+    Metadata:
+      checkov:
+        skip:
+          - id: CKV_AWS_18
+            comment: Versioning and CloudTrail cover state changes; access logs would need a second bucket
     Properties:
       BucketName: !Sub '${ProjectName}-tfstate-${AWS::AccountId}'
       VersioningConfiguration:
@@ -294,7 +300,9 @@ Resources:
               - logs:CreateLogGroup
               - logs:CreateLogStream
               - logs:PutLogEvents
-            Resource: '*'
+            Resource:
+              - !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${ProjectName}-*'
+              - !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${ProjectName}-*:*'
 
 Outputs:
   BoundaryArn:

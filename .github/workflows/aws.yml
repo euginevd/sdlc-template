@@ -1,9 +1,11 @@
 name: aws
 
 # One Terraform root per deployable unit in aws/<unit>/. Plans each changed unit with a read-only
-# role; applies only on push to main or a manual run, after approval in the apply environment.
-# Repository variables: PROJECT_NAME, AWS_PLAN_ROLE_ARN, AWS_DEPLOY_ROLE_ARN, TF_STATE_BUCKET, and optionally
-# AWS_TARGET (default dev) and AWS_REGION (default ap-southeast-2).
+# role; applies after approval in the apply environment.
+# dev: planned on every PR, applied on merge to main. prod: a manual run with target prod promotes main.
+# Repository variables: PROJECT_NAME, and optionally AWS_REGION (default ap-southeast-2).
+# Environment variables, set on each aws-<target>-plan and aws-<target>-apply environment from that
+# account's bootstrap stack: AWS_PLAN_ROLE_ARN (plan), AWS_DEPLOY_ROLE_ARN (apply), TF_STATE_BUCKET (both).
 on:
   pull_request:
     paths: [aws/**, '!aws/bootstrap/**', .github/workflows/aws.yml]
@@ -12,6 +14,11 @@ on:
     paths: [aws/**, '!aws/bootstrap/**', .github/workflows/aws.yml]
   workflow_dispatch:
     inputs:
+      target:
+        description: Environment to deploy to
+        type: choice
+        options: [dev, prod]
+        default: dev
       unit:
         description: Unit folder under aws/, or all
         type: string
@@ -25,16 +32,16 @@ permissions:
   contents: read
 
 concurrency:
-  group: aws
+  group: aws-${{ inputs.target || 'dev' }}
   cancel-in-progress: false
 
 env:
   TF_VERSION: 1.17.1
   AWS_REGION: ${{ vars.AWS_REGION || 'ap-southeast-2' }}
-  TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+  TARGET: ${{ inputs.target || 'dev' }}
   PROJECT_NAME: ${{ vars.PROJECT_NAME }}
   TF_VAR_project: ${{ vars.PROJECT_NAME }}
-  TF_VAR_environment: ${{ vars.AWS_TARGET || 'dev' }}
+  TF_VAR_environment: ${{ inputs.target || 'dev' }}
 
 jobs:
   detect:
@@ -68,12 +75,12 @@ jobs:
           fi
           echo "units=$(echo "$units" | jq -R . | jq -sc 'map(select(length > 0))')" >> "$GITHUB_OUTPUT"
 
-  # Skipped until the bootstrap stack exists and its role ARNs are set as repository variables.
+  # Skipped until the project is bootstrapped and PROJECT_NAME is set.
   plan:
     needs: detect
-    if: needs.detect.outputs.units != '[]' && vars.AWS_PLAN_ROLE_ARN != '' && vars.PROJECT_NAME != ''
+    if: needs.detect.outputs.units != '[]' && vars.PROJECT_NAME != ''
     runs-on: ubuntu-latest
-    environment: aws-${{ vars.AWS_TARGET || 'dev' }}-plan
+    environment: aws-${{ inputs.target || 'dev' }}-plan
     permissions:
       contents: read
       id-token: write
@@ -99,6 +106,8 @@ jobs:
 
       - run: terraform fmt -check -recursive
       - run: terraform init -input=false -backend-config="bucket=$TF_STATE_BUCKET" -backend-config="key=$PROJECT_NAME/${{ matrix.unit }}.tfstate"
+        env:
+          TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
       - run: terraform validate
 
       # -detailed-exitcode: 0 no changes, 2 changes, 1 error.
@@ -111,7 +120,7 @@ jobs:
           [ "$ec" -eq 1 ] && exit 1
           [ "$ec" -eq 2 ] || rm tfplan
           {
-            echo "## Terraform plan: ${{ matrix.unit }} ${DESTROY}"
+            echo "## Terraform plan: ${{ matrix.unit }} in $TARGET ${DESTROY}"
             if [ -f tfplan ]; then
               terraform show -no-color tfplan | grep -E '^Plan:' || true
               echo
@@ -138,9 +147,9 @@ jobs:
 
   apply:
     needs: [detect, plan]
-    if: ((github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch') && vars.AWS_DEPLOY_ROLE_ARN != '' && vars.PROJECT_NAME != ''
+    if: ((github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch') && vars.PROJECT_NAME != ''
     runs-on: ubuntu-latest
-    environment: aws-${{ vars.AWS_TARGET || 'dev' }}-apply
+    environment: aws-${{ inputs.target || 'dev' }}-apply
     permissions:
       contents: read
       id-token: write
@@ -177,6 +186,8 @@ jobs:
 
       - if: steps.has_plan.outputs.found == 'true'
         run: terraform init -input=false -backend-config="bucket=$TF_STATE_BUCKET" -backend-config="key=$PROJECT_NAME/${{ matrix.unit }}.tfstate"
+        env:
+          TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
 
       # Applies the reviewed plan exactly; fails if state changed since.
       - if: steps.has_plan.outputs.found == 'true'
