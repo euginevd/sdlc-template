@@ -28,7 +28,7 @@ Then:
 
 1. Replace `<project>` everywhere, the README's title and tagline, and the Context section of [AGENTS.md](AGENTS.md).
 2. Run `bash scripts/setup.sh` for the pre-push scan ([git-hooks](guides/02-git-hooks.md)).
-3. Fill in [docs/SPEC.md](docs/SPEC.md), `TECH_STACK.md` and `STATUS.md` under their headings. Keep `CODE_STANDARDS.md`, `PROCESS.md`, the workflow and the scripts as they are, and add your own entries to `DECISIONS.md`.
+3. Fill in [docs/SPEC.md](docs/SPEC.md), `TECH_STACK.md` and `STATUS.md` under their headings. Keep `CODE_STANDARDS.md`, `PROCESS.md`, the workflow and the scripts as they are, and add your own entries to `DECISIONS.md`. Keep `SECURITY.md` and `FINOPS.md` only if required.
 4. For each Terraform unit, copy [aws/_template/](aws/_template/) to `aws/<unit>/`.
 5. Ask the agent to plan. How it all fits: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md).
 
