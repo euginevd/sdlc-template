@@ -32,26 +32,34 @@
 flowchart LR
   users([Claimants and handlers])
 
-  subgraph aws ["AWS account, ap-southeast-2"]
-    cognito[Cognito sign-in]
-    web["web<br/>S3 and CloudFront"]
-    api["api<br/>Lambda, HTTP API"]
-    agent["agent<br/>Lambda"]
-    db[(Claims database)]
-    bucket[(Receipt bucket)]
-  end
+  web["<b>web</b><br/>S3 + CloudFront"]
+  cognito["<b>Cognito</b>"]
+  api["<b>api</b><br/>Lambda + HTTP API"]
+  agent["<b>agent</b><br/>Lambda"]
+  db[("Claims<br/>database")]
+  bucket[("Receipt<br/>bucket")]
 
-  claude{{Claude on Bedrock}}
-  bank[Bank API]
+  claude{{"Claude on<br/>Bedrock"}}
+  bank["Bank API"]
 
   users --> web
-  web --> cognito
-  web --> api
-  api --> agent
-  agent --> claude
-  api --> db
-  api --> bucket
-  api --> bank
+  web -->|sign in| cognito
+  web -->|requests| api
+  api -->|claims| db
+  api -->|receipts| bucket
+  api -->|decide claim| agent
+  agent -->|prompt| claude
+  api -->|payments| bank
+
+  classDef person fill:#fef3c7,stroke:#d97706,color:#1f2937
+  classDef app fill:#dbeafe,stroke:#2563eb,color:#1f2937
+  classDef store fill:#dcfce7,stroke:#16a34a,color:#1f2937
+  classDef external fill:#f3f4f6,stroke:#6b7280,color:#1f2937,stroke-dasharray:4 3
+
+  class users person
+  class web,cognito,api,agent app
+  class db,bucket store
+  class claude,bank external
 ```
 
 <sub>Full data flow and trust boundaries: [threat-model.md](docs/threat-model.md).</sub>
