@@ -8,12 +8,11 @@ import json
 import pathlib
 import sys
 
-# Each check: its name in the comment and its icon.
 CHECKS = {
-    "gitleaks": ("Secrets", "🔑"),
-    "trivy": ("Packages and IaC", "📦"),
-    "checkov": ("IaC policies", "🏗️"),
-    "semgrep": ("Code", "🧩"),
+    "gitleaks": "Secrets",
+    "trivy": "Packages and IaC",
+    "checkov": "IaC policies",
+    "semgrep": "Code",
 }
 # Most severe first; a scanner that rates nothing counts as UNKNOWN.
 SEVERITY = {"CRITICAL": "🔴", "HIGH": "🟠", "MEDIUM": "🟡", "LOW": "🔵", "UNKNOWN": "⚪"}
@@ -114,7 +113,7 @@ def badges(counts):
 
 def comment(folder, sha):
     rows, top, failed, total = [], [], 0, {}
-    for tool, (check, icon) in CHECKS.items():
+    for tool, check in CHECKS.items():
         path = pathlib.Path(folder) / f"{tool}.json"
         s = (
             json.loads(path.read_text(encoding="utf-8"))
@@ -123,7 +122,7 @@ def comment(folder, sha):
         )
         if s["error"]:
             failed += 1
-            result = "⚠️ Didn't finish: see the job log"
+            result = "Didn't finish: see the job log"
         elif s["count"]:
             failed += 1
             result = badges(s["severity"])
@@ -133,13 +132,13 @@ def comment(folder, sha):
             if s["count"] > len(s["top"]):
                 top.append(f"- …and {s['count'] - len(s['top'])} more from {check}")
         else:
-            result = "✅ Pass"
-        rows.append(f"| {icon} {check} ({tool.capitalize()}) | {result} |")
+            result = "–"
+        rows.append(f"| {check} ({tool.capitalize()}) | {result} |")
     status = "✅ all passed" if not failed else f"❌ {failed} failed"
-    print(f"{MARKER}\n### 🛡️ Security checks: {status} ({sha[:7]})\n")
-    print("| Check | Findings |\n|---|---|")
+    print(f"{MARKER}\n### Security checks: {status} ({sha[:7]})\n")
+    print("| Check | Findings |\n|---|--:|")
     print("\n".join(rows))
-    print(f"| **Total** | **{badges(total) or '✅ None'}** |")
+    print(f"| **Total** | **{badges(total) or '–'}** |")
     if top:
         print("\n<details><summary>Top findings</summary>\n")
         print("\n".join(top))
