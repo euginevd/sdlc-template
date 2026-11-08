@@ -48,8 +48,8 @@ sdlc-template/
 │   ├── PROCESS.md            how to plan, build, review and ship
 │   ├── STATUS.md             what's built and what's next
 │   ├── DECISIONS.md          what's settled and why
-│   ├── SECURITY.md           data classification, threats and controls (only if required)
-│   └── FINOPS.md             what costs money, budget and alerts (only if required)
+│   ├── SECURITY.md           data classification, threats and controls
+│   └── FINOPS.md             what costs money, budget and alerts
 ├── apps/                  04 the product: one folder per app (web, API, agent)
 ├── aws/                   05 the infrastructure, as Terraform
 │   ├── _template/            copy to aws/<unit>/ for each new unit
