@@ -18,17 +18,17 @@ The end-to-end flow, through the stages in section 3, for both a new project and
 
 | # | Stage | Who | Step |
 |:-:|-------|-----|------|
-| 1 | Plan | Dev | **Create the repo:** from the template, then run `bash scripts/setup.sh` (new project only) |
-| 2 | Plan | Dev, agent | **Update the spec:** *"Update spec"*. ↺ Correct it until it says what you want |
-| 3 | Plan | Dev, agent | **Plan:** *"Plan <the work>"*. The agent writes the plan and threat model; no code |
-| 4 | Plan | Dev | **Review the plan:** ↺ ask for changes to the plan and threat model, then approve |
-| 5 | Code | Dev | **Implement:** *"Implement the plan"*. The agent works through the phases |
+| 1 | Plan | Developer, agent | **Create the repo:** from the template, then run `bash scripts/setup.sh` (new project only) |
+| 2 | Plan | Developer, agent | **Update the spec:** *"Update spec"*. ↺ Correct it until it says what you want |
+| 3 | Plan | Developer, agent | **Plan:** *"Plan <the work>"*. The agent writes the plan and threat model; no code |
+| 4 | Plan | Developer | **Review the plan:** ↺ ask for changes to the plan and threat model, then approve |
+| 5 | Code | Developer | **Implement:** *"Implement the plan"*. The agent works through the phases |
 | 6 | Code | Agent | **Build each phase:** code, checks, subagent review, docs, then a local commit |
 | 7 | Code | Agent | **Push:** the pre-push scan runs. ↺ The agent fixes findings, then opens a PR |
 | 8 | Build and test | Pipeline, agent | **PR checks:** security scans and the Terraform plan. ↺ The agent fixes findings |
-| 9 | Release | Dev, agent | **Merge:** you review and approve; the agent squash-merges and deletes the branch |
-| 10 | Deploy | Dev, pipeline | **Apply:** you approve the Terraform plan; merges deploy `dev`, a manual run `prod` |
-| 11 | Operate and monitor | Agent, dev | **Close the loop:** the agent updates status and decisions; findings feed step 2 |
+| 9 | Release | Developer, agent | **Merge:** you review and approve; the agent squash-merges and deletes the branch |
+| 10 | Deploy | Developer, pipeline | **Apply:** you approve the Terraform plan; merges deploy `dev`, a manual run `prod` |
+| 11 | Operate and monitor | Agent, developer | **Close the loop:** the agent updates status and decisions; findings feed step 2 |
 
 ## 3. The stages
 
