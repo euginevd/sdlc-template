@@ -50,7 +50,7 @@ The eight DevSecOps stages, the core security activities in each, and the open-s
 A typical project made from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template), in order of importance. Items marked *(per plan)* or *(example)* appear as the project grows.
 
 ```
-sdlc-template/
+<project>/
 ├── AGENTS.md              01 the agent's rules; every agent reads this first
 ├── README.md              02 front page: what it is and how to start
 ├── docs/                  03 what the agent builds from, in reading order:
