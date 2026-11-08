@@ -80,7 +80,7 @@ A typical project made from [euginevd/sdlc-template](https://github.com/euginevd
 
 ## 5. The files
 
-What each file holds, the key decision behind it, and how often it changes.
+The files in the layout above: what each holds, the key decision behind it, and how often it changes.
 
 | File | What's in it | Changes |
 |------|--------------|---------|
@@ -101,7 +101,4 @@ What each file holds, the key decision behind it, and how often it changes.
 | `scripts/scan.sh` | The scan itself: Gitleaks for secrets, Trivy for packages and IaC; blocks on findings | Rarely |
 | `scripts/protect-main.sh` | Adds the `main` ruleset: PRs only, squash merge, no force push. Needs a public repo or a paid plan | Never |
 | `guides/01-agentic-sdlc.md` | This guide | Rarely |
-| `guides/02-git-hooks.md` | How the pre-push scan works, setup and day to day | Rarely |
-| `guides/03-findings.md` | Log of surprises from AWS, the pipeline or the tools | When something surprises you |
 | `SECURITY.md` | How to report a vulnerability privately, through GitHub | Never |
-| `.gitignore`, `.gitattributes`, `.vscode/extensions.json` | Housekeeping: no state, secrets or builds in git; LF for scripts; recommended extensions | Rarely |
