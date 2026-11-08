@@ -29,8 +29,6 @@ The eight DevSecOps stages and the core security activities in each.
 | 7 | Operate | Posture management · vulnerability management · AI posture management |
 | 8 | Monitor | Threat detection and logging · incident response · AI monitoring |
 
-For IRAP, map each stage's evidence to ISM controls in the project's SSP.
-
 ---
 
 ## 4. Reference
