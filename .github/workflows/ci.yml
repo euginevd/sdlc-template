@@ -1,16 +1,52 @@
 name: ci
 
-# Each app's checks on every PR and main, in pinned images; a job's checks run only once its apps exist.
+# Each app's checks on every PR, in pinned images; a job's checks run only once its apps exist.
+# A PR runs only the jobs its changed files need: a docs-only PR skips them all, and a skipped
+# required check counts as passed. Not rerun on main: the ruleset makes each PR test against the
+# latest main before it merges, so the merged code is what was tested.
 on:
   pull_request:
-  push:
-    branches: [main]
 
 permissions:
   contents: read
 
 jobs:
+  # Which apps the PR touches. A file outside the known paths runs every job, and so does a
+  # failure here: the jobs below run unless this job says "false".
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      python: ${{ steps.diff.outputs.python }}
+      web: ${{ steps.diff.outputs.web }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      - id: diff
+        name: Apps changed by this PR
+        run: |
+          # HEAD is the PR merged into main; its first parent is main.
+          files=$(git diff --name-only HEAD^1 HEAD) || { echo "python=true" >> "$GITHUB_OUTPUT"; echo "web=true" >> "$GITHUB_OUTPUT"; exit 0; }
+          python=false; web=false
+          while IFS= read -r f; do
+            case "$f" in
+              "") ;;
+              apps/web/*) web=true ;;
+              apps/* | *.py | pyproject.toml | uv.lock | .python-version) python=true ;;
+              *.md | docs/* | guides/* | LICENSE | aws/* | .vscode/*) ;;
+              *) python=true; web=true ;;
+            esac
+          done <<< "$files"
+          echo "$files"
+          echo "python=$python web=$web"
+          echo "python=$python" >> "$GITHUB_OUTPUT"
+          echo "web=$web" >> "$GITHUB_OUTPUT"
+
   python:
+    needs: changes
+    if: ${{ !cancelled() && needs.changes.outputs.python != 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # uv's own image, so uv is pinned by digest along with Python.
@@ -31,6 +67,8 @@ jobs:
           uv run pytest -q
 
   web:
+    needs: changes
+    if: ${{ !cancelled() && needs.changes.outputs.web != 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     container: node:24.22.1-bookworm-slim@sha256:be8204d4bd327363357f532187b752ff62759c31bedf98e9e18fc08c9cbd605c
