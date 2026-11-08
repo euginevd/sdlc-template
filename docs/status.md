@@ -12,7 +12,7 @@ Nothing yet: the repo has the template's layout, docs, pre-push scan, AWS workfl
 
 ## Known gaps
 
-- No `tflint` or IaC security scanner in the pipeline yet (`docs/code-standards.md` 19).
+- No `tflint` or IaC security scanner in the pipeline yet (`docs/code-standards.md` 26).
 
 ## Next
 
