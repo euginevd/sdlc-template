@@ -6,10 +6,10 @@ name: aws
 # AWS_TARGET (default dev) and AWS_REGION (default ap-southeast-2).
 on:
   pull_request:
-    paths: [aws/**, '!aws/bootstrap/**', '!aws/_template/**', .github/workflows/aws.yml]
+    paths: [aws/**, '!aws/bootstrap/**', .github/workflows/aws.yml]
   push:
     branches: [main]
-    paths: [aws/**, '!aws/bootstrap/**', '!aws/_template/**', .github/workflows/aws.yml]
+    paths: [aws/**, '!aws/bootstrap/**', .github/workflows/aws.yml]
   workflow_dispatch:
     inputs:
       unit:
@@ -65,9 +65,10 @@ jobs:
           fi
           echo "units=$(echo "$units" | jq -R . | jq -sc 'map(select(length > 0))')" >> "$GITHUB_OUTPUT"
 
+  # Skipped until the bootstrap stack exists and its role ARNs are set as repository variables.
   plan:
     needs: detect
-    if: needs.detect.outputs.units != '[]'
+    if: needs.detect.outputs.units != '[]' && vars.AWS_PLAN_ROLE_ARN != ''
     runs-on: ubuntu-latest
     environment: aws-${{ vars.AWS_TARGET || 'dev' }}-plan
     permissions:
@@ -134,7 +135,7 @@ jobs:
 
   apply:
     needs: [detect, plan]
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    if: ((github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch') && vars.AWS_DEPLOY_ROLE_ARN != ''
     runs-on: ubuntu-latest
     environment: aws-${{ vars.AWS_TARGET || 'dev' }}-apply
     permissions:

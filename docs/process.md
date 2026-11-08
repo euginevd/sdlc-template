@@ -1,6 +1,6 @@
 # Process
 
-Work follows the DevSecOps stages in the README: Plan, Code, Build, Test, Release, Deploy, Operate, Monitor. Security is part of every stage, not a step at the end.
+Work follows the DevSecOps stages in `guides/01-agentic-sdlc.md`: Plan, Code, Build, Test, Release, Deploy, Operate, Monitor. Security is part of every stage, not a step at the end.
 
 ## Plan
 
