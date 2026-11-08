@@ -2,11 +2,11 @@
 
 The risks the template accepts, each with why it's a risk and the fix for production. Numbered so reviews can cite them (trade-offs 1). An accepted risk is a decision: change it here, never by weakening a check.
 
-1. **The agent works as you on GitHub.**
+1. **The agent shares the developer's GitHub identity.**
 
    **Why it's a risk:**
 
-   It runs `gh` with your token, so it could approve its own deploy, edit the apply environments or delete the ruleset; only `AGENTS.md` rules 20 and 21 ask it not to.
+   It runs `gh` with the developer's token, so it could approve its own deploy, edit the apply environments or delete the ruleset; only `AGENTS.md` rules 20 and 21 ask it not to.
 
    **Production fix:**
 
