@@ -8,12 +8,16 @@ import json
 import pathlib
 import sys
 
+# Each check: its name in the comment and its icon.
 CHECKS = {
-    "gitleaks": "Secrets",
-    "trivy": "Packages and IaC",
-    "checkov": "IaC policies",
-    "semgrep": "Code",
+    "gitleaks": ("Secrets", "🔑"),
+    "trivy": ("Packages and IaC", "📦"),
+    "checkov": ("IaC policies", "🏗️"),
+    "semgrep": ("Code", "🧩"),
 }
+# Most severe first; a scanner that rates nothing counts as UNKNOWN.
+SEVERITY = {"CRITICAL": "🔴", "HIGH": "🟠", "MEDIUM": "🟡", "LOW": "🔵", "UNKNOWN": "⚪"}
+SEMGREP_SEVERITY = {"ERROR": "HIGH", "WARNING": "MEDIUM", "INFO": "LOW"}
 MARKER = "<!-- security-report -->"
 
 
@@ -33,40 +37,45 @@ def esc_prop(text):
     return esc(text).replace(":", "%3A").replace(",", "%2C")
 
 
+def rating(value):
+    value = str(value or "").upper()
+    return value if value in SEVERITY else "UNKNOWN"
+
+
+# Each scanner yields (file, line, rule, message, severity) per finding.
 def gitleaks(data):
     for f in data or []:
-        yield f["File"], f.get("StartLine", 1), f["RuleID"], "Secret found (redacted)"
+        yield f["File"], f.get("StartLine", 1), f["RuleID"], "Secret found (redacted)", "CRITICAL"
 
 
 def trivy(data):
     for r in data.get("Results") or []:
         for v in r.get("Vulnerabilities") or []:
-            fixed = v.get("FixedVersion") or "no fix yet"
+            fixed = v.get("FixedVersion")
             pkg = f"{v['PkgName']} {v['InstalledVersion']}"
-            yield r["Target"], 1, v["VulnerabilityID"], f"{v['Severity']}: {pkg}, fixed in {fixed}"
+            msg = f"{pkg}, fixed in {fixed}" if fixed else f"{pkg}, no fix yet"
+            yield r["Target"], 1, v["VulnerabilityID"], msg, rating(v.get("Severity"))
         for m in r.get("Misconfigurations") or []:
             line = (m.get("CauseMetadata") or {}).get("StartLine") or 1
-            yield r["Target"], line, m["ID"], f"{m['Severity']}: {m['Title']}"
+            yield r["Target"], line, m["ID"], m["Title"], rating(m.get("Severity"))
 
 
 def checkov(data):
     for block in data if isinstance(data, list) else [data]:
         for c in (block.get("results") or {}).get("failed_checks") or []:
             line = (c.get("file_line_range") or [1])[0]
-            yield c["file_path"].lstrip("/"), line, c["check_id"], c["check_name"]
+            path = c["file_path"].lstrip("/")
+            yield path, line, c["check_id"], c["check_name"], rating(c.get("severity"))
 
 
 def semgrep(data):
     for r in data.get("results") or []:
         rule = r["check_id"].split(".")[-1]
-        yield r["path"], r["start"]["line"], rule, r["extra"]["message"].split("\n")[0]
+        sev = SEMGREP_SEVERITY.get(r["extra"].get("severity"), "UNKNOWN")
+        yield r["path"], r["start"]["line"], rule, r["extra"]["message"].split("\n")[0], sev
 
 
-def findings(tool, data):
-    """Yield (file, line, rule, message) for each finding."""
-    yield from {"gitleaks": gitleaks, "trivy": trivy, "checkov": checkov, "semgrep": semgrep}[tool](
-        data
-    )
+SCANNERS = {"gitleaks": gitleaks, "trivy": trivy, "checkov": checkov, "semgrep": semgrep}
 
 
 def parse(tool, report, out):
@@ -76,14 +85,22 @@ def parse(tool, report, out):
     except (OSError, json.JSONDecodeError):
         data = None
     if data is None:
-        summary = {"tool": tool, "error": True, "count": 0, "top": []}
+        summary = {"tool": tool, "error": True, "count": 0, "severity": {}, "top": []}
     else:
-        items = [(rel(f), int(line), rule, msg) for f, line, rule, msg in findings(tool, data)]
-        for f, line, rule, msg in items[:50]:
+        items = [(rel(f), int(line), r, m, s) for f, line, r, m, s in SCANNERS[tool](data)]
+        items.sort(key=lambda i: list(SEVERITY).index(i[4]))
+        for f, line, rule, msg, sev in items[:50]:
             title = esc_prop(f"{tool} {rule}")
-            print(f"::error file={esc_prop(f)},line={line},title={title}::{esc(msg)}")
-        top = [f"{rule}: {msg} ({f}:{line})" for f, line, rule, msg in items[:3]]
-        summary = {"tool": tool, "error": False, "count": len(items), "top": top}
+            print(f"::error file={esc_prop(f)},line={line},title={title}::{esc(f'{sev}: {msg}')}")
+        counts = {s: sum(1 for i in items if i[4] == s) for s in SEVERITY}
+        top = [f"{SEVERITY[s]} {rule}: {msg} ({f}:{line})" for f, line, rule, msg, s in items[:3]]
+        summary = {
+            "tool": tool,
+            "error": False,
+            "count": len(items),
+            "severity": {s: n for s, n in counts.items() if n},
+            "top": top,
+        }
     pathlib.Path(out).write_text(json.dumps(summary), encoding="utf-8")
 
 
@@ -91,36 +108,51 @@ def cell(text):
     return text.replace("|", "\\|").replace("\n", " ")
 
 
+def badges(counts):
+    return " · ".join(f"{SEVERITY[s]} {counts[s]}" for s in SEVERITY if counts.get(s))
+
+
 def comment(folder, sha):
-    rows, failed = [], 0
-    for tool, check in CHECKS.items():
+    rows, top, failed, total = [], [], 0, {}
+    for tool, (check, icon) in CHECKS.items():
         path = pathlib.Path(folder) / f"{tool}.json"
         s = (
             json.loads(path.read_text(encoding="utf-8"))
             if path.exists()
-            else {"error": True, "count": 0, "top": []}
+            else {"error": True, "count": 0, "severity": {}, "top": []}
         )
         if s["error"]:
             failed += 1
-            result = "**Error:** the scan didn't finish; see the job log"
+            result = "⚠️ Didn't finish: see the job log"
         elif s["count"]:
             failed += 1
-            more = (
-                f"<br>and {s['count'] - len(s['top'])} more" if s["count"] > len(s["top"]) else ""
-            )
-            result = f"**{s['count']} found:**<br>" + "<br>".join(cell(t) for t in s["top"]) + more
+            result = badges(s["severity"])
+            for sev, n in s["severity"].items():
+                total[sev] = total.get(sev, 0) + n
+            top += [f"- {cell(t)}" for t in s["top"]]
+            if s["count"] > len(s["top"]):
+                top.append(f"- …and {s['count'] - len(s['top'])} more from {check}")
         else:
-            result = "Pass"
-        rows.append(f"| {check} ({tool.capitalize()}) | {result} |")
-    status = "all passed" if not failed else f"{failed} failed"
-    print(f"{MARKER}\n### Security checks: {status} ({sha[:7]})\n")
-    print("| Check | Result |\n|---|---|")
+            result = "✅ Pass"
+        rows.append(f"| {icon} {check} ({tool.capitalize()}) | {result} |")
+    status = "✅ all passed" if not failed else f"❌ {failed} failed"
+    print(f"{MARKER}\n### 🛡️ Security checks: {status} ({sha[:7]})\n")
+    print("| Check | Findings |\n|---|---|")
     print("\n".join(rows))
+    print(f"| **Total** | **{badges(total) or '✅ None'}** |")
+    if top:
+        print("\n<details><summary>Top findings</summary>\n")
+        print("\n".join(top))
+        print("\n</details>")
     if failed:
-        print("\nEach finding is also marked on its line under Files changed.")
+        names = {"UNKNOWN": "unrated"}
+        legend = " · ".join(f"{e} {names.get(s, s.lower())}" for s, e in SEVERITY.items())
+        print(f"\n{legend}. Each finding is also marked on its line under Files changed.")
 
 
 if __name__ == "__main__":
+    # The comment has emoji; a Windows console defaults to a code page without them.
+    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[union-attr]
     if sys.argv[1] == "parse":
         parse(*sys.argv[2:5])
     else:
