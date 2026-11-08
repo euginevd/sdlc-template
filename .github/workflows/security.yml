@@ -7,6 +7,9 @@ on:
   pull_request:
   push:
     branches: [main]
+  # Operate: re-scan main weekly (early Monday, Sydney time), so a vulnerability published after merge still fails a run.
+  schedule:
+    - cron: "0 20 * * 0"
 
 permissions:
   contents: read
