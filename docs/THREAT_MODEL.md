@@ -1,4 +1,4 @@
-# Security
+# Threat model
 
 > **Note:** use only if required: once the project has users, data or secrets to protect. Otherwise delete this file and its line in `AGENTS.md`.
 
