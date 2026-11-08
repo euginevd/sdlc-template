@@ -16,18 +16,18 @@
 
 ## 3. The stages
 
-The eight DevSecOps stages, each ending at a gate.
+The eight DevSecOps stages and the core security activities in each.
 
-| # | Stage | Gate |
-|:-:|-------|------|
-| 1 | Plan | You approve the plan |
-| 2 | Code | Pre-push scan |
-| 3 | Build | CI checks |
-| 4 | Test | Fresh-subagent review and tests |
-| 5 | Release | Checks pass, PR merged |
-| 6 | Deploy | You approve the apply |
-| 7 | Operate | Fix within SLA |
-| 8 | Monitor | Lessons feed the next Plan |
+| # | Stage | Core components |
+|:-:|-------|-----------------|
+| 1 | Plan | Threat modelling · security requirements and architecture |
+| 2 | Code | Secrets detection · static analysis (SAST, SCA, IaC) · repo hardening and code review |
+| 3 | Build | Image scanning and build gates · SBOM and signing · CI pipeline hardening |
+| 4 | Test | DAST, API and pen testing · security regression tests · AI security testing |
+| 5 | Release | Artifact re-scan and promotion by digest · infrastructure plan review · release approval |
+| 6 | Deploy | Admission control · GitOps deployment · secure workload configuration |
+| 7 | Operate | Posture management · vulnerability management · AI posture management |
+| 8 | Monitor | Threat detection and logging · incident response · AI monitoring |
 
 For IRAP, map each stage's evidence to ISM controls in the project's SSP.
 
