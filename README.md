@@ -29,7 +29,7 @@ Then:
 1. Replace `<project>` everywhere, the README's title and tagline, and the Context section of [AGENTS.md](AGENTS.md).
 2. Run `bash scripts/setup.sh` for the pre-push scan ([git-hooks](guides/02-git-hooks.md)), and `bash scripts/protect-main.sh` for the `main` ruleset (needs a public repo or a paid plan).
 3. Fill in [docs/spec.md](docs/spec.md), `tech-stack.md` and `status.md` under their headings. Keep `code-standards.md`, `process.md`, the workflow and the scripts as they are, and add your own entries to `decisions.md`. Keep `threat-model.md` and `costs.md` only if required.
-4. Keep the sample Terraform units you need (`aws/iam`, `aws/storage`, `aws/api`) and delete the rest. For a new unit, copy the closest sample.
+4. Keep, adapt or delete the sample Terraform unit, `aws/api`. For a new unit, copy it.
 5. Ask the agent to plan. How it all fits: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md).
 
 ## 🔁 Lifecycle
@@ -48,7 +48,7 @@ Eight DevSecOps stages, with security built into each, and the flow of a change 
 |------|------|
 | [apps/](apps/) | One folder per app (web, API, agent), each self-contained with its own tests |
 | [aws/](aws/) | Terraform, one folder and state per deployable unit |
-| [aws/iam/](aws/iam/), [aws/storage/](aws/storage/), [aws/api/](aws/api/) | Sample units: app role, S3 bucket, Lambda behind an HTTP API |
+| [aws/api/](aws/api/) | Sample unit: a Lambda behind an HTTP API, with logs |
 | [aws/bootstrap/](aws/bootstrap/) | CloudFormation stack: OIDC provider, state bucket, plan and deploy roles, permissions boundary |
 | [.github/workflows/](.github/workflows/) | `aws.yml`: plans changed units on a PR, applies after approval |
 | [scripts/](scripts/), `lefthook.yml`, `.lefthook/`, `.vscode/` | Developer workstation guardrails: one-time setup, the gitleaks and Trivy pre-push scan, recommended extensions |
