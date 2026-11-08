@@ -35,7 +35,7 @@ A worked example built from [sdlc-template](https://github.com/euginevd/sdlc-tem
 | [spec.md](docs/spec.md) | The project and what done means |
 | [status.md](docs/status.md) | What's built and what's next |
 | [decisions.md](docs/decisions.md) | Key decisions and why |
-| [design.md](docs/design.md) | Look and feel, from the ArcVault design system |
+| [design-system.md](docs/design-system.md) | Look and feel, from the ArcVault design system |
 | [threat-model.md](docs/threat-model.md), [costs.md](docs/costs.md) | Threats and controls; what it costs |
 
 ## 🚀 Bootstrap
@@ -58,6 +58,6 @@ Once per AWS account (`dev`, then `prod`), as an admin:
 ## 🆕 New project
 
 1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh`.
-2. Replace the worked example: `business-context.md` per business; `spec.md`, `status.md`, `guides/03-findings.md` and this README per project; `decisions.md`. Keep `design.md`, `threat-model.md` and `costs.md` only if needed.
+2. Replace the worked example: `business-context.md` per business; `spec.md`, `status.md`, `guides/03-findings.md` and this README per project; `decisions.md`. Keep `design-system.md`, `threat-model.md` and `costs.md` only if needed.
 3. Keep `AGENTS.md`, `code-standards.md`, the workflow and the scripts as they are.
 4. Ask the agent to plan. The full flow: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md), section 2.
