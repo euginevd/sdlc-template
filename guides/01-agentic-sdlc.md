@@ -80,25 +80,9 @@ A typical project made from [euginevd/sdlc-template](https://github.com/euginevd
 
 ## 5. The files
 
-The files in the layout above: what each holds, the key decision behind it, and how often it changes.
+The two files that matter most: what each holds, the key decision behind it, and how often it changes.
 
 | File | What's in it | Changes |
 |------|--------------|---------|
 | `AGENTS.md` | Rules for every coding agent: what to read, commands, workflow, boundaries, known mistakes. Generic, so the same in every project | Rarely; agents add known mistakes |
-| `README.md` | Front page: what the project is, how to start, bootstrap, cleanup, roadmap | Once per project |
 | `docs/spec.md` | The project (name, problem, goal, users, AWS), its stack, what done means, rules, what's out. The one file you fill in | Per project, then per change |
-| `docs/code-standards.md` | Numbered coding rules: general, security, tests, Terraform, languages, AI, docs | Rarely, after asking |
-| `docs/status.md` | What's built, how to run it, known gaps, what's next | Every commit that changes something |
-| `docs/decisions.md` | Key decisions with why and the alternative; superseded, never deleted | When a key decision is made |
-| `docs/threat-model.md` | Data classification, trust boundaries, threats and controls, compliance. Optional | When users, data or endpoints change |
-| `docs/costs.md` | One row per resource that costs money, budget and alerts. Optional | When something adds cost |
-| `docs/plan-<name>.md` | The current plan: design, risks, phases, PR groups | Per plan; deleted when done |
-| `aws/bootstrap/bootstrap.yaml` | CloudFormation: GitHub OIDC, state bucket, plan and deploy roles, permissions boundary. Deployed by you, not the pipeline | When a new AWS service is added |
-| `aws/api/` | Sample Terraform unit: a Lambda behind an HTTP API, with logs. Copy it for a new unit | Keep, adapt or delete |
-| `.github/workflows/aws.yml` | Plans changed units on a PR; applies after your approval; skipped until bootstrapped | Rarely |
-| `lefthook.yml`, `.lefthook/pre-push-scan.sh` | Run the security scan on every push, over the pushed commits and their history | Never |
-| `scripts/setup.sh` | Installs Gitleaks, Trivy and lefthook, then the hook. Run once per machine | Never |
-| `scripts/scan.sh` | The scan itself: Gitleaks for secrets, Trivy for packages and IaC; blocks on findings | Rarely |
-| `scripts/protect-main.sh` | Adds the `main` ruleset: PRs only, squash merge, no force push. Needs a public repo or a paid plan | Never |
-| `guides/01-agentic-sdlc.md` | This guide | Rarely |
-| `SECURITY.md` | How to report a vulnerability privately, through GitHub | Never |
