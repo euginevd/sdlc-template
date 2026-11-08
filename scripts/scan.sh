@@ -8,7 +8,7 @@ dir=$1
 label=$2
 
 for tool in gitleaks trivy; do
-  command -v "$tool" >/dev/null || { echo "$label: $tool not found, see guides/02-git-hooks.md"; exit 1; }
+  command -v "$tool" >/dev/null || { echo "$label: $tool not found, run bash scripts/setup.sh"; exit 1; }
 done
 
 failed=()
