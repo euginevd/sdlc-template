@@ -44,7 +44,7 @@ gh api "repos/$repo/rulesets" -X POST --input - >/dev/null <<'JSON' || { echo "C
     {
       "type": "required_status_checks",
       "parameters": {
-        "strict_required_status_checks_policy": false,
+        "strict_required_status_checks_policy": true,
         "required_status_checks": [
           { "context": "python" }, { "context": "web" }, { "context": "secrets" },
           { "context": "packages-and-iac" }, { "context": "terraform" }, { "context": "code" }
