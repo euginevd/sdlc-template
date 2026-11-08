@@ -28,6 +28,11 @@ def esc(text):
     return str(text).replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
 
 
+def esc_prop(text):
+    # A ',' or ':' would end an annotation's file= or title= value early.
+    return esc(text).replace(":", "%3A").replace(",", "%2C")
+
+
 def gitleaks(data):
     for f in data or []:
         yield f["File"], f.get("StartLine", 1), f["RuleID"], "Secret found (redacted)"
@@ -75,7 +80,8 @@ def parse(tool, report, out):
     else:
         items = [(rel(f), int(line), rule, msg) for f, line, rule, msg in findings(tool, data)]
         for f, line, rule, msg in items[:50]:
-            print(f"::error file={esc(f)},line={line},title={esc(tool + ' ' + rule)}::{esc(msg)}")
+            title = esc_prop(f"{tool} {rule}")
+            print(f"::error file={esc_prop(f)},line={line},title={title}::{esc(msg)}")
         top = [f"{rule}: {msg} ({f}:{line})" for f, line, rule, msg in items[:3]]
         summary = {"tool": tool, "error": False, "count": len(items), "top": top}
     pathlib.Path(out).write_text(json.dumps(summary), encoding="utf-8")
