@@ -1,6 +1,6 @@
 # Agent instructions
 
-These rules are the same for every project. The business and the project are described in the docs below.
+These rules are the same for every project. The business and the project are described in the docs below. In the template, `travel-claims` in `docs/` is a worked example for context: a new project replaces it with its own docs in the same structure.
 
 ## Read
 
