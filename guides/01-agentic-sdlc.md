@@ -31,12 +31,12 @@ The eight DevSecOps stages, who does each, the core security activities, and the
 
 ## 4. Workflow: spec-driven development
 
-The end-to-end flow of a change, stage by stage. You write the spec, the agent plans and builds from it, and every gate feeds findings back to the agent (↺) until the change is clean.
+The end-to-end flow, stage by stage, for both a new project and each change after it: **a new project starts at step 1; every later change, such as a feature or a fix, starts at step 2.** You write the spec, the agent plans and builds from it, and every gate feeds findings back to the agent (↺) until the work is clean.
 
 | # | Stage | Step | Who |
 |:-:|-------|------|-----|
-| 1 | Plan | **Create the repo:** `gh repo create <project> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` | You |
-| 2 | Plan | **Update the spec docs:** `spec.md`, `tech-stack.md` and `AGENTS.md` → Context; `threat-model.md` and `costs.md` if needed | You |
+| 1 | Plan | **Create the repo** (new project only)**:** `gh repo create <project> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` | You |
+| 2 | Plan | **Update the spec docs:** for a new project, `spec.md`, `tech-stack.md` and `AGENTS.md` → Context, plus `threat-model.md` and `costs.md` if needed; for a change, the parts of `spec.md` it affects | You |
 | 3 | Plan | **Prompt:** *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks, phases and PR groups; no code | You, then agent |
 | 4 | Plan | **Review the plan:** ↺ ask for changes until it's right, then approve | You |
 | 5 | Code | **Prompt:** *"Implement the plan for <the work>"* | You |
