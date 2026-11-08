@@ -18,7 +18,7 @@ The end-to-end flow, through the stages in section 3, for both a new project and
 
 | # | Stage | Who | Step |
 |:-:|-------|-----|------|
-| 1 | Plan | Developer, agent | **Create the repo:** from the template, then run `bash scripts/setup.sh` (new project only) |
+| 1 | Plan | Developer, agent | **Create the repo:** `gh repo create travel-claims --template euginevd/sdlc-template --private --clone` |
 | 2 | Plan | Developer, agent | **Update the spec:** *"Update spec"*. ↺ Correct it until it says what you want |
 | 3 | Plan | Agent | **Plan:** *"Plan <the work>"*. The agent writes the plan and threat model; no code |
 | 4 | Plan | Developer | **Review the plan:** ↺ ask for changes to the plan and threat model, then approve |
