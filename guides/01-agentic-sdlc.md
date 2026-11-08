@@ -47,7 +47,7 @@ The eight DevSecOps stages, the core security activities in each, and the open-s
 
 ## 4. The template repo
 
-What step 1 creates from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template), in order of importance:
+A typical project made from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template), in order of importance. Items marked *(per plan)* or *(example)* appear as the project grows.
 
 ```
 sdlc-template/
@@ -61,12 +61,16 @@ sdlc-template/
 │   ├── status.md             what's built and what's next
 │   ├── decisions.md          what's settled and why
 │   ├── threat-model.md       data classification, threats and controls
-│   └── costs.md              what costs money, budget and alerts
-├── apps/                  04 the product: one folder per app (web, API, agent)
+│   ├── costs.md              what costs money, budget and alerts
+│   └── plan-<name>.md        the plan being built (per plan; deleted when done)
+├── apps/                  04 the product: one folder per app
+│   ├── web/                  front end (example)
+│   └── api/                  backend or agent (example)
 ├── aws/                   05 the infrastructure, as Terraform
 │   ├── bootstrap/            CloudFormation, run once: OIDC, state bucket, CI roles
 │   └── api/                  sample: Lambda behind an HTTP API, with logs
-├── .github/workflows/     06 aws.yml: plan on the PR, apply after your approval
+├── .github/workflows/     06 the pipeline
+│   └── aws.yml               plan on the PR, apply after your approval
 ├── lefthook.yml           07 runs the security scan on every push
 ├── .lefthook/             08 the pre-push hook script
 ├── scripts/               09 setup.sh installs the tools; scan.sh runs Gitleaks and Trivy;
