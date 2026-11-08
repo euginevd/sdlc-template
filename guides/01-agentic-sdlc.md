@@ -4,7 +4,7 @@
 
 **The secure agentic SDLC is the software development lifecycle with AI coding agents as developers and security built into every stage.**
 
-- **People** own the what and the why: the spec, and approving the plan, the merge and the deploy. You're accountable for what ships, so anything that should last goes in a doc, not chat, and the agent shows evidence before you approve.
+- **People** own the what and the why: approving the spec, the plan, the merge and the deploy. You're accountable for what ships, so anything that should last goes in a doc, not chat, and the agent shows evidence before you approve.
 - **Agents** own the how: they plan, write, test and review the code, inside written rules.
 - **Controls** check every change before it ships: the pre-push scan, an independent review, the Terraform checks in CI and an approval gate.
 
@@ -19,7 +19,7 @@ The end-to-end flow, through the stages in section 3, for both a new project and
 | # | Stage | Who | Step |
 |:-:|-------|-----|------|
 | 1 | Plan | You | **Create the repo (new project only):** `gh repo create <project> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` |
-| 2 | Plan | You | **Update the spec:** `spec.md` for every change; for a new project, its Project section too |
+| 2 | Plan | You, then agent | **Update the spec:** *"Update docs/spec.md for <the change>"* (or *"Draft docs/spec.md from <your notes>"* for a new project). ↺ Review and correct it until it says what you want |
 | 3 | Plan | You, then agent | **Prompt:** *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks, phases and PR groups; no code |
 | 4 | Plan | You | **Review the plan:** ↺ ask for changes until it's right, then approve |
 | 5 | Code | You | **Prompt:** *"Implement the plan for <the work>"* |
@@ -85,7 +85,7 @@ A typical project made from [euginevd/sdlc-template](https://github.com/euginevd
 | File | What's in it | Changes |
 |------|--------------|---------|
 | `AGENTS.md` | Rules for every coding agent: what to read, commands, workflow, boundaries, known mistakes. Generic, so the same in every project | Rarely; agents add known mistakes |
-| `docs/spec.md` | The project (name, problem, goal, users, AWS), its stack, what done means, rules, what's out. The one file you fill in | Per project, then per change |
+| `docs/spec.md` | The project (name, problem, goal, users, AWS), its stack, what done means, rules, what's out. The one file to fill in: the agent drafts it, you approve it | Per project, then per change |
 | `docs/code-standards.md` | Numbered coding rules: general, security, tests, Terraform, languages, AI, docs | Rarely, after asking |
 | `docs/status.md` | What's built, how to run it, known gaps, what's next | Every commit that changes something |
 | `docs/decisions.md` | Key decisions with why and the alternative; superseded, never deleted | When a key decision is made |

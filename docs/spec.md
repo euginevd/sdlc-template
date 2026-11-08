@@ -1,6 +1,6 @@
 # Spec
 
-The one file to fill in for each project. Replace every `<…>` and *(…)*.
+The one file to fill in for each project, by hand or by asking the agent to draft it. Replace every `<…>` and *(…)*. The user approves every change.
 
 ## Project
 
