@@ -42,20 +42,17 @@ flowchart LR
     bucket[(Receipt bucket)]
   end
 
-  subgraph external ["External services"]
-    claude{{"Claude on Bedrock<br/>Australian profile"}}
-    bank[Bank API]
-  end
+  claude{{Claude on Bedrock}}
+  bank[Bank API]
 
   claimant & handler --> cognito
   claimant & handler --> web
-  web -- "HTTPS, token" --> api
-  api -- "claim as data" --> agent
-  agent -- "decision" --> api
+  web --> api
+  api <--> agent
   agent --> claude
   api --> db
   api --> bucket
-  api -- "payment under the limit" --> bank
+  api --> bank
 ```
 
 <sub>Full data flow and trust boundaries: [threat-model.md](docs/threat-model.md).</sub>
