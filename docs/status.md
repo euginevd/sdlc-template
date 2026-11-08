@@ -20,7 +20,7 @@ A worked example: `travel-claims`, in production. For a new project, replace it.
 
 9. Automatic payment under $1,000 (spec 11) runs in `dev` only; `prod` waits for the bank's API sign-off.
 10. Decision logs are redacted, but not yet tested against real receipts (spec 18).
-11. No `tflint` in the pipeline yet; Checkov and Trivy run on every PR.
+11. No `tflint` in the pipeline yet; Checkov, Trivy and Semgrep run on every PR.
 
 ## Next
 
