@@ -19,12 +19,14 @@ IMPORTANT: read these in full before you plan, change or answer questions about 
 5. `docs/STATUS.md`: what's built and what's next
 6. `docs/DECISIONS.md`: what's settled and why; don't reopen it unasked
 7. `guides/03-findings.md`: what the account or tools do that we didn't expect
+8. `docs/SECURITY.md`: data classification, threat model and controls, if the project uses it
+9. `docs/FINOPS.md`: one row per cost-bearing resource, if the project uses it
+
+`SECURITY.md` and `FINOPS.md` are used only if required. If the project doesn't need one, delete it and its line above.
 
 Add these only when needed, and list them above once they exist:
 
 - `docs/PLAN_<NAME>.md`: when asked to plan a piece of work
-- `docs/SECURITY.md`: threat model and controls, once there are users, data or secrets to protect
-- `docs/FINOPS.md`: one row per cost-bearing resource, once there are several
 - `docs/DESIGN.md`: UX decisions and look, once there's a UI
 - `guides/<NN>-<topic>.md`: how-tos and reference for people
 
