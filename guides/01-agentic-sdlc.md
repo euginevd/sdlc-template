@@ -18,13 +18,34 @@
 
 The eight DevSecOps stages, the core security activities in each, and the open-source tools most teams reach for.
 
-| # | Stage | Core components | Open-source tools |
-|:-:|-------|-----------------|-------------------|
-| 1 | Plan | Data classification · threat modelling · security requirements and architecture | OWASP Threat Dragon |
-| 2 | Code | Secrets detection · static analysis (SAST, SCA, IaC) · repo hardening and code review | Gitleaks · Semgrep |
-| 3 | Build | Image scanning and build gates · SBOM and signing · CI pipeline hardening | Trivy · Cosign |
-| 4 | Test | DAST, API and pen testing · security regression tests · AI security testing | OWASP ZAP · promptfoo |
-| 5 | Release | Artifact re-scan and promotion by digest · infrastructure plan review · release approval | Checkov · Trivy |
-| 6 | Deploy | Admission control · GitOps deployment · secure workload configuration | Argo CD · Kyverno |
-| 7 | Operate | Posture management · vulnerability management · AI posture management | Prowler · Trivy Operator |
-| 8 | Monitor | Threat detection and logging · incident response · AI monitoring | Falco · Wazuh |
+**1. Plan**
+- Data classification · threat modelling · security requirements and architecture
+- *Tools:* OWASP Threat Dragon
+
+**2. Code**
+- Secrets detection · static analysis (SAST, SCA, IaC) · repo hardening and code review
+- *Tools:* Gitleaks · Semgrep
+
+**3. Build**
+- Image scanning and build gates · SBOM and signing · CI pipeline hardening
+- *Tools:* Trivy · Cosign
+
+**4. Test**
+- DAST, API and pen testing · security regression tests · AI security testing
+- *Tools:* OWASP ZAP · promptfoo
+
+**5. Release**
+- Artifact re-scan and promotion by digest · infrastructure plan review · release approval
+- *Tools:* Checkov · Trivy
+
+**6. Deploy**
+- Admission control · GitOps deployment · secure workload configuration
+- *Tools:* Argo CD · Kyverno
+
+**7. Operate**
+- Posture management · vulnerability management · AI posture management
+- *Tools:* Prowler · Trivy Operator
+
+**8. Monitor**
+- Threat detection and logging · incident response · AI monitoring
+- *Tools:* Falco · Wazuh
