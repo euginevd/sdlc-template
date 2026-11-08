@@ -1,10 +1,10 @@
 # Spec
 
-The one file to fill in for each project, by hand or by asking the agent to draft it. Replace every `<…>` and *(…)*. The user approves every change.
+The one file to fill in for each project, by hand or by asking the agent to draft it. Replace the examples, every `<…>` and every *(…)*. The user approves every change.
 
 ## Project
 
-- Name: `<project>`, lowercase kebab-case, such as `travel-claims`.
+- Name: `travel-claims` (lowercase kebab-case)
 - Problem: *(what's wrong or missing today, and for whom)*
 - Goal: *(what changes once it's built, in one sentence)*
 - Users: *(each kind of user, and what they need from it)*
