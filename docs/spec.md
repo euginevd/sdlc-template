@@ -1,43 +1,25 @@
 # Spec
 
+The one file to fill in for each project. Replace every `<…>` and *(…)*.
+
 ## Project
 
-- **Name:** `<project>` (lowercase kebab-case; also the `PROJECT_NAME` repository variable and the bootstrap stack's `ProjectName`)
-- **What it is:** *(one or two sentences)*
-- **Users:** *(who uses it)*
-- **AWS account and region:** `<aws-account-name>`, `ap-southeast-2`
-- **Environments:** `dev` *(add `prod` when it's needed)*
-- **Developer machine:** Windows: PowerShell or Git Bash
+- Name: `<project>`, lowercase kebab-case. Also the `PROJECT_NAME` repository variable and the bootstrap stack's `ProjectName`.
+- Problem: *(what's wrong or missing today, and for whom)*
+- Goal: *(what changes once it's built, in one sentence)*
+- Users: *(each kind of user, and what they need from it)*
+- AWS: account `<aws-account-name>`, region `ap-southeast-2`, environments `dev` *(add `prod` when it's needed)*.
+- Developer machine: Windows, with PowerShell or Git Bash.
 
 ## Stack
 
-The template's defaults: GitHub and GitHub Actions, Terraform on AWS ([aws/AGENTS.md](../aws/AGENTS.md)), and the Gitleaks and Trivy pre-push scan. Add each app here.
+Template defaults: GitHub Actions, Terraform on AWS and the Gitleaks and Trivy pre-push scan. Add one line per app:
 
-| App | Language and framework | Hosting | Checks (lint, types, tests) |
-|-----|------------------------|---------|-----------------------------|
-| | | | |
+- `<app>`: *(language and framework)*, hosted on *(service)*. Checks: `<lint>`, `<types>`, `<tests>`.
 
-## The problem
+## Done when
 
-*(What's wrong or missing today, and for whom.)*
-
-## The goal
-
-*(What changes when this is built, in one or two sentences.)*
-
-## Users
-
-- *(Each kind of user, and what they need from it)*
-
-## Scope
-
-- *(What's in: apps, clouds, accounts)*
-
-## Success criteria
-
-| Check | Met when |
-|-------|----------|
-| | |
+1. *(A result anyone can verify, such as "a user can sign in and see their dashboard")*
 
 ## Rules
 
