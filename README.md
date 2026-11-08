@@ -28,6 +28,19 @@
 
 ## 📦 Apps
 
+```mermaid
+flowchart LR
+  claimant([Claimant]) --> web
+  handler([Handler]) --> web
+  web --> api
+  api <--> agent
+  agent --> claude{{Claude on Bedrock}}
+  api --> db[(Claims database)]
+  api --> bank[Bank API]
+```
+
+<sub>Full data flow and trust boundaries: [threat-model.md](docs/threat-model.md).</sub>
+
 | App | What | Runs on |
 |-----|------|---------|
 | `web` | Claimants submit and track claims; handlers review them | S3 and CloudFront |
