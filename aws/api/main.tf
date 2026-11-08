@@ -8,21 +8,12 @@ locals {
   boundary_arn = "arn:${local.partition}:iam::${local.account_id}:policy/${var.project}-boundary"
 }
 
-# Placeholder handler; replace with the app's code from apps/ when it exists.
+# The app's code from apps/api; it has no third-party packages, so the source is the whole bundle.
 data "archive_file" "handler" {
   type        = "zip"
+  source_dir  = "${path.module}/../../apps/api/src"
   output_path = "${path.module}/handler.zip"
-
-  source {
-    filename = "handler.py"
-    content  = <<-PY
-      import json
-
-
-      def handler(event, context):
-          return {"statusCode": 200, "body": json.dumps({"status": "ok"})}
-    PY
-  }
+  excludes    = ["**/__pycache__/**"]
 }
 
 resource "aws_iam_role" "lambda" {
@@ -70,7 +61,7 @@ resource "aws_lambda_function" "api" {
   function_name    = "${var.project}-api-${var.environment}"
   role             = aws_iam_role.lambda.arn
   runtime          = "python3.13"
-  handler          = "handler.handler"
+  handler          = "api.handler.handler"
   filename         = data.archive_file.handler.output_path
   source_code_hash = data.archive_file.handler.output_base64sha256
   timeout          = 10
