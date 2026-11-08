@@ -20,7 +20,7 @@ These rules are the same for every project. The business and the project are des
 
 ## Rules
 
-11. Plan: write `docs/plan-<name>.md` with the design, security risks, phases with checkbox criteria, and PR groups (one PR per plan, or per few hundred changed lines). No code, then stop.
+11. Plan: write `docs/plan-<name>.md` with the design, security risks, phases with checkbox criteria, and PR groups (one PR per plan, or per few hundred changed lines). If the work touches users, data, auth or endpoints, draft or update `docs/threat-model.md` too. No code, then stop.
 12. Each phase: build with tests, run the checks, have a fresh subagent review the diff against `code-standards.md`, fix what it blocks, update `docs/status.md`, commit locally.
 13. Each PR group: push, open one PR, fix every scan and check finding on it, ask for review only when checks pass, squash-merge once approved, then delete the branch locally and on GitHub. Only `main` remains.
 14. After the last phase: review the whole branch, report what was built and what the reviews found, update `docs/decisions.md`, delete the plan.
