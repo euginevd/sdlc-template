@@ -57,6 +57,7 @@ travel-claims/
 │   ├── business-context.md   the business: industry, regulators, systems, people
 │   ├── spec.md               the project, its stack, what we're building, what done means
 │   ├── code-standards.md     how to write the code
+│   ├── design.md             look and feel, from the design system
 │   ├── status.md             what's built and what's next
 │   ├── decisions.md          what's settled and why
 │   ├── threat-model.md       data flow, top risks (STRIDE, OWASP)
@@ -93,6 +94,7 @@ travel-claims/
 | `docs/code-standards.md` | Numbered coding rules the pipeline can't check: general, errors and logs, safe by design, tests, Terraform, languages, AI, docs | Rarely |
 | `docs/status.md` | What's built, how to run it, known gaps, what's next | Always |
 | `docs/decisions.md` | Key decisions with why and the alternative; superseded, never deleted | Sometimes |
+| `docs/design.md` | The design system's tokens and rules an app uses, plus the project's UI choices. Optional | Rarely |
 | `docs/threat-model.md` | Data flow, data classes, top risks mapped to STRIDE and OWASP, compliance. Optional | Sometimes |
 | `docs/costs.md` | One row per resource that costs money, budget and alerts. Optional | Sometimes |
 
