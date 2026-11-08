@@ -195,3 +195,9 @@ jobs:
       # Applies the reviewed plan exactly; fails if state changed since.
       - if: steps.has_plan.outputs.found == 'true'
         run: terraform apply -input=false tfplan
+
+      # Test: a deployed unit with an api_url output must answer on /health.
+      - if: steps.has_plan.outputs.found == 'true' && inputs.action != 'destroy'
+        run: |
+          url=$(terraform output -raw api_url 2>/dev/null) || { echo "No api_url output, nothing to check"; exit 0; }
+          curl --fail --silent --show-error --retry 5 --retry-delay 5 --retry-all-errors "$url/health"
