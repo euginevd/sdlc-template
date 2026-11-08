@@ -65,8 +65,8 @@ STRIDE: Spoofing, Tampering, Repudiation, Information disclosure, Denial of serv
 | R4 | Personal data leaks into logs | I | A09, LLM02 | Medium | Redaction at the source (code-standards 8), a test against real receipts *(planned, status 10)* | Code, Test |
 | R5 | Claim data leaves Australia through model calls | I | LLM02 | Medium | The Australian inference profile (spec 16) | Deploy |
 | R6 | Runaway model calls run up the bill | D | LLM10, API4 | Medium | Model call limits (code-standards 19), the `dev` budget (spec 19) | Code, Operate |
-| R7 | A compromised package or image | T | A03, LLM03 | Medium | Pinned week-old versions, Dependabot, Trivy on every push and PR and weekly | Code, Build, Operate |
-| R8 | A secret is committed | I | A07 | Medium | The pre-push scan, OIDC with no long-lived keys | Code, Deploy |
+| R7 | A compromised package or image | T | A03, LLM03 | Medium | Pinned week-old versions, SHA-pinned allowed actions only, Dependabot, Trivy on every push and PR and weekly | Code, Build, Operate |
+| R8 | A secret is committed | I | A07 | Medium | The pre-push scan, GitHub push protection, OIDC with no long-lived keys | Code, Deploy |
 
 ## Compliance
 
