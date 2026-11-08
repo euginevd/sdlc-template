@@ -79,18 +79,7 @@ OPERATE    9  Agent updates status and decisions, deletes the plan
 
 9. **Close the loop:** the agent updates `status.md` and `decisions.md` and deletes the plan. Surprises go in `guides/03-findings.md`. Alerts, findings and lessons become the next spec.
 
-## 5. Securing the coding agent
-
-The stages secure the app. The coding agent is a risk too: it runs commands on your machine, reads untrusted text and installs packages.
-
-- **Least privilege:** set the agent's allow and deny rules (for Claude Code, `settings.json`), and deny reads of `.env` and key files. It never holds production credentials; the cloud changes only through the pipeline.
-- **Sandbox:** give broad autonomy only inside a devcontainer or VM.
-- **Untrusted input:** issues, pasted logs, web pages and dependency docs can carry prompt injection aimed at the agent. Review what it does after reading them.
-- **Supply chain:** check every package it adds is real and maintained. Agents sometimes invent package names that attackers then register (slopsquatting).
-- **MCP servers and plugins:** only trusted ones, pinned by version.
-- **Evidence:** the pre-push scan, the review and the PR record what it changed. Never let it skip a hook or weaken a check.
-
-## 6. The template repo
+## 5. The template repo
 
 New projects start from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template): `gh repo create <project> --template euginevd/sdlc-template --private --clone`.
 
