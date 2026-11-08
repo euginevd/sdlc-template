@@ -57,6 +57,6 @@ sdlc-template/
 ├── .github/workflows/     06 aws.yml: plan on the PR, apply after your approval
 ├── lefthook.yml           07 runs the security scan on every push
 ├── .lefthook/             08 the pre-push hook script
-├── scripts/               09 setup.sh installs the tools; scan.sh runs gitleaks and Trivy
+├── scripts/               09 setup.sh installs the tools; scan.sh runs Gitleaks and Trivy
 └── guides/                10 reference for people, numbered 01, 02, …
 ```
