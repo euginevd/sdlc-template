@@ -26,7 +26,7 @@ gh repo create travel-claims --template euginevd/sdlc-template --private --clone
 
 Then:
 
-1. Fill in [docs/spec.md](docs/spec.md), by hand or by asking the agent to draft it from your notes, and the README's title and tagline. `AGENTS.md` stays as it is: it holds no project details.
+1. Fill in [docs/business-context.md](docs/business-context.md) once per business, and [docs/spec.md](docs/spec.md) per project, by hand or by asking the agent to draft them from your notes. Then the README's title and tagline. `AGENTS.md` stays as it is: it holds no project details.
 2. Run `bash scripts/setup.sh` for the pre-push scan ([git-hooks](guides/02-git-hooks.md)), and `bash scripts/protect-main.sh` for the `main` ruleset (needs a public repo or a paid plan).
 3. Fill in `status.md` under its headings. Keep `code-standards.md`, the workflow and the scripts as they are, and add your own entries to `decisions.md`. Keep `threat-model.md` and `costs.md` only if required.
 4. Keep, adapt or delete the sample Terraform unit, `aws/api`. For a new unit, copy it.

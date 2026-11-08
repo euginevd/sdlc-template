@@ -54,6 +54,7 @@ travel-claims/
 ├── AGENTS.md              01 the agent's rules, the same for every project; read first
 ├── README.md              02 front page: what it is and how to start
 ├── docs/                  03 what the agent builds from, in reading order:
+│   ├── business-context.md   the business: industry, regulators, systems, people
 │   ├── spec.md               the project, its stack, what we're building, what done means
 │   ├── code-standards.md     how to write the code
 │   ├── status.md             what's built and what's next
@@ -85,6 +86,7 @@ travel-claims/
 | File | What's in it | Changes |
 |------|--------------|---------|
 | `AGENTS.md` | Rules for every coding agent: what to read, commands, workflow, boundaries, known mistakes. Generic, so the same in every project | Rarely; agents add known mistakes |
+| `docs/business-context.md` | The business: who it is, its regulators, data rules, risk appetite, systems, owners and tone. The same for every project for that business | Only when the business changes |
 | `docs/spec.md` | The project (name, problem, goal, users, AWS), its stack, what done means, rules, what's out. The one file to fill in: the agent drafts it, you approve it | Per project, then per change |
 | `docs/code-standards.md` | Numbered coding rules: general, security, tests, Terraform, languages, AI, docs | Rarely, after asking |
 | `docs/status.md` | What's built, how to run it, known gaps, what's next | Every commit that changes something |
