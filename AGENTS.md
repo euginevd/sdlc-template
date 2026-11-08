@@ -14,7 +14,7 @@ These rules are the same for every project. The business and the project are des
 
 6. The developer is on Windows: give commands for PowerShell or Git Bash.
 7. Setup, once: `bash scripts/setup.sh`
-8. Security scan, run on every push: `lefthook run pre-push`
+8. Security scan, run on every push: `bash .lefthook/pre-push-scan.sh`
 9. Terraform, in `aws/<unit>/`: `terraform fmt -recursive && terraform init -backend=false && terraform validate`
 10. App checks: [docs/spec.md](docs/spec.md) → Stack
 
