@@ -1,10 +1,10 @@
 # Agent instructions
 
-The project is described in [docs/spec.md](docs/spec.md). These rules are the same for every project.
+The business is described in [docs/business-context.md](docs/business-context.md) and the project in [docs/spec.md](docs/spec.md). These rules are the same for every project.
 
 ## Read
 
-1. Always: [docs/spec.md](docs/spec.md), [docs/status.md](docs/status.md) and the current `docs/plan-<name>.md`.
+1. Always: [docs/business-context.md](docs/business-context.md), [docs/spec.md](docs/spec.md), [docs/status.md](docs/status.md) and the current `docs/plan-<name>.md`.
 2. Writing or reviewing code: [docs/code-standards.md](docs/code-standards.md).
 3. Changing an approach: [docs/decisions.md](docs/decisions.md). Don't reopen what's settled unasked.
 4. Users, data, auth or endpoints: [docs/threat-model.md](docs/threat-model.md), if it exists.
