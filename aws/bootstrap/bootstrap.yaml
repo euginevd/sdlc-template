@@ -1,20 +1,17 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >-
   Bootstrap for a project from sdlc-template: everything in the AWS account that Terraform
-  needs before it can run. Deployed by hand as stack <project>-bootstrap; deleting the stack
+  needs before it can run. Deployed by hand as stack <repo>-bootstrap; deleting the stack
   removes all of it.
 
 Parameters:
-  ProjectName:
-    Type: String
-    AllowedPattern: '[a-z][a-z0-9-]{1,30}'
-    Description: Lowercase kebab-case; prefixes every resource name
   GitHubOwner:
     Type: String
     Description: GitHub user or organisation that owns the repo
   GitHubRepo:
     Type: String
-    Description: Repository name
+    AllowedPattern: '[a-z][a-z0-9-]{1,30}'
+    Description: Repository name, lowercase kebab-case; also the project name that prefixes every resource
   Target:
     Type: String
     Default: dev
@@ -43,7 +40,7 @@ Resources:
   StateBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub '${ProjectName}-tfstate-${AWS::AccountId}'
+      BucketName: !Sub '${GitHubRepo}-tfstate-${AWS::AccountId}'
       VersioningConfiguration:
         Status: Enabled
       BucketEncryption:
@@ -65,7 +62,7 @@ Resources:
             NoncurrentVersionExpiration:
               NoncurrentDays: 90
       Tags:
-        - { Key: Project, Value: !Ref ProjectName }
+        - { Key: Project, Value: !Ref GitHubRepo }
         - { Key: ManagedBy, Value: CloudFormation }
 
   StateBucketPolicy:
@@ -89,7 +86,7 @@ Resources:
   DeployRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub '${ProjectName}-github-deploy'
+      RoleName: !Sub '${GitHubRepo}-github-deploy'
       Description: !Sub 'GitHub Actions deploy role for ${GitHubRepo}, aws-${Target}-apply environment'
       MaxSessionDuration: 3600
       AssumeRolePolicyDocument:
@@ -117,14 +114,14 @@ Resources:
                 Resource: !GetAtt StateBucket.Arn
                 Condition:
                   StringLike:
-                    s3:prefix: !Sub '${ProjectName}/*'
+                    s3:prefix: !Sub '${GitHubRepo}/*'
               - Effect: Allow
                 Action:
                   - s3:GetObject
                   - s3:PutObject
                   - s3:DeleteObject
-                Resource: !Sub '${StateBucket.Arn}/${ProjectName}/*'
-        # Add each AWS service's permissions here, scoped to ${ProjectName}-* resources, before a unit uses it.
+                Resource: !Sub '${StateBucket.Arn}/${GitHubRepo}/*'
+        # Add each AWS service's permissions here, scoped to ${GitHubRepo}-* resources, before a unit uses it.
         - PolicyName: project-resources
           PolicyDocument:
             Version: '2012-10-17'
@@ -139,7 +136,7 @@ Resources:
                   - iam:DetachRolePolicy
                   - iam:PutRolePermissionsBoundary
                   - iam:PutRolePolicy
-                Resource: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${ProjectName}-*'
+                Resource: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${GitHubRepo}-*'
                 Condition:
                   StringEquals:
                     iam:PermissionsBoundary: !Ref ProjectBoundary
@@ -154,12 +151,12 @@ Resources:
                   - iam:UpdateAssumeRolePolicy
                   - iam:UpdateRole
                   - iam:UpdateRoleDescription
-                Resource: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${ProjectName}-*'
+                Resource: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${GitHubRepo}-*'
               # Lets Terraform hand project roles to Lambda, nothing else.
               - Sid: IamPassProjectRoles
                 Effect: Allow
                 Action: iam:PassRole
-                Resource: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${ProjectName}-*'
+                Resource: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${GitHubRepo}-*'
                 Condition:
                   StringEquals:
                     iam:PassedToService: lambda.amazonaws.com
@@ -168,8 +165,8 @@ Resources:
                 Effect: Allow
                 Action: lambda:*
                 Resource:
-                  - !Sub 'arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${ProjectName}-*'
-                  - !Sub 'arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${ProjectName}-*:*'
+                  - !Sub 'arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${GitHubRepo}-*'
+                  - !Sub 'arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${GitHubRepo}-*:*'
               # API Gateway has no name-based ARNs, so it's limited to this region.
               - Sid: ApiGatewayRegion
                 Effect: Allow
@@ -179,8 +176,8 @@ Resources:
                 Effect: Allow
                 Action: logs:*
                 Resource:
-                  - !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${ProjectName}-*'
-                  - !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/apigateway/${ProjectName}-*'
+                  - !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${GitHubRepo}-*'
+                  - !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/apigateway/${GitHubRepo}-*'
               # HTTP API access logging and log group listing need these account-wide actions.
               - Sid: LogsDelivery
                 Effect: Allow
@@ -194,11 +191,11 @@ Resources:
                   - logs:PutResourcePolicy
                   - logs:UpdateLogDelivery
                 Resource: '*'
-              # The pipeline roles are named ${ProjectName}-github-*, so they're out of reach.
+              # The pipeline roles are named ${GitHubRepo}-github-*, so they're out of reach.
               - Sid: DenyPipelineRoles
                 Effect: Deny
                 Action: iam:*
-                Resource: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${ProjectName}-github-*'
+                Resource: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${GitHubRepo}-github-*'
               - Sid: DenyBoundaryRemoval
                 Effect: Deny
                 Action: iam:DeleteRolePermissionsBoundary
@@ -207,14 +204,14 @@ Resources:
                 Action: sts:AssumeRole
                 Resource: '*'
       Tags:
-        - { Key: Project, Value: !Ref ProjectName }
+        - { Key: Project, Value: !Ref GitHubRepo }
         - { Key: ManagedBy, Value: CloudFormation }
 
   # Runs terraform plan without approval, so it can only read.
   PlanRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub '${ProjectName}-github-plan'
+      RoleName: !Sub '${GitHubRepo}-github-plan'
       Description: !Sub 'GitHub Actions read-only plan role for ${GitHubRepo}, aws-${Target}-plan environment'
       MaxSessionDuration: 3600
       AssumeRolePolicyDocument:
@@ -242,27 +239,27 @@ Resources:
                 Resource: !GetAtt StateBucket.Arn
                 Condition:
                   StringLike:
-                    s3:prefix: !Sub '${ProjectName}/*'
+                    s3:prefix: !Sub '${GitHubRepo}/*'
               - Effect: Allow
                 Action: s3:GetObject
-                Resource: !Sub '${StateBucket.Arn}/${ProjectName}/*'
+                Resource: !Sub '${StateBucket.Arn}/${GitHubRepo}/*'
               # Plan takes the state lock.
               - Effect: Allow
                 Action:
                   - s3:PutObject
                   - s3:DeleteObject
-                Resource: !Sub '${StateBucket.Arn}/${ProjectName}/*.tflock'
-              # Add each AWS service's read actions here, scoped to ${ProjectName}-* resources where the service allows it.
+                Resource: !Sub '${StateBucket.Arn}/${GitHubRepo}/*.tflock'
+              # Add each AWS service's read actions here, scoped to ${GitHubRepo}-* resources where the service allows it.
               - Effect: Allow
                 Action:
                   - iam:Get*
                   - iam:List*
-                Resource: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${ProjectName}-*'
+                Resource: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${GitHubRepo}-*'
               - Effect: Allow
                 Action:
                   - lambda:Get*
                   - lambda:List*
-                Resource: !Sub 'arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${ProjectName}-*'
+                Resource: !Sub 'arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${GitHubRepo}-*'
               - Effect: Allow
                 Action: apigateway:GET
                 Resource: !Sub 'arn:${AWS::Partition}:apigateway:${AWS::Region}::/*'
@@ -276,7 +273,7 @@ Resources:
                 Action: sts:AssumeRole
                 Resource: '*'
       Tags:
-        - { Key: Project, Value: !Ref ProjectName }
+        - { Key: Project, Value: !Ref GitHubRepo }
         - { Key: ManagedBy, Value: CloudFormation }
 
   # Ceiling for every role Terraform creates. Starts with logs only; widen it as the project needs.
@@ -284,8 +281,8 @@ Resources:
   ProjectBoundary:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      ManagedPolicyName: !Sub '${ProjectName}-boundary'
-      Description: !Sub 'Permissions boundary for roles created by ${ProjectName} Terraform'
+      ManagedPolicyName: !Sub '${GitHubRepo}-boundary'
+      Description: !Sub 'Permissions boundary for roles created by ${GitHubRepo} Terraform'
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
