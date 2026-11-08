@@ -20,8 +20,8 @@ The end-to-end flow, through the stages in section 3, for both a new project and
 |:-:|-------|-----|------|
 | 1 | Plan | You | **Create the repo (new project only):** `gh repo create travel-claims --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` |
 | 2 | Plan | You, then agent | **Update the spec:** *"Update docs/spec.md for <the change>"* (or *"Draft docs/spec.md from <your notes>"* for a new project). ↺ Review and correct it until it says what you want |
-| 3 | Plan | You, then agent | **Prompt:** *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks, phases and PR groups; no code |
-| 4 | Plan | You | **Review the plan:** ↺ ask for changes until it's right, then approve |
+| 3 | Plan | You, then agent | **Prompt:** *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks, phases and PR groups, and drafts or updates `threat-model.md` if the work touches users, data, auth or endpoints; no code |
+| 4 | Plan | You | **Review the plan and threat model:** ↺ ask for changes until they're right, then approve |
 | 5 | Code | You | **Prompt:** *"Implement the plan for <the work>"* |
 | 6 | Code | Agent | **Build each phase:** code, local checks, fresh-subagent review, docs, local commit |
 | 7 | Code | Agent | **Push:** the pre-push scan runs (Gitleaks, Trivy). ↺ The agent fixes any finding and pushes again, then opens a PR |
