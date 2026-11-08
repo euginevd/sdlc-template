@@ -1,6 +1,16 @@
+<div align="center">
+
 # travel-claims
 
-An AI agent decides routine travel insurance claims in minutes, so handlers spend their time only on claims that need judgement.
+**An AI agent decides routine travel insurance claims in minutes, so handlers spend their time only on claims that need judgement.**
+
+![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-OIDC-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-Cloud-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+
+[Claimants](#-claimants) · [Handlers](#️-handlers) · [Apps](#-apps)
+
+</div>
 
 > This is [sdlc-template](https://github.com/euginevd/sdlc-template), with `travel-claims` as its worked example. To start a project from it: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md), section 2.
 
