@@ -33,7 +33,7 @@ The checks show the code works, not that it's fit to merge. Every change gets a 
 
 1. Push the branch. The pre-push scan runs; fix what it finds and push again.
 2. Open a PR. The workflows run the checks and the Terraform plan.
-3. Merge once every check passes, then delete the branch.
+3. Fix every finding the checks post, and push again. Merge once every check passes and the user approves, then delete the branch.
 4. The apply runs after the user approves it in the `-apply` environment.
 
 ## Operate and Monitor
