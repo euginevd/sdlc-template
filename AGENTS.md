@@ -69,6 +69,6 @@ Prefer one repo per product, not per app, cloud or component:
 
 ## Rules
 
-- Work on a branch and open a PR. Merge once checks pass, then delete the branch; only `main` remains.
+- Work on a branch and open a PR. Fix every finding the checks post. Merge once checks pass and the user approves, then delete the branch; only `main` remains.
 - Never create, change or delete cloud resources yourself; the pipeline and the user do. Read-only checks are fine.
 - One-line commit messages, human author only. No AI co-author or attribution lines.

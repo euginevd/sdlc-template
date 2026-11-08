@@ -4,7 +4,7 @@
 
 **The secure agentic SDLC is the software development lifecycle with AI coding agents as developers and security built into every stage.**
 
-- **People** own the what and the why: the spec, the plan approval and the deploy approval. You're accountable for what ships, so anything that should last goes in a doc, not chat, and the agent shows evidence before you approve.
+- **People** own the what and the why: the spec, and approving the plan, the merge and the deploy. You're accountable for what ships, so anything that should last goes in a doc, not chat, and the agent shows evidence before you approve.
 - **Agents** own the how: they plan, write, test and review the code, inside written rules.
 - **Controls** check every change before it ships: the pre-push scan, an independent review, the Terraform checks in CI and an approval gate.
 
@@ -29,13 +29,55 @@ The eight DevSecOps stages, who does each, the core security activities, and the
 | 7 | Operate | You | Posture management · vulnerability management · AI posture management | Prowler · Trivy Operator |
 | 8 | Monitor | You and pipeline | Threat detection and logging · incident response · AI monitoring | Falco · Wazuh |
 
-## 4. How a change flows
+## 4. Workflow: spec-driven development
 
-1. **You** write `docs/spec.md`: the problem, the goal, success criteria and what's out.
-2. **You** ask: *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks and phases, and no code. You approve or redirect it.
-3. **You** ask: *"Implement the plan for <the work>"*. The agent builds one phase at a time: code, checks, a fresh-subagent review, docs, commit.
-4. **The agent** pushes (the pre-push scan runs), opens a PR, merges once checks pass and deletes the branch.
-5. **You** read the Terraform plan and approve the apply. The agent then updates `status.md` and `decisions.md` and deletes the plan.
+The end-to-end flow of a change, through the stages in section 3. This is **spec-driven development**: you write the spec, the agent plans and builds from it, and gates feed findings back to the agent until the change is clean.
+
+```
+PLAN       1  Create the repo from the template
+           2  Review and update the spec docs
+           3  Prompt: "Plan <the work> in docs/plan-<name>.md"
+           4  Review, refine and approve the plan  ◄── not right yet: refine
+                │
+CODE       5  Prompt: "Implement the plan for <the work>"
+           6  Agent codes, commits and pushes
+                ├─ pre-push scan finds an issue ──► agent fixes, pushes again
+                └─ agent opens a PR
+                │
+BUILD      7  PR checks, scans and reviews
+& TEST          ├─ a finding ──► agent fixes, pushes to the PR
+                └─ agent review + your review ──► you approve the merge
+                │
+RELEASE    8  Merge to main: Terraform plan runs
+& DEPLOY        └─ you read the plan and approve ──► apply
+                │
+OPERATE    9  Agent updates status and decisions, deletes the plan
+& MONITOR       └─ findings, alerts and lessons ──► next spec (back to 2)
+```
+
+**Plan**
+
+1. **Create the repo:** `gh repo create <project> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` for the pre-push scan.
+2. **Update the spec docs:** `docs/spec.md` (problem, goal, success criteria, what's out), `docs/tech-stack.md`, the Context section of `AGENTS.md`, and `docs/threat-model.md` and `docs/costs.md` if the project needs them. Keep `code-standards.md` and `process.md` as they are.
+3. **Prompt the plan:** *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, security risks and phases with checkbox criteria, and no code.
+4. **Review the plan:** ask for changes until it's right, then approve it. This is the cheapest place to catch a mistake.
+
+**Code**
+
+5. **Prompt the build:** *"Implement the plan for <the work>"*.
+6. **The agent writes the code**, one phase at a time: code, local checks, a fresh-subagent review, docs, commit. On push, the pre-push scan (Gitleaks, Trivy) blocks secrets, misconfigurations and vulnerable packages; the agent reads the findings, fixes them and pushes again. Then it opens a PR.
+
+**Build and test**
+
+7. **PR checks and reviews:** the workflows run the checks and the Terraform plan, and post findings on the PR. The agent fixes each finding and pushes again. You review the diff, the findings and the plan, and approve the merge; the agent merges and deletes the branch.
+
+**Release and deploy**
+
+8. **Deploy:** the merge to `main` runs the Terraform plan. You read it in the job summary and approve the apply; Terraform applies exactly that plan through OIDC.
+
+**Operate and monitor**
+
+9. **Close the loop:** the agent updates `status.md` and `decisions.md` and deletes the plan. Surprises go in `guides/03-findings.md`. Alerts, findings and lessons become the next spec.
 
 ## 5. Securing the coding agent
 
