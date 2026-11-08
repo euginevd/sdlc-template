@@ -12,10 +12,9 @@ terraform {
     }
   }
 
-  # The bucket is passed at init, so the account ID stays out of the repo:
-  # terraform init -backend-config="bucket=$TF_STATE_BUCKET"
+  # The pipeline passes the bucket and key at init, so no project name or account ID is in the code:
+  # terraform init -backend-config="bucket=$TF_STATE_BUCKET" -backend-config="key=$PROJECT_NAME/<unit>.tfstate"
   backend "s3" {
-    key          = "<project>/api.tfstate"
     region       = "ap-southeast-2"
     use_lockfile = true
     encrypt      = true

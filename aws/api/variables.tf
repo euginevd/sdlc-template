@@ -1,13 +1,12 @@
+# Set by the pipeline from repository variables: TF_VAR_project and TF_VAR_environment.
 variable "project" {
   description = "Project name, the prefix for every resource name"
   type        = string
-  default     = "<project>"
 }
 
 variable "environment" {
   description = "Deployment target, such as dev or prod"
   type        = string
-  default     = "dev"
 }
 
 variable "region" {
