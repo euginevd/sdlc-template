@@ -12,22 +12,22 @@
 
 IMPORTANT: read these in full before you plan, change or answer questions about anything:
 
-1. `docs/SPEC.md`: what we need and what done means
-2. `docs/TECH_STACK.md`: the tools and how it deploys
-3. `docs/CODE_STANDARDS.md`: how to write the code
-4. `docs/PROCESS.md`: how to plan, build, review and ship, stage by stage
-5. `docs/STATUS.md`: what's built and what's next
-6. `docs/DECISIONS.md`: what's settled and why; don't reopen it unasked
+1. `docs/spec.md`: what we need and what done means
+2. `docs/tech-stack.md`: the tools and how it deploys
+3. `docs/code-standards.md`: how to write the code
+4. `docs/process.md`: how to plan, build, review and ship, stage by stage
+5. `docs/status.md`: what's built and what's next
+6. `docs/decisions.md`: what's settled and why; don't reopen it unasked
 7. `guides/03-findings.md`: what the account or tools do that we didn't expect
-8. `docs/THREAT_MODEL.md`: data classification, threat model and controls, if the project uses it
-9. `docs/COSTS.md`: one row per cost-bearing resource, if the project uses it
+8. `docs/threat-model.md`: data classification, threat model and controls, if the project uses it
+9. `docs/costs.md`: one row per cost-bearing resource, if the project uses it
 
-`THREAT_MODEL.md` and `COSTS.md` are used only if required. If the project doesn't need one, delete it and its line above.
+`threat-model.md` and `costs.md` are used only if required. If the project doesn't need one, delete it and its line above.
 
 Add these only when needed, and list them above once they exist:
 
-- `docs/PLAN_<NAME>.md`: when asked to plan a piece of work
-- `docs/DESIGN.md`: UX decisions and look, once there's a UI
+- `docs/plan-<name>.md`: when asked to plan a piece of work
+- `docs/design.md`: UX decisions and look, once there's a UI
 - `guides/<NN>-<topic>.md`: how-tos and reference for people
 
 ## Your role

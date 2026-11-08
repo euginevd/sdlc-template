@@ -4,10 +4,10 @@ Work follows the DevSecOps stages in the README: Plan, Code, Build, Test, Releas
 
 ## Plan
 
-When asked to plan, write the plan to `docs/PLAN_<NAME>.md` and write no code.
+When asked to plan, write the plan to `docs/plan-<name>.md` and write no code.
 
-- Start with the design: the parts, what each is for, and why. Check it against `docs/CODE_STANDARDS.md`.
-- Name the security risks the work adds (users, data, secrets, public endpoints) and how each is handled. Once there are any, keep `docs/THREAT_MODEL.md` up to date.
+- Start with the design: the parts, what each is for, and why. Check it against `docs/code-standards.md`.
+- Name the security risks the work adds (users, data, secrets, public endpoints) and how each is handled. Once there are any, keep `docs/threat-model.md` up to date.
 - Split the work into phases, each building on the last.
 - Give each phase success criteria you can verify yourself, as checkboxes.
 - Then stop and wait to be asked to build it.
@@ -17,16 +17,16 @@ When asked to plan, write the plan to `docs/PLAN_<NAME>.md` and write no code.
 For each change, or each phase of a plan:
 
 1. Build it, with tests where the project has them.
-2. Run the checks in `docs/TECH_STACK.md` and fix what fails.
+2. Run the checks in `docs/tech-stack.md` and fix what fails.
 3. Review it (below) and fix what the review finds.
-4. Update the docs it affects, `docs/STATUS.md` always. Tick off the plan's criteria.
+4. Update the docs it affects, `docs/status.md` always. Tick off the plan's criteria.
 5. Commit with a one-line message.
 
 ## Review
 
 The checks show the code works, not that it's fit to merge. Every change gets a review before it's committed.
 
-- The reviewer is a fresh subagent that didn't write the code. Give it `docs/CODE_STANDARDS.md` and the diff, and ask it to review as a strict senior engineer deciding whether to merge, security included.
+- The reviewer is a fresh subagent that didn't write the code. Give it `docs/code-standards.md` and the diff, and ask it to review as a strict senior engineer deciding whether to merge, security included.
 - Fix everything it would block on. If you disagree with a finding, say so in your report instead of skipping it.
 
 ## Release and Deploy
@@ -38,9 +38,9 @@ The checks show the code works, not that it's fit to merge. Every change gets a 
 
 ## Operate and Monitor
 
-When a plan's last phase is done, review the whole branch against `main` the same way, then report what was built, what the reviews found and what you changed. Then update `docs/STATUS.md` and `docs/DECISIONS.md`, and delete the plan and its line in `AGENTS.md`; git history keeps it.
+When a plan's last phase is done, review the whole branch against `main` the same way, then report what was built, what the reviews found and what you changed. Then update `docs/status.md` and `docs/decisions.md`, and delete the plan and its line in `AGENTS.md`; git history keeps it.
 
-Anything unexpected from the account, the pipeline or the tools goes in `guides/03-findings.md`. Cost-bearing resources go in `docs/COSTS.md` once there are several.
+Anything unexpected from the account, the pipeline or the tools goes in `guides/03-findings.md`. Cost-bearing resources go in `docs/costs.md` once there are several.
 
 ## Rules
 
