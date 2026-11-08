@@ -6,7 +6,7 @@
 
 - **People** own the what and the why: the spec, the plan approval and the deploy approval. You're accountable for what ships, so anything that should last goes in a doc, not chat, and the agent shows evidence before you approve.
 - **Agents** own the how: they plan, write, test and review the code, inside written rules.
-- **Controls** check every change before it ships: the pre-push scan, CI checks, an independent review and an approval gate.
+- **Controls** check every change before it ships: the pre-push scan, an independent review, the Terraform checks in CI and an approval gate.
 
 ## 2. Where the name comes from
 
@@ -16,22 +16,39 @@
 
 ## 3. The stages
 
-The eight DevSecOps stages, the core security activities in each, and the open-source tools most teams reach for.
+The eight DevSecOps stages, who does each, the core security activities, and the open-source tools most teams reach for.
 
-| # | Stage | Core components | Open-source tools |
-|:-:|-------|-----------------|-------------------|
-| 1 | Plan | Data classification · threat modelling · security requirements and architecture | OWASP Threat Dragon |
-| 2 | Code | Secrets detection · static analysis (SAST, SCA, IaC) · repo hardening and code review | Gitleaks · Semgrep |
-| 3 | Build | Image scanning and build gates · SBOM and signing · CI pipeline hardening | Trivy · Cosign |
-| 4 | Test | DAST, API and pen testing · security regression tests · AI security testing | OWASP ZAP · promptfoo |
-| 5 | Release | Artifact re-scan and promotion by digest · infrastructure plan review · release approval | Checkov · Trivy |
-| 6 | Deploy | Admission control · GitOps deployment · secure workload configuration | Argo CD · Kyverno |
-| 7 | Operate | Posture management · vulnerability management · AI posture management | Prowler · Trivy Operator |
-| 8 | Monitor | Threat detection and logging · incident response · AI monitoring | Falco · Wazuh |
+| # | Stage | Who | Core components | Open-source tools |
+|:-:|-------|-----|-----------------|-------------------|
+| 1 | Plan | You, then agent | Data classification · threat modelling · security requirements and architecture | OWASP Threat Dragon |
+| 2 | Code | Agent | Secrets detection · static analysis (SAST, SCA, IaC) · repo hardening and code review | Gitleaks · Semgrep |
+| 3 | Build | Pipeline | Image scanning and build gates · SBOM and signing · CI pipeline hardening | Trivy · Cosign |
+| 4 | Test | Agent and pipeline | DAST, API and pen testing · security regression tests · AI security testing | OWASP ZAP · promptfoo |
+| 5 | Release | Agent | Artifact re-scan and promotion by digest · infrastructure plan review · release approval | Checkov · Trivy |
+| 6 | Deploy | Pipeline, after your approval | Admission control · GitOps deployment · secure workload configuration | Argo CD · Kyverno |
+| 7 | Operate | You | Posture management · vulnerability management · AI posture management | Prowler · Trivy Operator |
+| 8 | Monitor | You and pipeline | Threat detection and logging · incident response · AI monitoring | Falco · Wazuh |
 
-This template already runs Gitleaks and Trivy in the pre-push scan; the README's Lifecycle table shows who does what at each stage. Admission control, Argo CD, Kyverno and Trivy Operator apply once a project runs on Kubernetes.
+## 4. How a change flows
 
-## 4. The template repo
+1. **You** write `docs/spec.md`: the problem, the goal, success criteria and what's out.
+2. **You** ask: *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks and phases, and no code. You approve or redirect it.
+3. **You** ask: *"Implement the plan for <the work>"*. The agent builds one phase at a time: code, checks, a fresh-subagent review, docs, commit.
+4. **The agent** pushes (the pre-push scan runs), opens a PR, merges once checks pass and deletes the branch.
+5. **You** read the Terraform plan and approve the apply. The agent then updates `status.md` and `decisions.md` and deletes the plan.
+
+## 5. Securing the coding agent
+
+The stages secure the app. The coding agent is a risk too: it runs commands on your machine, reads untrusted text and installs packages.
+
+- **Least privilege:** set the agent's allow and deny rules (for Claude Code, `settings.json`), and deny reads of `.env` and key files. It never holds production credentials; the cloud changes only through the pipeline.
+- **Sandbox:** give broad autonomy only inside a devcontainer or VM.
+- **Untrusted input:** issues, pasted logs, web pages and dependency docs can carry prompt injection aimed at the agent. Review what it does after reading them.
+- **Supply chain:** check every package it adds is real and maintained. Agents sometimes invent package names that attackers then register (slopsquatting).
+- **MCP servers and plugins:** only trusted ones, pinned by version.
+- **Evidence:** the pre-push scan, the review and the PR record what it changed. Never let it skip a hook or weaken a check.
+
+## 6. The template repo
 
 New projects start from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template): `gh repo create <project> --template euginevd/sdlc-template --private --clone`.
 
@@ -53,10 +70,14 @@ sdlc-template/
 ├── apps/                  04 the product: one folder per app (web, API, agent)
 ├── aws/                   05 the infrastructure, as Terraform
 │   ├── bootstrap/            CloudFormation, deployed once: OIDC, state bucket, pipeline roles
-│   └── _template/            copy to aws/<unit>/ for each new unit
+│   ├── iam/                  sample: app role with the permissions boundary
+│   ├── storage/              sample: private, encrypted S3 bucket
+│   └── api/                  sample: Lambda behind an HTTP API, with logs
 ├── .github/workflows/     06 aws.yml: plan on the PR, apply after your approval
 ├── lefthook.yml           07 runs the security scan on every push
 ├── .lefthook/             08 the pre-push hook script
-├── scripts/               09 setup.sh installs the tools; scan.sh runs Gitleaks and Trivy
-└── guides/                10 reference for people, numbered 01, 02, …
+├── scripts/               09 setup.sh installs the tools; scan.sh runs Gitleaks and Trivy;
+│                             protect-main.sh adds the main ruleset
+├── guides/                10 reference for people, numbered 01, 02, …
+└── SECURITY.md            11 how to report a vulnerability (GitHub's policy file)
 ```

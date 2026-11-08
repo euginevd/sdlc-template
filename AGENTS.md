@@ -40,7 +40,7 @@ Add these only when needed, and list them above once they exist:
 ## Conventions
 
 - One app per folder in `apps/<app>/`, each with its own dependencies, tests and README.
-- One Terraform root per deployable unit in `aws/<unit>/`, state key `<project>/<unit>.tfstate`. Copy `aws/_template/` to start one.
+- One Terraform root per deployable unit in `aws/<unit>/`, state key `<project>/<unit>.tfstate`. Start a new unit from the closest sample: `aws/iam`, `aws/storage` or `aws/api`.
 - Names: resources `<project>-<unit>-<what>`, roles `<project>-<unit>[-<purpose>]`.
 - Every role Terraform creates has the `<project>-boundary` permissions boundary.
 - A new AWS service needs plan and deploy permissions in the bootstrap stack first.
@@ -49,11 +49,11 @@ Add these only when needed, and list them above once they exist:
 
 - `apps/<app>/`: the apps (web, API, agent)
 - `aws/<unit>/`: Terraform, one root and state per deployable unit
-- `aws/_template/`: the starting files for a new unit; never deployed
+- `aws/iam/`, `aws/storage/`, `aws/api/`: sample units (app role, S3 bucket, Lambda behind an HTTP API); keep the ones the project needs
 - `aws/bootstrap/`: the CloudFormation stack for OIDC, state and the pipeline roles
 - `.github/workflows/`: one workflow per top-level folder; plan on PR, apply after approval
 - `.lefthook/`, `lefthook.yml`: the pre-push scan
-- `scripts/`: one-time `setup.sh`, and `scan.sh`, the scan the pre-push hook runs
+- `scripts/`: one-time `setup.sh`, `scan.sh` (the scan the pre-push hook runs) and `protect-main.sh` (the `main` ruleset)
 - `docs/`: the documents the agent builds from
 - `guides/`: reference for people, such as findings and how-tos, named `<NN>-<topic>.md` (`01`, `02`, …) so they sort in reading order
 - `local/`: personal scratch, not in git

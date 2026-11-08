@@ -1,4 +1,3 @@
-# Copy this folder to aws/<unit>/, then replace <project> and <unit>.
 terraform {
   required_version = ">= 1.17"
 
@@ -12,7 +11,7 @@ terraform {
   # The bucket is passed at init, so the account ID stays out of the repo:
   # terraform init -backend-config="bucket=$TF_STATE_BUCKET"
   backend "s3" {
-    key          = "<project>/<unit>.tfstate"
+    key          = "<project>/iam.tfstate"
     region       = "ap-southeast-2"
     use_lockfile = true
     encrypt      = true
@@ -25,7 +24,7 @@ provider "aws" {
   default_tags {
     tags = {
       Project     = var.project
-      Unit        = "<unit>"
+      Unit        = "iam"
       Environment = var.environment
       ManagedBy   = "Terraform"
     }
