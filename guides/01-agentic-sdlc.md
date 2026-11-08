@@ -64,7 +64,7 @@ sdlc-template/
 │   └── costs.md              what costs money, budget and alerts
 ├── apps/                  04 the product: one folder per app (web, API, agent)
 ├── aws/                   05 the infrastructure, as Terraform
-│   ├── bootstrap/            CloudFormation, deployed once: OIDC, state bucket, pipeline roles
+│   ├── bootstrap/            CloudFormation, run once: OIDC, state bucket, CI roles
 │   ├── iam/                  sample: app role with the permissions boundary
 │   ├── storage/              sample: private, encrypted S3 bucket
 │   └── api/                  sample: Lambda behind an HTTP API, with logs
