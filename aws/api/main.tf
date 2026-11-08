@@ -55,11 +55,18 @@ resource "aws_iam_role_policy" "lambda_logs" {
 }
 
 resource "aws_cloudwatch_log_group" "lambda" {
+  #checkov:skip=CKV_AWS_158: AWS-managed encryption is enough for app logs; a customer key adds a key policy to run
+  #checkov:skip=CKV_AWS_338: 30-day retention keeps cost down (costs.md); raise it per environment if audits need more
   name              = "/aws/lambda/${var.project}-api-${var.environment}"
   retention_in_days = 30
 }
 
 resource "aws_lambda_function" "api" {
+  #checkov:skip=CKV_AWS_117: no private resources to reach, so no VPC; add one when the function needs a database
+  #checkov:skip=CKV_AWS_116: invoked synchronously by the HTTP API, so a dead-letter queue never receives anything
+  #checkov:skip=CKV_AWS_115: the API's throttling caps the load; reserved concurrency can fail in new accounts
+  #checkov:skip=CKV_AWS_50: tracing is off in the sample; turn on X-Ray when the app has more than one hop
+  #checkov:skip=CKV_AWS_272: code signing needs a signer profile; add it before prod if policy requires it
   function_name    = "${var.project}-api-${var.environment}"
   role             = aws_iam_role.lambda.arn
   runtime          = "python3.13"
@@ -83,6 +90,8 @@ resource "aws_apigatewayv2_api" "api" {
 }
 
 resource "aws_cloudwatch_log_group" "api_access" {
+  #checkov:skip=CKV_AWS_158: AWS-managed encryption is enough for app logs; a customer key adds a key policy to run
+  #checkov:skip=CKV_AWS_338: 30-day retention keeps cost down (costs.md); raise it per environment if audits need more
   name              = "/aws/apigateway/${var.project}-api-${var.environment}"
   retention_in_days = 30
 }
@@ -118,6 +127,7 @@ resource "aws_apigatewayv2_integration" "api" {
 }
 
 resource "aws_apigatewayv2_route" "health" {
+  #checkov:skip=CKV_AWS_309: /health is public on purpose and returns no data; every other route needs an authoriser
   api_id    = aws_apigatewayv2_api.api.id
   route_key = "GET /health"
   target    = "integrations/${aws_apigatewayv2_integration.api.id}"
