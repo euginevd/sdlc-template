@@ -34,10 +34,11 @@ Template defaults: GitHub Actions, Terraform on AWS and the Gitleaks and Trivy p
 17. Receipts are untrusted input: text hidden in them must not change a decision.
 18. Every decision is logged with its reasons, with personal data redacted.
 19. AWS spend stays under $200 a month in `dev`.
+20. Security requirements baseline: OWASP ASVS 5.0 Level 2.
 
 ## Not for now
 
-20. Quotes and policy sales: claims only.
-21. A mobile app.
-22. Claims in currencies other than AUD.
-23. Fraud detection beyond the payment checks.
+21. Quotes and policy sales: claims only.
+22. A mobile app.
+23. Claims in currencies other than AUD.
+24. Fraud detection beyond the payment checks.
