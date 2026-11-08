@@ -4,7 +4,7 @@ The one file to fill in for each project, by hand or by asking the agent to draf
 
 ## Project
 
-- Name: `travel-claims` (lowercase kebab-case)
+- Name: `travel-claims`
 - Problem: *(what's wrong or missing today, and for whom)*
 - Goal: *(what changes once it's built, in one sentence)*
 - Users: *(each kind of user, and what they need from it)*
