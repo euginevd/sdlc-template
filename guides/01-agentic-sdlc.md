@@ -77,7 +77,7 @@ travel-claims/
 ├── lefthook.yml           07 runs the security scan on every push
 ├── .lefthook/             08 the pre-push hook script
 ├── scripts/               09 setup.sh installs the tools; scan.sh runs Gitleaks and Trivy;
-│                             security-report.py builds the PR summary; protect-main.sh adds the main ruleset
+│                             security-report.py builds the PR summary; protect-main.sh hardens the repo and adds the main ruleset
 ├── .vscode/               10 the Trivy and Semgrep extensions, for your review
 ├── pyproject.toml         11 the Python workspace and tool settings, with uv.lock and .python-version
 ├── guides/                12 reference for people, numbered 01, 02, …
