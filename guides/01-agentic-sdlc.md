@@ -52,8 +52,8 @@ sdlc-template/
 │   └── costs.md              what costs money, budget and alerts
 ├── apps/                  04 the product: one folder per app (web, API, agent)
 ├── aws/                   05 the infrastructure, as Terraform
-│   ├── _template/            copy to aws/<unit>/ for each new unit
-│   └── bootstrap/            CloudFormation, deployed once: OIDC, state bucket, pipeline roles
+│   ├── bootstrap/            CloudFormation, deployed once: OIDC, state bucket, pipeline roles
+│   └── _template/            copy to aws/<unit>/ for each new unit
 ├── .github/workflows/     06 aws.yml: plan on the PR, apply after your approval
 ├── lefthook.yml           07 runs the security scan on every push
 ├── .lefthook/             08 the pre-push hook script
