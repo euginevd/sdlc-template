@@ -8,6 +8,10 @@
 - **Agents** own the how: they plan, write, test and review the code, inside written rules.
 - **Controls** check every change before it ships: the pre-push scan, an independent review, the Terraform checks in CI and an approval gate.
 
+The industry's emerging term is **agentic software development** (Forrester, Gartner), with no single standard yet; keeping "SDLC" in the name says existing security controls still apply. It draws on AWS's [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering), spec-driven development (GitHub Spec Kit), [AGENTS.md](https://agents.md), DevSecOps and the NIST Secure Software Development Framework (SSDF).
+
+> **Note:** avoid the term ADLC. It's used both for this and for building AI agents as a product (the Agent Development Lifecycle).
+
 ## 2. Workflow: spec-driven development
 
 The end-to-end flow, through the stages in section 3, for both a new project and each change after it: **a new project starts at step 1; every later change, such as a feature or a fix, starts at step 2.** You write the spec, the agent plans and builds from it, and every gate feeds findings back to the agent (↺) until the work is clean.
@@ -72,9 +76,3 @@ sdlc-template/
 ├── guides/                10 reference for people, numbered 01, 02, …
 └── SECURITY.md            11 how to report a vulnerability (GitHub's policy file)
 ```
-
-## 5. Background: where the name comes from
-
-**Agentic software development** is the industry's emerging term (Forrester, Gartner); there's no single standard yet. Keeping "SDLC" in the name says existing security controls still apply. This lifecycle draws on AWS's [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering), spec-driven development (GitHub Spec Kit), [AGENTS.md](https://agents.md), DevSecOps and the NIST Secure Software Development Framework (SSDF).
-
-> **Note:** avoid the term ADLC. It's used both for this and for building AI agents as a product (the Agent Development Lifecycle).
