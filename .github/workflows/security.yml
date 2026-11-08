@@ -1,6 +1,6 @@
 name: security
 
-# Re-runs the pre-push scan on every PR and on main, because a hook can be skipped with --no-verify.
+# The pre-push scan again on every PR and main (a hook can be skipped), plus Checkov and Semgrep.
 # Tools run from pinned container images, so no third-party action code runs in the pipeline.
 on:
   pull_request:
@@ -35,3 +35,11 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Checkov, Terraform and CloudFormation
         run: docker run --rm -v "$PWD:/repo" bridgecrew/checkov:3.4.3 -d /repo/aws --quiet --compact
+
+  code:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # aws/ is left to Checkov and Trivy, so the same finding isn't reported twice.
+      - name: Semgrep, static analysis of the code
+        run: docker run --rm -v "$PWD:/src" semgrep/semgrep:1.182.1 semgrep scan /src --config p/default --exclude aws --error --metrics off

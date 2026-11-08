@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# One-time developer setup: gitleaks, Trivy, lefthook and the Git hooks.
-# Installs only what's missing, so it's safe to run again. Usage: bash scripts/setup.sh
+# One-time setup: installs gitleaks, Trivy and lefthook if missing, then the hooks. Usage: bash scripts/setup.sh
 set -uo pipefail
 
 cd "$(git rev-parse --show-toplevel)" || exit 1

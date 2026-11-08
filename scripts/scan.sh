@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
-# Security scan of a folder: gitleaks for secrets, Trivy for vulnerable packages, IaC
-# misconfigurations and secrets. Lists the findings, then exits 0 to allow or 1 to block.
-# Run by the pre-push hook (.lefthook/pre-push-scan.sh); kept separate so any folder can be scanned.
-# SCAN_SEVERITY sets Trivy's blocking severities (default HIGH,CRITICAL).
-# Usage: scan.sh <folder> <label>
+# Scans a folder: gitleaks for secrets, Trivy for packages, IaC and secrets; exits 1 to block the push.
+# SCAN_SEVERITY sets Trivy's blocking levels (default HIGH,CRITICAL). Usage: scan.sh <folder> <label>
 set -uo pipefail
 
 [ $# -eq 2 ] || { echo "Usage: scan.sh <folder> <label>"; exit 1; }
