@@ -27,7 +27,7 @@ The end-to-end flow, through the stages in section 3, for both a new project and
 | 7 | Code | Agent | **Push:** the pre-push scan runs. ↺ The agent fixes findings, then opens a PR |
 | 8 | Build and test | Pipeline, agent | **PR checks:** security scans, a summary comment and the Terraform plan. ↺ The agent fixes findings |
 | 9 | Release | Developer, agent | **Merge:** you review the diff and security summary, then the agent squash-merges |
-| 10 | Deploy | Developer, pipeline | **Apply:** you approve the Terraform plan; merges deploy `dev`, a manual run `prod` |
+| 10 | Deploy | Developer, pipeline | **Apply:** you approve the plan; it deploys (`dev` on merge, `prod` by hand) and checks `/health` |
 | 11 | Operate and monitor | Agent, developer | **Close the loop:** the agent updates status and decisions; findings feed step 2 |
 
 ## 3. The stages
