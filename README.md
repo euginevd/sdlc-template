@@ -38,6 +38,7 @@ A worked example built from [sdlc-template](https://github.com/euginevd/sdlc-tem
 | [decisions.md](docs/decisions.md) | Key decisions and why |
 | [design-system.md](docs/design-system.md) | Look and feel, from the ArcVault design system |
 | [threat-model.md](docs/threat-model.md), [costs.md](docs/costs.md) | Threats and controls; what it costs |
+| [02-security-trade-offs.md](guides/02-security-trade-offs.md) | The template's accepted risks, and what to change for production |
 
 ## 🚀 Bootstrap
 

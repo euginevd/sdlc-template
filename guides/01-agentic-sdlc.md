@@ -81,7 +81,8 @@ travel-claims/
 ├── .vscode/               10 the Trivy and Semgrep extensions, for your review
 ├── pyproject.toml         11 the Python workspace and tool settings, with uv.lock and .python-version
 ├── guides/                12 reference for people, numbered 01, 02, …
-│   └── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template
+│   ├── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template
+│   └── 02-security-trade-offs.md  accepted risks, why, and what to change for production
 └── SECURITY.md            13 how to report a vulnerability (GitHub's policy file)
 ```
 
