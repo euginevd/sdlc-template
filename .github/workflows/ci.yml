@@ -24,7 +24,7 @@ jobs:
         if: hashFiles('pyproject.toml') != ''
         run: |
           pip install --no-cache-dir --root-user-action ignore uv==0.13.6
-          uv sync --frozen
+          uv sync --locked
           uv run ruff format --check
           uv run ruff check
           uv run pyright

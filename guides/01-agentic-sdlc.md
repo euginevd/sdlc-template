@@ -77,12 +77,14 @@ travel-claims/
 ├── lefthook.yml           07 runs the security scan on every push
 ├── .lefthook/             08 the pre-push hook script
 ├── scripts/               09 setup.sh installs the tools; scan.sh runs Gitleaks and Trivy;
-│                             security-report.py builds the PR summary; protect-main.sh hardens the repo and adds the main ruleset
+│                             security-report.py builds the PR summary; protect-main.sh hardens the repo and sets the main ruleset, safe to rerun
 ├── .vscode/               10 the Trivy and Semgrep extensions, for your review
 ├── pyproject.toml         11 the Python workspace and tool settings, with uv.lock and .python-version
 ├── guides/                12 reference for people, numbered 01, 02, …
-│   └── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template
-└── SECURITY.md            13 how to report a vulnerability (GitHub's policy file)
+│   ├── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template
+│   └── 02-security-trade-offs.md  accepted risks, why, and what to change for production
+├── SECURITY.md            13 how to report a vulnerability (GitHub's policy file)
+└── LICENSE                14 MIT, for the template; replace or delete it per project
 ```
 
 ## 5. The files

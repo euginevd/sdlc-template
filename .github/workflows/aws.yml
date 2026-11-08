@@ -45,6 +45,7 @@ env:
 jobs:
   detect:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     outputs:
       units: ${{ steps.units.outputs.units }}
     steps:
@@ -80,6 +81,7 @@ jobs:
     needs: detect
     if: needs.detect.outputs.units != '[]' && vars.PROJECT_NAME != ''
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     environment: aws-${{ inputs.target || 'dev' }}-plan
     permissions:
       contents: read
@@ -91,6 +93,9 @@ jobs:
     defaults:
       run:
         working-directory: aws/${{ matrix.unit }}
+    # Passed to the shell as a variable, never pasted into the script.
+    env:
+      UNIT: ${{ matrix.unit }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -107,7 +112,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - run: terraform fmt -check -recursive
-      - run: terraform init -input=false -backend-config="region=$AWS_REGION" -backend-config="bucket=$TF_STATE_BUCKET" -backend-config="key=$PROJECT_NAME/${{ matrix.unit }}.tfstate"
+      - run: terraform init -input=false -backend-config="region=$AWS_REGION" -backend-config="bucket=$TF_STATE_BUCKET" -backend-config="key=$PROJECT_NAME/$UNIT.tfstate"
         env:
           TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
       - run: terraform validate
@@ -122,7 +127,7 @@ jobs:
           [ "$ec" -eq 1 ] && exit 1
           [ "$ec" -eq 2 ] || rm tfplan
           {
-            echo "## Terraform plan: ${{ matrix.unit }} in $TARGET ${DESTROY}"
+            echo "## Terraform plan: $UNIT in $TARGET ${DESTROY}"
             if [ -f tfplan ]; then
               terraform show -no-color tfplan | grep -E '^Plan:' || true
               echo
@@ -152,6 +157,7 @@ jobs:
     # Release: only main is applied, so a manual run can't deploy an unreviewed branch.
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.PROJECT_NAME != ''
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     environment: aws-${{ inputs.target || 'dev' }}-apply
     permissions:
       contents: read
@@ -163,6 +169,9 @@ jobs:
     defaults:
       run:
         working-directory: aws/${{ matrix.unit }}
+    # Passed to the shell as a variable, never pasted into the script.
+    env:
+      UNIT: ${{ matrix.unit }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -190,7 +199,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - if: steps.has_plan.outputs.found == 'true'
-        run: terraform init -input=false -backend-config="region=$AWS_REGION" -backend-config="bucket=$TF_STATE_BUCKET" -backend-config="key=$PROJECT_NAME/${{ matrix.unit }}.tfstate"
+        run: terraform init -input=false -backend-config="region=$AWS_REGION" -backend-config="bucket=$TF_STATE_BUCKET" -backend-config="key=$PROJECT_NAME/$UNIT.tfstate"
         env:
           TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
 
