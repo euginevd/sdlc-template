@@ -47,7 +47,7 @@ Resources:
       checkov:
         skip:
           - id: CKV_AWS_18
-            comment: Versioning and CloudTrail cover state changes; access logs would need a second bucket
+            comment: Versioning keeps every state change; access logs would need a second bucket. Turn on CloudTrail S3 data events if audits need who made each change
     Properties:
       BucketName: !Sub '${ProjectName}-tfstate-${AWS::AccountId}'
       VersioningConfiguration:
