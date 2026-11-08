@@ -21,7 +21,7 @@ The project is described in [docs/spec.md](docs/spec.md). These rules are the sa
 
 - Plan: write `docs/plan-<name>.md` with the design, security risks, phases with checkbox criteria, and PR groups (one PR per plan, or per few hundred changed lines). No code, then stop.
 - Each phase: build with tests, run the checks, have a fresh subagent review the diff against `code-standards.md`, fix what it blocks, update `docs/status.md`, commit locally.
-- Each PR group: push, open one PR, fix every scan and check finding on it, ask for review only when checks pass, squash-merge once approved, delete the branch.
+- Each PR group: push, open one PR, fix every scan and check finding on it, ask for review only when checks pass, squash-merge once approved, then delete the branch locally and on GitHub. Only `main` remains.
 - After the last phase: review the whole branch, report what was built and what the reviews found, update `docs/decisions.md`, delete the plan.
 - Build only what the spec or plan lists, and suggest the rest. Small follow-ups go in the next PR.
 - Report what passed, failed and was skipped. Ask when something is unclear or two docs conflict.
