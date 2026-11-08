@@ -25,7 +25,7 @@ jobs:
       - name: Gitleaks, full history
         run: |
           mkdir summary; code=0
-          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 git /repo --redact --no-banner --exit-code 1 --report-format json --report-path /repo/gitleaks.json || code=$?
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f git /repo --redact --no-banner --exit-code 1 --report-format json --report-path /repo/gitleaks.json || code=$?
           python3 scripts/security-report.py parse gitleaks gitleaks.json summary/gitleaks.json
           exit $code
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -43,7 +43,7 @@ jobs:
       - name: Trivy, vulnerable packages and IaC
         run: |
           mkdir summary; code=0
-          docker run --rm -v "$PWD:/repo" aquasec/trivy:0.76.2 fs /repo --scanners vuln,misconfig --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 --format json --output /repo/trivy.json || code=$?
+          docker run --rm -v "$PWD:/repo" aquasec/trivy:0.76.2@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb fs /repo --scanners vuln,misconfig --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 --format json --output /repo/trivy.json || code=$?
           python3 scripts/security-report.py parse trivy trivy.json summary/trivy.json
           exit $code
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -61,7 +61,7 @@ jobs:
       - name: Checkov, Terraform and CloudFormation
         run: |
           mkdir summary; code=0
-          docker run --rm -v "$PWD:/repo" bridgecrew/checkov:3.4.3 -d /repo/aws --quiet --compact -o cli -o json --output-file-path console,/repo/checkov.json || code=$?
+          docker run --rm -v "$PWD:/repo" bridgecrew/checkov:3.4.3@sha256:bfe9d70bb7f044aba49bd99675813445f106dee6072da583f51008cb667f3a63 -d /repo/aws --quiet --compact -o cli -o json --output-file-path console,/repo/checkov.json || code=$?
           python3 scripts/security-report.py parse checkov checkov.json summary/checkov.json
           exit $code
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -80,7 +80,7 @@ jobs:
       - name: Semgrep, static analysis of the code
         run: |
           mkdir summary; code=0
-          docker run --rm -v "$PWD:/src" semgrep/semgrep:1.182.1 semgrep scan /src --config p/default --exclude aws --error --metrics off --json-output /src/semgrep.json || code=$?
+          docker run --rm -v "$PWD:/src" semgrep/semgrep:1.182.1@sha256:451b3d875c00dac7ed5db5293e584a07de11449a409c10b3c2d2652f429630b6 semgrep scan /src --config p/default --exclude aws --error --metrics off --json-output /src/semgrep.json || code=$?
           python3 scripts/security-report.py parse semgrep semgrep.json summary/semgrep.json
           exit $code
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -98,7 +98,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Trivy, SBOM
-        run: docker run --rm -v "$PWD:/repo" aquasec/trivy:0.76.2 fs /repo --format cyclonedx --output /repo/sbom.cdx.json
+        run: docker run --rm -v "$PWD:/repo" aquasec/trivy:0.76.2@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb fs /repo --format cyclonedx --output /repo/sbom.cdx.json
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: sbom

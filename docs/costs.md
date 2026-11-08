@@ -12,5 +12,5 @@ A worked example: `travel-claims` in `dev`. Optional: delete it if the project h
 
 ## Budget and alerts
 
-6. `dev` budget: $200 a month (spec 19). AWS Budgets emails the team at 80% and 100%.
+6. `dev` budget: spec 19. AWS Budgets emails the team at 80% and 100%.
 7. `prod` budget: set after the first full month of real claims.

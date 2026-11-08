@@ -47,7 +47,7 @@ resource "aws_iam_role_policy" "lambda_logs" {
 
 resource "aws_cloudwatch_log_group" "lambda" {
   #checkov:skip=CKV_AWS_158: AWS-managed encryption is enough for app logs; a customer key adds a key policy to run
-  #checkov:skip=CKV_AWS_338: 30-day retention keeps cost down (costs.md); raise it per environment if audits need more
+  #checkov:skip=CKV_AWS_338: 30-day retention keeps cost down; raise it per environment if audits need more
   name              = "/aws/lambda/${var.project}-api-${var.environment}"
   retention_in_days = 30
 }
@@ -82,7 +82,7 @@ resource "aws_apigatewayv2_api" "api" {
 
 resource "aws_cloudwatch_log_group" "api_access" {
   #checkov:skip=CKV_AWS_158: AWS-managed encryption is enough for app logs; a customer key adds a key policy to run
-  #checkov:skip=CKV_AWS_338: 30-day retention keeps cost down (costs.md); raise it per environment if audits need more
+  #checkov:skip=CKV_AWS_338: 30-day retention keeps cost down; raise it per environment if audits need more
   name              = "/aws/apigateway/${var.project}-api-${var.environment}"
   retention_in_days = 30
 }

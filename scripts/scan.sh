@@ -16,7 +16,7 @@ failed=()
 gitleaks dir "$dir" --no-banner --redact --exit-code 1 </dev/null || failed+=(gitleaks)
 
 trivy fs "$dir" --quiet --scanners vuln,misconfig,secret \
-  --severity "${SCAN_SEVERITY:-HIGH,CRITICAL}" --exit-code 1 </dev/null || failed+=(trivy)
+  --severity "${SCAN_SEVERITY:-HIGH,CRITICAL}" --ignore-unfixed --exit-code 1 </dev/null || failed+=(trivy)
 
 if [ ${#failed[@]} -gt 0 ]; then
   echo "$label: blocked by ${failed[*]}. Fix the findings above."

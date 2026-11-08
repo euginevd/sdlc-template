@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Ruleset on the default branch: squash-merged PRs only, no force push or delete; safe to rerun.
-# Private repos need a paid GitHub plan; add required checks in Settings → Rules. Usage: bash scripts/protect-main.sh
+# Requires the ci and security checks to pass. Private repos need a paid GitHub plan. Usage: bash scripts/protect-main.sh
 set -uo pipefail
 
 repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner) || exit 1
@@ -19,6 +19,16 @@ gh api "repos/$repo/rulesets" -X POST --input - >/dev/null <<'JSON' || { echo "C
   "rules": [
     { "type": "deletion" },
     { "type": "non_fast_forward" },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": false,
+        "required_status_checks": [
+          { "context": "python" }, { "context": "web" }, { "context": "secrets" },
+          { "context": "packages-and-iac" }, { "context": "terraform" }, { "context": "code" }
+        ]
+      }
+    },
     {
       "type": "pull_request",
       "parameters": {

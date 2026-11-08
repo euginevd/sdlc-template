@@ -14,9 +14,9 @@ A worked example: `travel-claims`, in production. For a new project, replace it 
 
 Template defaults: GitHub Actions, Terraform on AWS, the pre-push scan and the PR security checks.
 
-6. `web`: React, Vite and TypeScript, hosted on S3 and CloudFront. Checks: `npm run lint`, `npm run typecheck`, `npm test`.
-7. `api`: Python and FastAPI on Lambda behind an HTTP API. Checks: `uv run ruff check`, `uv run pyright`, `uv run pytest`.
-8. `agent`: Python and LangGraph on Lambda, calling Claude on Amazon Bedrock. Checks: `uv run ruff check`, `uv run pyright`, `uv run pytest`.
+6. `web`: React, Vite and TypeScript, hosted on S3 and CloudFront.
+7. `api`: Python and FastAPI on Lambda behind an HTTP API.
+8. `agent`: Python and LangGraph on Lambda, calling Claude on Amazon Bedrock.
 
 ## Done when
 

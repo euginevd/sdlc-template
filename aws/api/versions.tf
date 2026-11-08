@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.17"
+  required_version = "~> 1.17.0"
 
   required_providers {
     aws = {
@@ -12,10 +12,8 @@ terraform {
     }
   }
 
-  # The pipeline passes the bucket and key at init, so no project name or account ID is in the code:
-  # terraform init -backend-config="bucket=$TF_STATE_BUCKET" -backend-config="key=$PROJECT_NAME/<unit>.tfstate"
+  # The pipeline passes the region, bucket and key at init, so no region, project or account ID is in the code.
   backend "s3" {
-    region       = "ap-southeast-2"
     use_lockfile = true
     encrypt      = true
   }

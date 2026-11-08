@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-time setup: installs gitleaks, Trivy and lefthook if missing, then the hooks. Usage: bash scripts/setup.sh
+# One-time setup: installs gitleaks, Trivy, lefthook, uv and Terraform if missing, then the hooks. Usage: bash scripts/setup.sh
 set -uo pipefail
 
 cd "$(git rev-parse --show-toplevel)" || exit 1
@@ -30,7 +30,10 @@ install() {
 install gitleaks Gitleaks.Gitleaks gitleaks || exit 1
 install trivy AquaSecurity.Trivy trivy || exit 1
 install lefthook evilmartians.lefthook lefthook || exit 1
+install uv astral-sh.uv uv || exit 1
+install terraform Hashicorp.Terraform hashicorp/tap/terraform || exit 1
 lefthook install || exit 1
+[ -f pyproject.toml ] && { uv sync || exit 1; }
 
-echo "Done: gitleaks, Trivy and the Git hooks installed."
+echo "Done: the tools, the Git hooks and the Python environment are ready."
 echo "Check: bash .lefthook/pre-push-scan.sh"
