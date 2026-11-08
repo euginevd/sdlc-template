@@ -39,16 +39,18 @@ A worked example built from [sdlc-template](https://github.com/euginevd/sdlc-tem
 
 ## 🚀 Bootstrap
 
-Once per AWS account, as an admin:
+Once per AWS account (`dev`, then `prod`), as an admin:
 
 1. **AWS Console:** CloudFormation → upload [bootstrap.yaml](aws/bootstrap/bootstrap.yaml) as `travel-claims-bootstrap`, with `ProjectName` `travel-claims` and `Target` `dev` or `prod` (`CreateOidcProvider` false if the account already has GitHub's).
 2. **GitHub:** Settings → Environments: `aws-<target>-plan`, and `aws-<target>-apply` with yourself as required reviewer.
-3. **GitHub:** Settings → Variables: `PROJECT_NAME` (`travel-claims`), and `AWS_PLAN_ROLE_ARN`, `AWS_DEPLOY_ROLE_ARN` and `TF_STATE_BUCKET` from the stack's outputs.
+3. **GitHub:** Settings → Variables: `PROJECT_NAME` (`travel-claims`) for the repo. Then on each environment, from that account's stack outputs: `AWS_PLAN_ROLE_ARN` on `-plan`, `AWS_DEPLOY_ROLE_ARN` on `-apply`, and `TF_STATE_BUCKET` on both.
 4. **GitHub,** once the repo is public: Settings → Security → turn on Private vulnerability reporting.
+
+**Deploying:** a merge to `main` applies to `dev` after your approval. To promote to `prod`: Actions → `aws` → Run workflow → target `prod`, `all`, `apply`, then approve.
 
 ## 🧹 Cleanup
 
-1. **GitHub:** Actions → `aws` → Run workflow → `all`, `destroy`.
+1. **GitHub:** Actions → `aws` → Run workflow → each target, `all`, `destroy`.
 2. **AWS Console:** empty the state bucket, then delete the bootstrap stack.
 3. **GitHub:** delete the plan and apply environments.
 

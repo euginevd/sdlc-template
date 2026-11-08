@@ -14,15 +14,15 @@ A worked example: `travel-claims`, in production. For a new project, replace it.
 5. Set up a machine once: `bash scripts/setup.sh`.
 6. Run locally: `npm run dev` in `apps/web`, and `uv run fastapi dev` in `apps/api`.
 7. Check: `AGENTS.md` → Commands.
-8. Deploy: merge to `main`, then approve the apply in the `aws-<env>-apply` environment.
+8. Deploy: a merge to `main` applies to `dev` after approval; a manual `aws` run with target `prod` promotes it.
 
 ## Known gaps
 
 9. Automatic payment under $1,000 (spec 11) runs in `dev` only; `prod` waits for the bank's API sign-off.
 10. Decision logs are redacted, but not yet tested against real receipts (spec 18).
-11. No `tflint` or IaC security scanner in the pipeline yet.
+11. No `tflint` in the pipeline yet; Checkov and Trivy run on every PR.
 
 ## Next
 
 12. Turn on automatic payment in `prod` once the bank signs off: `docs/plan-prod-payments.md`.
-13. Add pipeline scans on every PR.
+13. Add `tflint` to the pipeline.
