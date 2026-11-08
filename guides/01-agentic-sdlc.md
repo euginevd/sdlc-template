@@ -16,19 +16,19 @@ The industry's emerging term is **agentic software development** (Forrester, Gar
 
 The end-to-end flow, through the stages in section 3, for both a new project and each change after it: **a new project starts at step 1; every later change, such as a feature or a fix, starts at step 2.** You write the spec, the agent plans and builds from it, and every gate feeds findings back to the agent (↺) until the work is clean.
 
-| # | Stage | Step | Who |
-|:-:|-------|------|-----|
-| 1 | Plan | **Create the repo (new project only):** `gh repo create <project> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` | You |
-| 2 | Plan | **Update the spec docs:** `spec.md` for every change; for a new project, also `tech-stack.md` and `AGENTS.md` → Context | You |
-| 3 | Plan | **Prompt:** *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks, phases and PR groups; no code | You, then agent |
-| 4 | Plan | **Review the plan:** ↺ ask for changes until it's right, then approve | You |
-| 5 | Code | **Prompt:** *"Implement the plan for <the work>"* | You |
-| 6 | Code | **Build each phase:** code, local checks, fresh-subagent review, docs, local commit | Agent |
-| 7 | Code | **Push:** the pre-push scan runs (Gitleaks, Trivy). ↺ The agent fixes any finding and pushes again, then opens a PR | Agent |
-| 8 | Build and test | **PR checks:** the workflows run the checks and the Terraform plan (app checks *(planned)*). ↺ The agent fixes any finding on the same PR | Pipeline, then agent |
-| 9 | Release | **Review and merge:** you review the diff and the plan and approve; the agent squash-merges and deletes the branch | You, then agent |
-| 10 | Deploy | **Apply:** you read the Terraform plan and approve; Terraform applies exactly that plan through OIDC | You, then pipeline |
-| 11 | Operate and monitor | **Close the loop:** the agent updates `status.md` and `decisions.md` and deletes the plan; findings and alerts become the next spec (back to 2) | Agent and you |
+| # | Stage | Who | Step |
+|:-:|-------|-----|------|
+| 1 | Plan | You | **Create the repo (new project only):** `gh repo create <project> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` |
+| 2 | Plan | You | **Update the spec docs:** `spec.md` for every change; for a new project, also `tech-stack.md` and `AGENTS.md` → Context |
+| 3 | Plan | You, then agent | **Prompt:** *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks, phases and PR groups; no code |
+| 4 | Plan | You | **Review the plan:** ↺ ask for changes until it's right, then approve |
+| 5 | Code | You | **Prompt:** *"Implement the plan for <the work>"* |
+| 6 | Code | Agent | **Build each phase:** code, local checks, fresh-subagent review, docs, local commit |
+| 7 | Code | Agent | **Push:** the pre-push scan runs (Gitleaks, Trivy). ↺ The agent fixes any finding and pushes again, then opens a PR |
+| 8 | Build and test | Pipeline, then agent | **PR checks:** the workflows run the checks and the Terraform plan (app checks *(planned)*). ↺ The agent fixes any finding on the same PR |
+| 9 | Release | You, then agent | **Review and merge:** you review the diff and the plan and approve; the agent squash-merges and deletes the branch |
+| 10 | Deploy | You, then pipeline | **Apply:** you read the Terraform plan and approve; Terraform applies exactly that plan through OIDC |
+| 11 | Operate and monitor | Agent and you | **Close the loop:** the agent updates `status.md` and `decisions.md` and deletes the plan; findings and alerts become the next spec (back to 2) |
 
 ## 3. The stages
 
