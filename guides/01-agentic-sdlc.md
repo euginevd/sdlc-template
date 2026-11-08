@@ -35,24 +35,26 @@ This template already runs Gitleaks and Trivy in the pre-push scan; the README's
 
 New projects start from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template): `gh repo create <project> --template euginevd/sdlc-template --private --clone`.
 
+Listed in order of importance:
+
 ```
 sdlc-template/
-├── AGENTS.md              the agent's entry point
-├── README.md              front page for people
-├── apps/                  one folder per app: web, API, agent
-├── aws/
-│   ├── _template/         starting files for a new Terraform unit
-│   └── bootstrap/         CloudFormation: OIDC, state bucket, pipeline roles
-├── docs/                  what the agent builds from
-│   ├── SPEC.md            what and why
-│   ├── TECH_STACK.md      tools, checks, deploy
-│   ├── CODE_STANDARDS.md  how to write the code
-│   ├── PROCESS.md         plan, build, review, ship
-│   ├── STATUS.md          what's built and what's next
-│   └── DECISIONS.md       what's settled and why
-├── guides/                reference for people, numbered 01, 02, …
-├── scripts/               one-time setup and the security scan
-├── .github/workflows/     aws.yml: plan on PR, apply after approval
-├── .lefthook/             the pre-push hook
-└── lefthook.yml           runs the scan on every push
+├── AGENTS.md              01 the agent's rules; every agent reads this first
+├── README.md              02 front page: what it is, how to start, the lifecycle
+├── docs/                  03 what the agent builds from, in reading order:
+│   ├── SPEC.md               what we're building and what done means
+│   ├── TECH_STACK.md         tools, checks and how it deploys
+│   ├── CODE_STANDARDS.md     how to write the code
+│   ├── PROCESS.md            how to plan, build, review and ship
+│   ├── STATUS.md             what's built and what's next
+│   └── DECISIONS.md          what's settled and why
+├── apps/                  04 the product: one folder per app (web, API, agent)
+├── aws/                   05 the infrastructure, as Terraform
+│   ├── _template/            copy to aws/<unit>/ for each new unit
+│   └── bootstrap/            CloudFormation, deployed once: OIDC, state bucket, pipeline roles
+├── .github/workflows/     06 aws.yml: plan on the PR, apply after your approval
+├── lefthook.yml           07 runs the security scan on every push
+├── .lefthook/             08 the pre-push hook script
+├── scripts/               09 setup.sh installs the tools; scan.sh runs gitleaks and Trivy
+└── guides/                10 reference for people, numbered 01, 02, …
 ```
