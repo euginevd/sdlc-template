@@ -6,7 +6,7 @@
 
 - **People** own the what and the why: approving the spec, the plan, the merge and the deploy. You're accountable for what ships, so anything that should last goes in a doc, not chat, and the agent shows evidence before you approve.
 - **Agents** own the how: they plan, write, test and review the code, inside written rules.
-- **Controls** check every change before it ships: the pre-push scan, an independent review, the Terraform checks in CI and an approval gate.
+- **Controls** check every change before it ships: the pre-push scan, the security checks and summary on every PR, an independent review, the Terraform plan and an approval gate.
 
 The industry's emerging term is **agentic software development** (Forrester, Gartner), with no single standard yet; keeping "SDLC" in the name says existing security controls still apply. It draws on AWS's [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering), spec-driven development (GitHub Spec Kit), [AGENTS.md](https://agents.md), DevSecOps and the NIST Secure Software Development Framework (SSDF).
 
@@ -72,14 +72,15 @@ travel-claims/
 ├── .github/workflows/     06 the pipeline, one workflow per job
 │   ├── aws.yml               plan on the PR, apply after your approval
 │   ├── ci.yml                each app's lint, types and tests (example)
-│   └── security.yml          Gitleaks, Trivy and Checkov on every PR
+│   └── security.yml          Gitleaks, Trivy, Checkov and Semgrep on every PR, with a summary comment
 ├── lefthook.yml           07 runs the security scan on every push
 ├── .lefthook/             08 the pre-push hook script
 ├── scripts/               09 setup.sh installs the tools; scan.sh runs Gitleaks and Trivy;
-│                             protect-main.sh adds the main ruleset
-├── guides/                10 reference for people, numbered 01, 02, …
+│                             security-report.py builds the PR summary; protect-main.sh adds the main ruleset
+├── .vscode/               10 the Trivy and Semgrep extensions, for your review
+├── guides/                11 reference for people, numbered 01, 02, …
 │   └── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template
-└── SECURITY.md            11 how to report a vulnerability (GitHub's policy file)
+└── SECURITY.md            12 how to report a vulnerability (GitHub's policy file)
 ```
 
 ## 5. The files
