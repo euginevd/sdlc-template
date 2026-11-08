@@ -35,7 +35,7 @@ The end-to-end flow, stage by stage, for both a new project and each change afte
 
 | # | Stage | Step | Who |
 |:-:|-------|------|-----|
-| 1 | Plan | **Create the repo** (new project only)**:** `gh repo create <project> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` | You |
+| 1 | Plan | **Create the repo (new project only):** `gh repo create <project> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` | You |
 | 2 | Plan | **Update the spec docs:** for a new project, `spec.md`, `tech-stack.md` and `AGENTS.md` → Context, plus `threat-model.md` and `costs.md` if needed; for a change, the parts of `spec.md` it affects | You |
 | 3 | Plan | **Prompt:** *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks, phases and PR groups; no code | You, then agent |
 | 4 | Plan | **Review the plan:** ↺ ask for changes until it's right, then approve | You |
