@@ -10,6 +10,19 @@ A worked example: `travel-claims`. Optional: delete it if the project has no use
 
 ## Trust boundaries
 
+```mermaid
+flowchart LR
+  claimant([Claimant]) -- claim, receipts --> web
+  handler([Handler]) -- sign-in --> entra[Entra ID]
+  subgraph aws [AWS account, ap-southeast-2]
+    web[web] --> api[api]
+    api --> db[(Claims database)]
+    api -- claim --> agent[agent]
+    agent --> bedrock[Bedrock, AU profile]
+  end
+  api -- payment --> bank[Bank API]
+```
+
 4. Receipts and claim text from claimants enter the agent: untrusted input.
 5. The agent's decision drives the payment code: model output leading to a real action.
 6. Handlers sign in through Microsoft Entra ID (business 6); claimants sign in to the web app.
