@@ -78,8 +78,10 @@ travel-claims/
 │   └── api/                  sample: apps/api on Lambda behind an HTTP API, with logs
 ├── .github/workflows/     06 the pipeline, one workflow per concern
 │   ├── aws.yml               plan on the PR, apply after your approval
-│   ├── ci.yml                each app's format, lint, types and tests
-│   └── security.yml          Gitleaks, Trivy, Checkov and Semgrep on every PR, main and weekly, with a summary comment and SBOM
+│   ├── ci.yml                each app's format, lint, types and tests, for the apps a PR changes
+│   ├── codeql.yml            CodeQL on every PR except docs-only, main and weekly
+│   └── security.yml          Gitleaks, Trivy, Checkov and Semgrep on every PR, main and weekly, with a summary comment and SBOM;
+│                             a PR's Gitleaks and Semgrep cover only what it adds
 │                             (beside it, .github/dependabot.yml: weekly update PRs, week-old releases only;
 │                             .github/pull_request_template.md: every PR's What, Security and Checks)
 ├── lefthook.yml           07 runs the security scan on every push
