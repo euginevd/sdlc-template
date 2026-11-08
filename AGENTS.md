@@ -11,7 +11,6 @@ The project is described in [docs/spec.md](docs/spec.md). These rules are the sa
 5. [docs/decisions.md](docs/decisions.md): what's settled, before changing an approach. Don't reopen it unasked.
 6. [docs/threat-model.md](docs/threat-model.md): when the task touches users, data, auth or endpoints, if it exists.
 7. [docs/costs.md](docs/costs.md): when anything adds cost, if it exists.
-8. [aws/AGENTS.md](aws/AGENTS.md): when working in `aws/`.
 
 ## Commands
 
