@@ -12,7 +12,7 @@ A worked example: `travel-claims`, in production. For a new project, replace it 
 
 ## Stack
 
-Template defaults: GitHub Actions, Terraform on AWS and the Gitleaks and Trivy pre-push scan.
+Template defaults: GitHub Actions, Terraform on AWS, the pre-push scan and the PR security checks.
 
 6. `web`: React, Vite and TypeScript, hosted on S3 and CloudFront. Checks: `npm run lint`, `npm run typecheck`, `npm test`.
 7. `api`: Python and FastAPI on Lambda behind an HTTP API. Checks: `uv run ruff check`, `uv run pyright`, `uv run pytest`.

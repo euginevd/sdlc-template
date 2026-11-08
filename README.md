@@ -58,6 +58,6 @@ Once per AWS account (`dev`, then `prod`), as an admin:
 ## 🆕 New project
 
 1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh`.
-2. Replace the worked example: `business-context.md` per business; `spec.md`, `status.md`, `guides/03-findings.md` and this README per project; `decisions.md`. Keep `design-system.md`, `threat-model.md` and `costs.md` only if needed.
+2. Replace the worked example: `business-context.md` per business; `spec.md`, `status.md` and this README per project; `decisions.md`. Keep `design-system.md`, `threat-model.md` and `costs.md` only if needed.
 3. Keep `AGENTS.md`, `code-standards.md`, the workflow and the scripts as they are.
 4. Ask the agent to plan. The full flow: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md), section 2.

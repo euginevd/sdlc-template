@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
-# Adds a ruleset to the repo's default branch: changes only through a squash-merged PR,
-# no force pushes, no deletion. Safe to run again: it skips if the ruleset exists.
-# Required status checks are added per project once its CI exists, in GitHub → Settings → Rules.
-# Rulesets on private repos need GitHub Pro, Team or Enterprise; public repos work on any plan.
-# Usage: bash scripts/protect-main.sh
+# Ruleset on the default branch: squash-merged PRs only, no force push or delete; safe to rerun.
+# Private repos need a paid GitHub plan; add required checks in Settings → Rules. Usage: bash scripts/protect-main.sh
 set -uo pipefail
 
 repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner) || exit 1

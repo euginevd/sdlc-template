@@ -1,11 +1,9 @@
 name: aws
 
-# One Terraform root per deployable unit in aws/<unit>/. Plans each changed unit with a read-only
-# role; applies after approval in the apply environment.
-# dev: planned on every PR, applied on merge to main. prod: a manual run with target prod promotes main.
-# Repository variables: PROJECT_NAME, and optionally AWS_REGION (default ap-southeast-2).
-# Environment variables, set on each aws-<target>-plan and aws-<target>-apply environment from that
-# account's bootstrap stack: AWS_PLAN_ROLE_ARN (plan), AWS_DEPLOY_ROLE_ARN (apply), TF_STATE_BUCKET (both).
+# One Terraform root per unit in aws/<unit>/: plan with a read-only role, apply after approval.
+# dev: planned on every PR, applied on merge to main; prod: a manual run with target prod.
+# Repo variables: PROJECT_NAME, optional AWS_REGION (default ap-southeast-2).
+# Per environment, from the bootstrap stack: AWS_PLAN_ROLE_ARN, AWS_DEPLOY_ROLE_ARN, TF_STATE_BUCKET.
 on:
   pull_request:
     paths: [aws/**, '!aws/bootstrap/**', .github/workflows/aws.yml]
