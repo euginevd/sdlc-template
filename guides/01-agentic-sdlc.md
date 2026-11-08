@@ -53,7 +53,7 @@ A typical project made from [euginevd/sdlc-template](https://github.com/euginevd
 travel-claims/
 ├── AGENTS.md              01 the agent's rules, the same for every project; read first
 ├── README.md              02 front page: what it is and how to start
-├── docs/                  03 what the agent builds from, in reading order:
+├── docs/                  03 what the agent builds from:
 │   ├── business-context.md   the business: industry, regulators, systems, people
 │   ├── spec.md               the project, its stack, what we're building, what done means
 │   ├── code-standards.md     how to write the code
@@ -69,19 +69,20 @@ travel-claims/
 ├── aws/                   05 the infrastructure, as Terraform
 │   ├── bootstrap/            CloudFormation, run once: OIDC, state bucket, CI roles
 │   └── api/                  sample: apps/api on Lambda behind an HTTP API, with logs
-├── .github/workflows/     06 the pipeline, one workflow per job
+├── .github/workflows/     06 the pipeline, one workflow per concern
 │   ├── aws.yml               plan on the PR, apply after your approval
 │   ├── ci.yml                each app's format, lint, types and tests
-│   └── security.yml          Gitleaks, Trivy, Checkov and Semgrep on every PR and weekly, with a summary comment and SBOM
+│   └── security.yml          Gitleaks, Trivy, Checkov and Semgrep on every PR, main and weekly, with a summary comment and SBOM
 │                             (beside it, .github/dependabot.yml: weekly update PRs, week-old releases only)
 ├── lefthook.yml           07 runs the security scan on every push
 ├── .lefthook/             08 the pre-push hook script
 ├── scripts/               09 setup.sh installs the tools; scan.sh runs Gitleaks and Trivy;
 │                             security-report.py builds the PR summary; protect-main.sh adds the main ruleset
 ├── .vscode/               10 the Trivy and Semgrep extensions, for your review
-├── guides/                11 reference for people, numbered 01, 02, …
+├── pyproject.toml         11 the Python workspace and tool settings, with uv.lock and .python-version
+├── guides/                12 reference for people, numbered 01, 02, …
 │   └── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template
-└── SECURITY.md            12 how to report a vulnerability (GitHub's policy file)
+└── SECURITY.md            13 how to report a vulnerability (GitHub's policy file)
 ```
 
 ## 5. The files
@@ -93,7 +94,7 @@ travel-claims/
 | `AGENTS.md` | Numbered rules for every coding agent: what to read, commands, workflow, boundaries, known mistakes. The same in every project | Rarely |
 | `docs/business-context.md` | The business: who it is, regulators, data rules, risk appetite, systems, owners and tone. The same for every project for that business | Rarely |
 | `docs/spec.md` | The project: name, problem, goal, users, AWS, stack, what done means, rules and what's out. The agent drafts it, you approve it | Often |
-| `docs/code-standards.md` | Numbered coding rules the pipeline can't check: general, errors and logs, safe by design, tests, Terraform, languages, AI, docs | Rarely |
+| `docs/code-standards.md` | Numbered coding rules the pipeline can't check: general, errors and logs, safe by design, tests, Terraform, languages, AI, containers, docs | Rarely |
 | `docs/status.md` | What's built, how to run it, known gaps, what's next | Always |
 | `docs/decisions.md` | Key decisions with why and the alternative; superseded, never deleted | Sometimes |
 | `docs/design-system.md` | The design system's tokens and rules an app uses, plus the project's UI choices. Optional | Rarely |

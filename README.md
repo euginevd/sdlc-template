@@ -33,6 +33,7 @@ A worked example built from [sdlc-template](https://github.com/euginevd/sdlc-tem
 | [AGENTS.md](AGENTS.md) | Rules for every coding agent |
 | [business-context.md](docs/business-context.md) | The business: Wattle Travel Insurance (fictional) |
 | [spec.md](docs/spec.md) | The project and what done means |
+| [code-standards.md](docs/code-standards.md) | How to write the code |
 | [status.md](docs/status.md) | What's built and what's next |
 | [decisions.md](docs/decisions.md) | Key decisions and why |
 | [design-system.md](docs/design-system.md) | Look and feel, from the ArcVault design system |
@@ -42,7 +43,7 @@ A worked example built from [sdlc-template](https://github.com/euginevd/sdlc-tem
 
 Once per AWS account (`dev`, then `prod`), as an admin:
 
-1. **AWS Console:** CloudFormation → upload [bootstrap.yaml](aws/bootstrap/bootstrap.yaml) as `travel-claims-bootstrap`, with `ProjectName` `travel-claims` and `Target` `dev` or `prod` (`CreateOidcProvider` false if the account already has GitHub's).
+1. **AWS Console:** CloudFormation → upload [bootstrap.yaml](aws/bootstrap/bootstrap.yaml) as `travel-claims-bootstrap`, with `ProjectName` `travel-claims`, `GitHubOwner` and `GitHubRepo` as in the repo URL, and `Target` `dev` or `prod` (`CreateOidcProvider` false if the account already has GitHub's).
 2. **GitHub:** Settings → Environments: `aws-<target>-plan`, and `aws-<target>-apply` with yourself as required reviewer and deployment branches limited to `main`.
 3. **GitHub:** Settings → Variables: `PROJECT_NAME` (`travel-claims`) for the repo. Then on each environment, from that account's stack outputs: `AWS_PLAN_ROLE_ARN` on `-plan`, `AWS_DEPLOY_ROLE_ARN` on `-apply`, and `TF_STATE_BUCKET` on both.
 4. **GitHub:** Settings → Security → turn on Dependabot alerts and security updates; once the repo is public, Private vulnerability reporting too.
@@ -57,7 +58,7 @@ Once per AWS account (`dev`, then `prod`), as an admin:
 
 ## 🆕 New project
 
-1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh`.
-2. Replace the worked example: `business-context.md` per business; `spec.md`, `status.md` and this README per project; `decisions.md`. Keep `design-system.md`, `threat-model.md` and `costs.md` only if needed.
+1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` and `bash scripts/protect-main.sh`. A private repo needs a paid GitHub plan for the `main` ruleset and the approval environments; a public repo gets them free.
+2. Replace the worked example: `business-context.md` per business; `spec.md`, `status.md`, this README and the root `pyproject.toml` name per project; `decisions.md`. Keep `design-system.md`, `threat-model.md` and `costs.md` only if needed.
 3. Keep `AGENTS.md`, `code-standards.md`, the workflow and the scripts as they are.
 4. Ask the agent to plan. The full flow: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md), section 2.

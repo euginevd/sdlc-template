@@ -1,4 +1,4 @@
-# Set by the pipeline from repository variables: TF_VAR_project and TF_VAR_environment.
+# Set by the pipeline: TF_VAR_project, TF_VAR_environment and TF_VAR_region.
 variable "project" {
   description = "Project name, the prefix for every resource name"
   type        = string
