@@ -4,7 +4,7 @@ How software delivery got here, what changes when AI agents write the code, and 
 
 ## 1. How we got here
 
-![From waterfall to the secure agentic SDLC](assets/evolution.svg)
+![From waterfall to the secure agentic SDLC](assets/evolution.png)
 
 Each way of building software fixed the biggest gap in the one before it.
 
@@ -24,7 +24,7 @@ An agent that only writes code speeds up one step, and moves the queue to the ne
 
 ## 3. An agent is a model inside a harness
 
-![An agent is a model inside a harness](assets/harness.svg)
+![An agent is a model inside a harness](assets/harness.png)
 
 A model on its own can only produce text. What makes it a useful, safe agent is the harness around it:
 
@@ -36,7 +36,7 @@ You sit above the harness: you set the goal and approve each gate.
 
 ## 4. Who does what
 
-![The secure agentic SDLC: who does what](assets/lifecycle.svg)
+![The secure agentic SDLC: who does what](assets/lifecycle.png)
 
 Every stage has three parts: the agent does the work, controls check it automatically, and a person decides where it matters. Here is the receipt-upload change for `travel-claims`, stage by stage.
 
