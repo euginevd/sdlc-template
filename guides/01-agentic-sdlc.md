@@ -72,7 +72,7 @@ travel-claims/
 ├── .github/workflows/     06 the pipeline, one workflow per job
 │   ├── aws.yml               plan on the PR, apply after your approval
 │   ├── ci.yml                each app's format, lint, types and tests
-│   └── security.yml          Gitleaks, Trivy, Checkov and Semgrep on every PR, with a summary comment
+│   └── security.yml          Gitleaks, Trivy, Checkov and Semgrep on every PR and weekly, with a summary comment and SBOM
 │                             (beside it, .github/dependabot.yml: weekly update PRs, week-old releases only)
 ├── lefthook.yml           07 runs the security scan on every push
 ├── .lefthook/             08 the pre-push hook script
