@@ -16,7 +16,7 @@ These rules are the same for every project. The business and the project are des
 7. Setup, once: `bash scripts/setup.sh`
 8. Security scan, run on every push: `bash .lefthook/pre-push-scan.sh`
 9. Terraform, in `aws/<unit>/`: `terraform fmt -recursive && terraform init -backend=false && terraform validate`
-10. App checks: the steps in [.github/workflows/ci.yml](.github/workflows/ci.yml)
+10. App checks: the steps in [.github/workflows/ci.yml](.github/workflows/ci.yml). A PR runs only the jobs for the apps it changes, so a new app needs its own job and its folder added to the `changes` job.
 
 ## Rules
 
