@@ -94,7 +94,7 @@ travel-claims/
 │   ├── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template
 │   ├── 02-security-trade-offs.md  accepted risks, why, and what to change for production
 │   ├── 03-secure-agentic-sdlc-end-to-end.md  the story: how we got here, who does what, guardrails
-│   └── assets/               the guides' diagrams, as SVG and PNG
+│   └── assets/               the guides' diagrams as PNG; diagrams.py rebuilds them
 ├── SECURITY.md            13 how to report a vulnerability, what happens next and what's in scope
 ├── CONTRIBUTING.md        14 how a change is made, by a person or an agent
 └── LICENSE                15 MIT, for the template; replace or delete it per project
