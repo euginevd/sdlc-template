@@ -83,7 +83,8 @@ travel-claims/
 ├── guides/                12 reference for people, numbered 01, 02, …
 │   ├── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template
 │   └── 02-security-trade-offs.md  accepted risks, why, and what to change for production
-└── SECURITY.md            13 how to report a vulnerability (GitHub's policy file)
+├── SECURITY.md            13 how to report a vulnerability (GitHub's policy file)
+└── LICENSE                14 MIT, for the template; replace or delete it per project
 ```
 
 ## 5. The files
