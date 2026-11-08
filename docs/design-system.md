@@ -1,4 +1,4 @@
-# Design
+# Design system
 
 A worked example: `travel-claims`. Every project follows the [ArcVault design system](https://claude.ai/artifact/SWnGNCZKAxQBhxJ68cv5ao); this page is the part an app uses, plus the project's own choices. Optional: delete it if the project has no UI.
 
