@@ -24,7 +24,7 @@ One repo per product. Apps go in `apps/`, each one self-contained. Cloud infrast
 gh repo create <repo> --template euginevd/sdlc-template --private --clone
 ```
 
-Name the repo in lowercase kebab-case: it becomes the project name in every AWS resource.
+Name the repo in lowercase kebab-case: it becomes the project name in every AWS resource. Don't rename it after the first deploy: the pipeline's AWS roles, the Terraform state and every resource name depend on it.
 
 Then:
 

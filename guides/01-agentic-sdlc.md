@@ -18,7 +18,7 @@ The end-to-end flow, through the stages in section 3, for both a new project and
 
 | # | Stage | Who | Step |
 |:-:|-------|-----|------|
-| 1 | Plan | You | **Create the repo (new project only):** `gh repo create <project> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` |
+| 1 | Plan | You | **Create the repo (new project only):** `gh repo create <repo> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh`. Name it in lowercase kebab-case: it becomes the project name in every AWS resource, so don't rename it after the first deploy |
 | 2 | Plan | You, then agent | **Update the spec:** *"Update docs/spec.md for <the change>"* (or *"Draft docs/spec.md from <your notes>"* for a new project). ↺ Review and correct it until it says what you want |
 | 3 | Plan | You, then agent | **Prompt:** *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks, phases and PR groups; no code |
 | 4 | Plan | You | **Review the plan:** ↺ ask for changes until it's right, then approve |
@@ -50,7 +50,7 @@ The eight DevSecOps stages, the core security activities in each, and the open-s
 A typical project made from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template), in order of importance. Items marked *(per plan)* or *(example)* appear as the project grows.
 
 ```
-<project>/
+<repo>/
 ├── AGENTS.md              01 the agent's rules, the same for every project; read first
 ├── README.md              02 front page: what it is and how to start
 ├── docs/                  03 what the agent builds from, in reading order:
