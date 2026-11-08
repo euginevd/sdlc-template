@@ -1,4 +1,4 @@
-# FinOps
+# Costs
 
 > **Note:** use only if required: once the project has several resources that cost money. Otherwise delete this file and its line in `AGENTS.md`.
 

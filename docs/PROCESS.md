@@ -7,7 +7,7 @@ Work follows the DevSecOps stages in the README: Plan, Code, Build, Test, Releas
 When asked to plan, write the plan to `docs/PLAN_<NAME>.md` and write no code.
 
 - Start with the design: the parts, what each is for, and why. Check it against `docs/CODE_STANDARDS.md`.
-- Name the security risks the work adds (users, data, secrets, public endpoints) and how each is handled. Once there are any, keep `docs/SECURITY.md` up to date.
+- Name the security risks the work adds (users, data, secrets, public endpoints) and how each is handled. Once there are any, keep `docs/THREAT_MODEL.md` up to date.
 - Split the work into phases, each building on the last.
 - Give each phase success criteria you can verify yourself, as checkboxes.
 - Then stop and wait to be asked to build it.
@@ -40,7 +40,7 @@ The checks show the code works, not that it's fit to merge. Every change gets a 
 
 When a plan's last phase is done, review the whole branch against `main` the same way, then report what was built, what the reviews found and what you changed. Then update `docs/STATUS.md` and `docs/DECISIONS.md`, and delete the plan and its line in `AGENTS.md`; git history keeps it.
 
-Anything unexpected from the account, the pipeline or the tools goes in `guides/03-findings.md`. Cost-bearing resources go in `docs/FINOPS.md` once there are several.
+Anything unexpected from the account, the pipeline or the tools goes in `guides/03-findings.md`. Cost-bearing resources go in `docs/COSTS.md` once there are several.
 
 ## Rules
 
