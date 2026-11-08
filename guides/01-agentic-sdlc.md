@@ -72,5 +72,8 @@ sdlc-template/
 ├── scripts/               09 setup.sh installs the tools; scan.sh runs Gitleaks and Trivy;
 │                             protect-main.sh adds the main ruleset
 ├── guides/                10 reference for people, numbered 01, 02, …
+│   ├── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template
+│   ├── 02-git-hooks.md       the pre-push scan: setup and day to day
+│   └── 03-findings.md        surprises from the account, pipeline or tools
 └── SECURITY.md            11 how to report a vulnerability (GitHub's policy file)
 ```
