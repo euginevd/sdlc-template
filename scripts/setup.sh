@@ -4,13 +4,20 @@ set -uo pipefail
 
 cd "$(git rev-parse --show-toplevel)" || exit 1
 
+# winget adds tools to the Windows user PATH, which an open shell doesn't see until it's reloaded.
+reload_path() {
+  command -v powershell.exe >/dev/null || return 0
+  export PATH="$PATH:$(cygpath -p "$(powershell.exe -NoProfile -Command "[Environment]::GetEnvironmentVariable('Path','User')" | tr -d '\r')")"
+}
+reload_path
+
 # Installs a tool with winget on Windows or Homebrew on macOS and Linux.
 install() {
   local cmd=$1 winget_id=$2 brew_name=$3
   command -v "$cmd" >/dev/null && return 0
   if command -v winget >/dev/null; then
     winget install --id "$winget_id" --exact --accept-source-agreements --accept-package-agreements || return 1
-    export PATH="$LOCALAPPDATA/Microsoft/WinGet/Links:$PATH"
+    reload_path
   elif command -v brew >/dev/null; then
     brew install "$brew_name" || return 1
   else
@@ -26,4 +33,4 @@ install lefthook evilmartians.lefthook lefthook || exit 1
 lefthook install || exit 1
 
 echo "Done: gitleaks, Trivy and the Git hooks installed."
-echo "Check: lefthook run pre-push"
+echo "Check: bash .lefthook/pre-push-scan.sh"
