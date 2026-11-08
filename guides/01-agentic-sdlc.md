@@ -16,18 +16,18 @@
 
 ## 3. The stages
 
-The eight DevSecOps stages, with the AWS AI-DLC phase and the SSDF practices each one meets. Every stage ends at a gate.
+The eight DevSecOps stages and the SSDF practices each one meets. Every stage ends at a gate.
 
-| # | Stage | AI-DLC phase | NIST SSDF | Gate |
-|:-:|-------|--------------|-----------|------|
-| 1 | Plan | Inception | PO.1, PO.2, PW.1, PW.2 | You approve the plan |
-| 2 | Code | Construction | PW.5, PS.1 | Pre-push scan |
-| 3 | Build | Construction | PO.3, PW.4, PW.6 | CI checks |
-| 4 | Test | Construction | PW.7, PW.8 | Fresh-subagent review and tests |
-| 5 | Release | Operations | PO.4, PS.2 | Checks pass, PR merged |
-| 6 | Deploy | Operations | PO.5, PW.9 | You approve the apply |
-| 7 | Operate | Operations | PS.3, RV.1 | Fix within SLA |
-| 8 | Monitor | Operations | RV.2, RV.3 | Lessons feed the next Plan |
+| # | Stage | NIST SSDF | Gate |
+|:-:|-------|-----------|------|
+| 1 | Plan | PO.1, PO.2, PW.1, PW.2 | You approve the plan |
+| 2 | Code | PW.5, PS.1 | Pre-push scan |
+| 3 | Build | PO.3, PW.4, PW.6 | CI checks |
+| 4 | Test | PW.7, PW.8 | Fresh-subagent review and tests |
+| 5 | Release | PO.4, PS.2 | Checks pass, PR merged |
+| 6 | Deploy | PO.5, PW.9 | You approve the apply |
+| 7 | Operate | PS.3, RV.1 | Fix within SLA |
+| 8 | Monitor | RV.2, RV.3 | Lessons feed the next Plan |
 
 SSDF groups: PO prepare the organisation, PS protect the software, PW produce well-secured software, RV respond to vulnerabilities. For IRAP, map the same evidence to ISM controls in the project's SSP.
 
