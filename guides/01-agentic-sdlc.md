@@ -16,15 +16,15 @@
 
 ## 3. The stages
 
-The eight DevSecOps stages and the core security activities in each.
+The eight DevSecOps stages, the core security activities in each, and the open-source tools most teams reach for.
 
-| # | Stage | Core components |
-|:-:|-------|-----------------|
-| 1 | Plan | Threat modelling · security requirements and architecture |
-| 2 | Code | Secrets detection · static analysis (SAST, SCA, IaC) · repo hardening and code review |
-| 3 | Build | Image scanning and build gates · SBOM and signing · CI pipeline hardening |
-| 4 | Test | DAST, API and pen testing · security regression tests · AI security testing |
-| 5 | Release | Artifact re-scan and promotion by digest · infrastructure plan review · release approval |
-| 6 | Deploy | Admission control · GitOps deployment · secure workload configuration |
-| 7 | Operate | Posture management · vulnerability management · AI posture management |
-| 8 | Monitor | Threat detection and logging · incident response · AI monitoring |
+| # | Stage | Core components | Open-source tools |
+|:-:|-------|-----------------|-------------------|
+| 1 | Plan | Data classification · threat modelling · security requirements and architecture | OWASP Threat Dragon |
+| 2 | Code | Secrets detection · static analysis (SAST, SCA, IaC) · repo hardening and code review | Gitleaks · Semgrep |
+| 3 | Build | Image scanning and build gates · SBOM and signing · CI pipeline hardening | Trivy · Cosign |
+| 4 | Test | DAST, API and pen testing · security regression tests · AI security testing | OWASP ZAP · promptfoo |
+| 5 | Release | Artifact re-scan and promotion by digest · infrastructure plan review · release approval | Checkov · Trivy |
+| 6 | Deploy | Admission control · GitOps deployment · secure workload configuration | Argo CD · Kyverno |
+| 7 | Operate | Posture management · vulnerability management · AI posture management | Prowler · Trivy Operator |
+| 8 | Monitor | Threat detection and logging · incident response · AI monitoring | Falco · Wazuh |
