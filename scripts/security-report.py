@@ -8,7 +8,7 @@ import json
 import pathlib
 import sys
 
-CHECKS = {"gitleaks": "Secrets", "trivy": "Packages and IaC", "checkov": "Terraform and CloudFormation", "semgrep": "Code"}
+CHECKS = {"gitleaks": "Secrets", "trivy": "Packages and IaC", "checkov": "IaC policies", "semgrep": "Code"}
 MARKER = "<!-- security-report -->"
 
 
@@ -73,24 +73,28 @@ def cell(text):
 
 
 def comment(folder, sha):
-    rows = []
+    rows, failed = [], 0
     for tool, check in CHECKS.items():
         path = pathlib.Path(folder) / f"{tool}.json"
         s = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"error": True, "count": 0, "top": [], "skips": 0}
         if s["error"]:
-            result, detail = "Error", "The scan didn't finish; see the job log"
+            failed += 1
+            result = "**Error:** the scan didn't finish; see the job log"
         elif s["count"]:
+            failed += 1
             more = f"<br>and {s['count'] - len(s['top'])} more" if s["count"] > len(s["top"]) else ""
-            result, detail = "Fail", "<br>".join(cell(t) for t in s["top"]) + more
+            result = f"**{s['count']} found:**<br>" + "<br>".join(cell(t) for t in s["top"]) + more
         else:
-            result, detail = "Pass", "None"
+            result = "Pass"
         if s.get("skips"):
-            detail += f" ({s['skips']} skips, each with a reason in the code)"
-        rows.append(f"| {check} | {tool.capitalize()} | {result} | {s['count']} | {detail} |")
-    print(f"{MARKER}\n### Security checks for {sha[:7]}\n")
-    print("| Check | Tool | Result | Findings | Details |\n|---|---|---|:-:|---|")
+            result += f", {s['skips']} skips with reasons"
+        rows.append(f"| {check} ({tool.capitalize()}) | {result} |")
+    status = "all passed" if not failed else f"{failed} failed"
+    print(f"{MARKER}\n### Security checks: {status} ({sha[:7]})\n")
+    print("| Check | Result |\n|---|---|")
     print("\n".join(rows))
-    print("\nFindings are also marked on the changed lines under Files changed.")
+    if failed:
+        print("\nEach finding is also marked on its line under Files changed.")
 
 
 if __name__ == "__main__":
