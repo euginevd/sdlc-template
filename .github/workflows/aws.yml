@@ -2,7 +2,7 @@ name: aws
 
 # One Terraform root per deployable unit in aws/<unit>/. Plans each changed unit with a read-only
 # role; applies only on push to main or a manual run, after approval in the apply environment.
-# Repository variables: PROJECT_NAME, AWS_PLAN_ROLE_ARN, AWS_DEPLOY_ROLE_ARN, TF_STATE_BUCKET, and optionally
+# The repo name is the project name. Repository variables: AWS_PLAN_ROLE_ARN, AWS_DEPLOY_ROLE_ARN, TF_STATE_BUCKET, and optionally
 # AWS_TARGET (default dev) and AWS_REGION (default ap-southeast-2).
 on:
   pull_request:
@@ -32,8 +32,8 @@ env:
   TF_VERSION: 1.17.1
   AWS_REGION: ${{ vars.AWS_REGION || 'ap-southeast-2' }}
   TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
-  PROJECT_NAME: ${{ vars.PROJECT_NAME }}
-  TF_VAR_project: ${{ vars.PROJECT_NAME }}
+  PROJECT_NAME: ${{ github.event.repository.name }}
+  TF_VAR_project: ${{ github.event.repository.name }}
   TF_VAR_environment: ${{ vars.AWS_TARGET || 'dev' }}
 
 jobs:
@@ -71,7 +71,7 @@ jobs:
   # Skipped until the bootstrap stack exists and its role ARNs are set as repository variables.
   plan:
     needs: detect
-    if: needs.detect.outputs.units != '[]' && vars.AWS_PLAN_ROLE_ARN != '' && vars.PROJECT_NAME != ''
+    if: needs.detect.outputs.units != '[]' && vars.AWS_PLAN_ROLE_ARN != ''
     runs-on: ubuntu-latest
     environment: aws-${{ vars.AWS_TARGET || 'dev' }}-plan
     permissions:
@@ -138,7 +138,7 @@ jobs:
 
   apply:
     needs: [detect, plan]
-    if: ((github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch') && vars.AWS_DEPLOY_ROLE_ARN != '' && vars.PROJECT_NAME != ''
+    if: ((github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch') && vars.AWS_DEPLOY_ROLE_ARN != ''
     runs-on: ubuntu-latest
     environment: aws-${{ vars.AWS_TARGET || 'dev' }}-apply
     permissions:

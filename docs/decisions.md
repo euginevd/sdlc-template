@@ -23,7 +23,7 @@ Key decisions only, newest last. Never delete one; supersede it with a new entry
 ## 4. No account IDs or project names in the code
 2026-11-08 · Accepted
 
-**Why:** the pipeline passes the state bucket, state key, project name and environment from repository variables, so the code can go public safely and needs no placeholders.
+**Why:** the pipeline passes them in: the project name is the repo name, and the state bucket and environment come from repository variables. The code can go public safely and needs no placeholders.
 **Instead of:** writing them into each Terraform unit.
 
 ## 5. Pre-push scan with Gitleaks and Trivy through lefthook

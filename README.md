@@ -21,8 +21,10 @@ One repo per product. Apps go in `apps/`, each one self-contained. Cloud infrast
 ## 🧰 Use it
 
 ```
-gh repo create <project> --template euginevd/sdlc-template --private --clone
+gh repo create <repo> --template euginevd/sdlc-template --private --clone
 ```
+
+Name the repo in lowercase kebab-case: it becomes the project name in every AWS resource.
 
 Then:
 
@@ -62,12 +64,12 @@ Once per project, before the first deploy, as an admin in the project's AWS acco
 
 | # | Where | Step |
 |:-:|-------|------|
-| 1 | **AWS Console** | CloudFormation → Create stack → Upload [bootstrap.yaml](aws/bootstrap/bootstrap.yaml) → name `<project>-bootstrap` → fill in the parameters (`CreateOidcProvider` false if the account already has GitHub's) → acknowledge IAM resources → Submit |
+| 1 | **AWS Console** | CloudFormation → Create stack → Upload [bootstrap.yaml](aws/bootstrap/bootstrap.yaml) → name `<repo>-bootstrap` → fill in the parameters (`CreateOidcProvider` false if the account already has GitHub's) → acknowledge IAM resources → Submit |
 | 2 | **GitHub** | Settings → Environments: create `aws-<target>-plan`, and `aws-<target>-apply` with yourself as required reviewer |
-| 3 | **GitHub** | Settings → Secrets and variables → Actions → Variables: `PROJECT_NAME` (the stack's `ProjectName`), and `AWS_PLAN_ROLE_ARN`, `AWS_DEPLOY_ROLE_ARN` and `TF_STATE_BUCKET` from the stack's outputs; `AWS_TARGET` if it isn't `dev` |
+| 3 | **GitHub** | Settings → Secrets and variables → Actions → Variables: `AWS_PLAN_ROLE_ARN`, `AWS_DEPLOY_ROLE_ARN` and `TF_STATE_BUCKET` from the stack's outputs; `AWS_TARGET` if it isn't `dev` |
 | 4 | **GitHub** | When the repo goes public: Settings → Security → turn on Private vulnerability reporting, which [SECURITY.md](SECURITY.md) points to |
 
-A new AWS service: add its permissions to the template, then CloudFormation → `<project>-bootstrap` → Update → Replace existing template.
+A new AWS service: add its permissions to the template, then CloudFormation → `<repo>-bootstrap` → Update → Replace existing template.
 
 ## 🧹 Cleanup
 
