@@ -26,9 +26,9 @@ gh repo create travel-claims --template euginevd/sdlc-template --private --clone
 
 Then:
 
-1. Fill in [docs/business-context.md](docs/business-context.md) once per business, and [docs/spec.md](docs/spec.md) per project, by hand or by asking the agent to draft them from your notes. Then the README's title and tagline. `AGENTS.md` stays as it is: it holds no project details.
+1. Replace the worked example, `travel-claims`, with your own: [docs/business-context.md](docs/business-context.md) once per business and [docs/spec.md](docs/spec.md) per project, by hand or by asking the agent to draft them from your notes. Then the README's title and tagline. `AGENTS.md` stays as it is: it holds no project details.
 2. Run `bash scripts/setup.sh` for the pre-push scan ([git-hooks](guides/02-git-hooks.md)), and `bash scripts/protect-main.sh` for the `main` ruleset (needs a public repo or a paid plan).
-3. Fill in `status.md` under its headings. Keep `code-standards.md`, the workflow and the scripts as they are, and add your own entries to `decisions.md`. Keep `threat-model.md` and `costs.md` only if required.
+3. Clear the example from `status.md` and `guides/03-findings.md`. In `decisions.md`, keep decisions 1–6 and replace the project ones. Keep `threat-model.md` and `costs.md` only if required, rewritten for your project. Keep `code-standards.md`, the workflow and the scripts as they are.
 4. Keep, adapt or delete the sample Terraform unit, `aws/api`. For a new unit, copy it.
 5. Ask the agent to plan. How it all fits: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md).
 
@@ -40,7 +40,7 @@ Eight DevSecOps stages, with security built into each, and the flow of a change 
 
 | App | What | Stack | Deploys to |
 |-----|------|-------|------------|
-| *(none yet)* | | | |
+| *(none yet: `apps/` starts empty; the docs describe the worked example's `web`, `api` and `agent`)* | | | |
 
 ## 📦 Repo
 
@@ -51,8 +51,8 @@ Eight DevSecOps stages, with security built into each, and the flow of a change 
 | [aws/api/](aws/api/) | Sample unit: a Lambda behind an HTTP API, with logs |
 | [aws/bootstrap/](aws/bootstrap/) | CloudFormation stack: OIDC provider, state bucket, plan and deploy roles, permissions boundary |
 | [.github/workflows/](.github/workflows/) | `aws.yml`: plans changed units on a PR, applies after approval |
-| [scripts/](scripts/), `lefthook.yml`, `.lefthook/`, `.vscode/` | Developer workstation guardrails: one-time setup, the gitleaks and Trivy pre-push scan, recommended extensions |
-| [AGENTS.md](AGENTS.md), [docs/](docs/) | Spec, tech stack, standards, process, status and decisions, for people and coding agents |
+| [scripts/](scripts/), `lefthook.yml`, `.lefthook/`, `.vscode/` | Developer workstation guardrails: one-time setup, the Gitleaks and Trivy pre-push scan, recommended extensions |
+| [AGENTS.md](AGENTS.md), [docs/](docs/) | Agent rules, then business context, spec, code standards, status, decisions, threat model and costs: a worked example for people and coding agents |
 | [SECURITY.md](SECURITY.md) | How to report a vulnerability |
 | [guides/](guides/) | Reference: [secure agentic SDLC](guides/01-agentic-sdlc.md), [git hooks](guides/02-git-hooks.md), [findings](guides/03-findings.md) |
 
