@@ -30,3 +30,29 @@ The eight DevSecOps stages, the core security activities in each, and the open-s
 | 8 | Monitor | Threat detection and logging · incident response · AI monitoring | Falco · Wazuh |
 
 This template already runs Gitleaks and Trivy in the pre-push scan; the README's Lifecycle table shows who does what at each stage. Admission control, Argo CD, Kyverno and Trivy Operator apply once a project runs on Kubernetes.
+
+## 4. The template repo
+
+New projects start from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template): `gh repo create <project> --template euginevd/sdlc-template --private --clone`.
+
+```
+sdlc-template/
+├── AGENTS.md              the agent's entry point
+├── README.md              front page for people
+├── apps/                  one folder per app: web, API, agent
+├── aws/
+│   ├── _template/         starting files for a new Terraform unit
+│   └── bootstrap/         CloudFormation: OIDC, state bucket, pipeline roles
+├── docs/                  what the agent builds from
+│   ├── SPEC.md            what and why
+│   ├── TECH_STACK.md      tools, checks, deploy
+│   ├── CODE_STANDARDS.md  how to write the code
+│   ├── PROCESS.md         plan, build, review, ship
+│   ├── STATUS.md          what's built and what's next
+│   └── DECISIONS.md       what's settled and why
+├── guides/                reference for people, numbered 01, 02, …
+├── scripts/               one-time setup and the security scan
+├── .github/workflows/     aws.yml: plan on PR, apply after approval
+├── .lefthook/             the pre-push hook
+└── lefthook.yml           runs the scan on every push
+```
