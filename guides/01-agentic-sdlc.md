@@ -30,6 +30,13 @@ The end-to-end flow, through the stages in section 3, for both a new project and
 | 10 | Deploy | Developer, pipeline | **Apply:** you approve the plan; it deploys (`dev` on merge, `prod` by hand) and checks `/health` |
 | 11 | Operate and monitor | Agent, developer | **Close the loop:** the agent updates status and decisions; findings feed step 2 |
 
+Step 1 in full, for a new project:
+
+1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` and `bash scripts/protect-main.sh` (Actions limits, squash-only merges, GitHub's security features and the `main` ruleset; rerun it after changing it). A private repo needs a paid GitHub plan for the ruleset and the approval environments; a public repo gets them free.
+2. Replace the worked example, keeping its structure: `business-context.md` per business; `spec.md`, `status.md`, the README and the root `pyproject.toml` name (then `uv lock`) per project; `decisions.md`. Keep `design-system.md`, `threat-model.md` and `costs.md` only if needed. Replace or delete `LICENSE`.
+3. Keep `AGENTS.md`, `code-standards.md`, the workflows and the scripts as they are.
+4. Bootstrap AWS: the steps at the top of [bootstrap.yaml](../aws/bootstrap/bootstrap.yaml).
+
 ## 3. The stages
 
 The eight DevSecOps stages, the core security activities in each, and the open-source tools most teams reach for. Who does what is in the workflow (section 2).
@@ -52,7 +59,7 @@ A typical project made from [euginevd/sdlc-template](https://github.com/euginevd
 ```
 travel-claims/
 ├── AGENTS.md              01 the agent's rules, the same for every project; read first
-├── README.md              02 front page: what it is and how to start
+├── README.md              02 front page: what the app does and how its users use it
 ├── docs/                  03 what the agent builds from:
 │   ├── business-context.md   the business: industry, regulators, systems, people
 │   ├── spec.md               the project, its stack, what we're building, what done means
@@ -73,7 +80,8 @@ travel-claims/
 │   ├── aws.yml               plan on the PR, apply after your approval
 │   ├── ci.yml                each app's format, lint, types and tests
 │   └── security.yml          Gitleaks, Trivy, Checkov and Semgrep on every PR, main and weekly, with a summary comment and SBOM
-│                             (beside it, .github/dependabot.yml: weekly update PRs, week-old releases only)
+│                             (beside it, .github/dependabot.yml: weekly update PRs, week-old releases only;
+│                             .github/pull_request_template.md: every PR's What, Security and Checks)
 ├── lefthook.yml           07 runs the security scan on every push
 ├── .lefthook/             08 the pre-push hook script
 ├── scripts/               09 setup.sh installs the tools; scan.sh runs Gitleaks and Trivy;
@@ -83,8 +91,9 @@ travel-claims/
 ├── guides/                12 reference for people, numbered 01, 02, …
 │   ├── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template
 │   └── 02-security-trade-offs.md  accepted risks, why, and what to change for production
-├── SECURITY.md            13 how to report a vulnerability (GitHub's policy file)
-└── LICENSE                14 MIT, for the template; replace or delete it per project
+├── SECURITY.md            13 how to report a vulnerability, what happens next and what's in scope
+├── CONTRIBUTING.md        14 how a change is made, by a person or an agent
+└── LICENSE                15 MIT, for the template; replace or delete it per project
 ```
 
 ## 5. The files

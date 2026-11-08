@@ -14,7 +14,7 @@ A worked example: `travel-claims`, in production. For a new project, replace it.
 5. Set up a machine once: `bash scripts/setup.sh`.
 6. Run locally: `npm run dev` in `apps/web`, and `uv run fastapi dev` in `apps/api`.
 7. Check: `AGENTS.md` → Commands.
-8. Deploy: README → Deploying.
+8. Deploy: a merge to `main` applies to `dev` after approval; `prod` is a manual run of the `aws` workflow.
 
 ## Known gaps
 

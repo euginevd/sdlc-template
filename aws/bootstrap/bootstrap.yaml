@@ -1,3 +1,9 @@
+# Once per AWS account (dev, then prod), by a person, never the agent: the apply environment is the deploy gate.
+# 1. CloudFormation: deploy this file as stack <ProjectName>-bootstrap.
+# 2. GitHub environments: aws-<Target>-plan, and aws-<Target>-apply with a required reviewer, main only.
+# 3. GitHub variables: PROJECT_NAME on the repo; this stack's outputs on the environments (see Outputs).
+# Deploy: a merge to main applies to dev after approval; prod is a manual run of the aws workflow.
+# Cleanup: run the aws workflow with destroy for each target, empty the state bucket, delete this stack and the environments.
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >-
   Bootstrap for a project from sdlc-template: everything in the AWS account that Terraform
