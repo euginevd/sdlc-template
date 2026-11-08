@@ -19,7 +19,7 @@ The end-to-end flow, through the stages in section 3, for both a new project and
 | # | Stage | Who | Step |
 |:-:|-------|-----|------|
 | 1 | Plan | You | **Create the repo (new project only):** `gh repo create travel-claims --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` |
-| 2 | Plan | You, then agent | **Update the spec:** *"Update docs/spec.md for <the change>"* (or *"Draft docs/spec.md from <your notes>"* for a new project). ↺ Review and correct it until it says what you want |
+| 2 | Plan | You, then agent | **Update the spec:** *"Update docs/spec.md for <the change>"* (or *"Draft docs/spec.md from <your notes>"* for a new project, and *"Draft docs/business-context.md from <notes on the business>"* for a new business). ↺ Review and correct them until they say what you want |
 | 3 | Plan | You, then agent | **Prompt:** *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks, phases and PR groups; no code |
 | 4 | Plan | You | **Review the plan:** ↺ ask for changes until it's right, then approve |
 | 5 | Code | You | **Prompt:** *"Implement the plan for <the work>"* |
