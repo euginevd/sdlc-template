@@ -30,8 +30,7 @@
 
 ```mermaid
 flowchart LR
-  claimant([Claimant])
-  handler([Handler])
+  users([Claimants and handlers])
 
   subgraph aws ["AWS account, ap-southeast-2"]
     cognito[Cognito sign-in]
@@ -45,10 +44,10 @@ flowchart LR
   claude{{Claude on Bedrock}}
   bank[Bank API]
 
-  claimant & handler --> cognito
-  claimant & handler --> web
+  users --> web
+  web --> cognito
   web --> api
-  api <--> agent
+  api --> agent
   agent --> claude
   api --> db
   api --> bucket
