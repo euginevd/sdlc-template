@@ -24,7 +24,7 @@ A worked example built from [sdlc-template](https://github.com/euginevd/sdlc-tem
 | `api` | Claims, receipts, decisions and payments | Lambda behind an HTTP API |
 | `agent` | Decides each claim against the policy wording | Lambda, Claude on Bedrock |
 
-`apps/` starts empty in the template; the docs describe these three.
+`apps/` holds a sample `api` health check in the template; the docs describe all three.
 
 ## 📚 Docs
 

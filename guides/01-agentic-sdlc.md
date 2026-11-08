@@ -65,13 +65,13 @@ travel-claims/
 │   └── plan-<name>.md        the plan being built (per plan; deleted when done)
 ├── apps/                  04 the product: one folder per app
 │   ├── web/                  front end (example)
-│   └── api/                  backend or agent (example)
+│   └── api/                  sample: the health check behind aws/api
 ├── aws/                   05 the infrastructure, as Terraform
 │   ├── bootstrap/            CloudFormation, run once: OIDC, state bucket, CI roles
 │   └── api/                  sample: Lambda behind an HTTP API, with logs
 ├── .github/workflows/     06 the pipeline, one workflow per job
 │   ├── aws.yml               plan on the PR, apply after your approval
-│   ├── ci.yml                each app's lint, types and tests (example)
+│   ├── ci.yml                each app's format, lint, types and tests
 │   └── security.yml          Gitleaks, Trivy, Checkov and Semgrep on every PR, with a summary comment
 ├── lefthook.yml           07 runs the security scan on every push
 ├── .lefthook/             08 the pre-push hook script
