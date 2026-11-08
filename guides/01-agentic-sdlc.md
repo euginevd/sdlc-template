@@ -92,7 +92,9 @@ travel-claims/
 ├── pyproject.toml         11 the Python workspace and tool settings, with uv.lock and .python-version
 ├── guides/                12 reference for people, numbered 01, 02, …
 │   ├── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template
-│   └── 02-security-trade-offs.md  accepted risks, why, and what to change for production
+│   ├── 02-security-trade-offs.md  accepted risks, why, and what to change for production
+│   ├── 03-secure-agentic-sdlc-end-to-end.md  the story: how we got here, who does what, guardrails
+│   └── assets/               the guides' diagrams, as SVG and PNG
 ├── SECURITY.md            13 how to report a vulnerability, what happens next and what's in scope
 ├── CONTRIBUTING.md        14 how a change is made, by a person or an agent
 └── LICENSE                15 MIT, for the template; replace or delete it per project
