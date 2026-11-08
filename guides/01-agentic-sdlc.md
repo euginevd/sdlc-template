@@ -10,26 +10,26 @@
 
 ## 2. Where the name comes from
 
-**Agentic software development** is the industry's emerging term (Forrester's *ASD*, Gartner's *agentic engineering*); there's no single standard yet. This lifecycle is the **secure agentic SDLC**: keeping "SDLC" says existing security controls still apply. It draws on AWS's [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering) (AI plans, people approve), spec-driven development (GitHub Spec Kit), [AGENTS.md](https://agents.md), DevSecOps, and the NIST Secure Software Development Framework (SSDF, SP 800-218; section 3).
+**Agentic software development** is the industry's emerging term (Forrester's *ASD*, Gartner's *agentic engineering*); there's no single standard yet. This lifecycle is the **secure agentic SDLC**: keeping "SDLC" says existing security controls still apply. It draws on AWS's [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering) (AI plans, people approve), spec-driven development (GitHub Spec Kit), [AGENTS.md](https://agents.md), DevSecOps, and the NIST Secure Software Development Framework (SSDF, SP 800-218).
 
 > **Note:** not to be confused with ADLC, which can also mean building AI agents as a product (the Agent Development Lifecycle).
 
 ## 3. The stages
 
-The eight DevSecOps stages and the SSDF practices each one meets. Every stage ends at a gate.
+The eight DevSecOps stages, each ending at a gate.
 
-| # | Stage | NIST SSDF | Gate |
-|:-:|-------|-----------|------|
-| 1 | Plan | PO.1, PO.2, PW.1, PW.2 | You approve the plan |
-| 2 | Code | PW.5, PS.1 | Pre-push scan |
-| 3 | Build | PO.3, PW.4, PW.6 | CI checks |
-| 4 | Test | PW.7, PW.8 | Fresh-subagent review and tests |
-| 5 | Release | PO.4, PS.2 | Checks pass, PR merged |
-| 6 | Deploy | PO.5, PW.9 | You approve the apply |
-| 7 | Operate | PS.3, RV.1 | Fix within SLA |
-| 8 | Monitor | RV.2, RV.3 | Lessons feed the next Plan |
+| # | Stage | Gate |
+|:-:|-------|------|
+| 1 | Plan | You approve the plan |
+| 2 | Code | Pre-push scan |
+| 3 | Build | CI checks |
+| 4 | Test | Fresh-subagent review and tests |
+| 5 | Release | Checks pass, PR merged |
+| 6 | Deploy | You approve the apply |
+| 7 | Operate | Fix within SLA |
+| 8 | Monitor | Lessons feed the next Plan |
 
-SSDF groups: PO prepare the organisation, PS protect the software, PW produce well-secured software, RV respond to vulnerabilities. For IRAP, map the same evidence to ISM controls in the project's SSP.
+For IRAP, map each stage's evidence to ISM controls in the project's SSP.
 
 Each stage below says what you do, what you need to know, and what to add when the app is itself an AI agent.
 
