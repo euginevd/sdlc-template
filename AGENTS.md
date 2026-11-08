@@ -1,6 +1,6 @@
 # Agent instructions
 
-The business is described in [docs/business-context.md](docs/business-context.md) and the project in [docs/spec.md](docs/spec.md). These rules are the same for every project.
+These rules are the same for every project. The business and the project are described in the docs below.
 
 ## Read
 
