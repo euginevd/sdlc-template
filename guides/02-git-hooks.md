@@ -16,12 +16,10 @@ Hooks that slow every commit get skipped, and agents commit often. Pre-push pays
 
 ## How it works
 
-| File | Does |
-|------|------|
-| `lefthook.yml` | Runs the `scan` job on `pre-push`, passing git's list of pushed refs |
-| `.lefthook/pre-push-scan.sh` | Exports each pushed commit's files, plus the diffs of every commit not yet on the remote, and passes them to `scripts/scan.sh` |
-| `scripts/scan.sh` | Runs `gitleaks dir` for secrets and `trivy fs` for vulnerabilities, IaC misconfigurations and secrets, lists the findings and blocks on any |
-| `.gitattributes` | Keeps `*.sh` at LF so bash runs it on Windows |
+- `lefthook.yml`: runs the `scan` job on `pre-push`, passing git's list of pushed refs.
+- `.lefthook/pre-push-scan.sh`: exports each pushed commit's files, plus the diffs of every commit not yet on the remote, and passes them to `scripts/scan.sh`.
+- `scripts/scan.sh`: runs `gitleaks dir` for secrets and `trivy fs` for vulnerabilities, IaC misconfigurations and secrets, lists the findings and blocks on any.
+- `.gitattributes`: keeps `*.sh` at LF so bash runs it on Windows.
 
 - **Catches history too:** a secret committed and then removed before the push is still found in the diffs.
 - **Blocks** on any gitleaks finding, on a Trivy finding at High or Critical, or when a tool is missing (fail closed).
@@ -41,25 +39,21 @@ Hooks that slow every commit get skipped, and agents commit often. Pre-push pays
 
 ## Why lefthook
 
-| Option | Verdict |
-|--------|---------|
-| **lefthook** *(chosen)* | One Go binary, no runtime. Config in git, so everyone runs the same hooks. Parallel jobs, globs and `{staged_files}` built in. Easy for people and agents to read and extend |
-| Plain git hooks | Works with nothing installed: commit `.githooks/pre-push` and run `git config core.hooksPath .githooks` once. You hand-write parallel runs, globs and staged-file handling |
-| pre-commit / prek | Best for its library of shared hooks (`terraform_fmt`, `tflint`, `checkov`, `gitleaks`). pre-commit needs Python and is slower; prek is its fast Rust rewrite with the same config |
-| Husky | Needs Node and `package.json`; only for JS repos |
+- **lefthook** *(chosen)*: one Go binary, no runtime. Config in git, so everyone runs the same hooks. Parallel jobs, globs and `{staged_files}` built in. Easy for people and agents to read and extend.
+- **Plain git hooks:** work with nothing installed: commit `.githooks/pre-push` and run `git config core.hooksPath .githooks` once. You hand-write parallel runs, globs and staged-file handling.
+- **pre-commit / prek:** best for a library of shared hooks (`terraform_fmt`, `tflint`, `checkov`, `gitleaks`). pre-commit needs Python and is slower; prek is its fast Rust rewrite with the same config.
+- **Husky:** needs Node and `package.json`; only for JS repos.
 
 ## Other scanners
 
 Same `lefthook.yml` shape: one job per tool, each exits non-zero on a finding.
 
-| Scan | Used here | Alternatives |
-|------|-----------|--------------|
-| Secrets | `gitleaks dir` | `trufflehog git` |
-| IaC | `trivy fs --scanners misconfig` | `checkov -d .` |
-| Vulnerable dependencies | `trivy fs --scanners vuln` | `osv-scanner -r .` |
-| SAST | *(planned)* | `semgrep scan --config auto --error` |
-| Container images | *(planned)* | `trivy image` |
-| Licensed platforms | | Wiz (`wizcli scan dir`), Snyk (`snyk test`, `snyk iac test`) |
+- **Secrets:** `gitleaks dir` · alternative `trufflehog git`
+- **IaC:** `trivy fs --scanners misconfig` · alternative `checkov -d .`
+- **Vulnerable dependencies:** `trivy fs --scanners vuln` · alternative `osv-scanner -r .`
+- **SAST:** *(planned)* `semgrep scan --config auto --error`
+- **Container images:** *(planned)* `trivy image`
+- **Licensed platforms:** Wiz (`wizcli scan dir`), Snyk (`snyk test`, `snyk iac test`)
 
 Pin tool versions in CI; scanners are supply-chain targets too.
 
