@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >-
   Bootstrap for a project from sdlc-template: everything in the AWS account that Terraform
-  needs before it can run. Deployed by hand as stack <project>-bootstrap; deleting the stack
+  needs before it can run. Deployed by hand as stack <ProjectName>-bootstrap; deleting the stack
   removes all of it.
 
 Parameters:
