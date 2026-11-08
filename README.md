@@ -39,10 +39,10 @@ DevSecOps: security is built into every stage, not added at the end. The person 
 | # | Stage | Who | Output | Security |
 |:-:|-------|-----|--------|----------|
 | 1 | **Plan** | Person, then agent | [docs/SPEC.md](docs/SPEC.md), then `docs/PLAN_<NAME>.md` with phases and checkbox criteria. The person approves the plan before any code | Threat model in `docs/SECURITY.md` once there are users, data or secrets |
-| 2 | **Code** | Agent | One phase at a time, to [docs/CODE_STANDARDS.md](docs/CODE_STANDARDS.md) | No secrets in code; pre-push secret and IaC scan *(planned)* |
+| 2 | **Code** | Agent | One phase at a time, to [docs/CODE_STANDARDS.md](docs/CODE_STANDARDS.md) | No secrets in code; pre-push scan for secrets, IaC and vulnerable packages |
 | 3 | **Build** | Pipeline | Lint, format, type checks, `terraform validate` | Dependencies pinned; SCA and SAST scans *(planned)* |
-| 4 | **Test** | Agent and pipeline | Unit and end-to-end tests, then a fresh-subagent review of the diff | IaC scan; tests never call real models or cloud |
-| 5 | **Release** | Agent | PR with checks green, merged, branch deleted | Branch protection; CI actions pinned to a commit SHA |
+| 4 | **Test** | Agent and pipeline | Unit and end-to-end tests, then a fresh-subagent review of the diff | Tests never call real models or cloud |
+| 5 | **Release** | Agent | PR with checks green, merged, branch deleted | CI actions pinned to a commit SHA; `main` ruleset requiring checks *(planned)* |
 | 6 | **Deploy** | Pipeline | Terraform plan on the PR, apply after approval | OIDC to least-privilege roles; no access keys |
 | 7 | **Operate** | Person | Runbooks in [guides/](guides/), costs in `docs/FINOPS.md` | Patching, key rotation, access reviews |
 | 8 | **Monitor** | Person and pipeline | [docs/STATUS.md](docs/STATUS.md) and [docs/DECISIONS.md](docs/DECISIONS.md) updated, the plan deleted | Logs, alerts and cloud security findings feed the next Plan |
