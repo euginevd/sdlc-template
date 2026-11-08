@@ -80,7 +80,8 @@ travel-claims/
 │   ├── aws.yml               plan on the PR, apply after your approval
 │   ├── ci.yml                each app's format, lint, types and tests
 │   └── security.yml          Gitleaks, Trivy, Checkov and Semgrep on every PR, main and weekly, with a summary comment and SBOM
-│                             (beside it, .github/dependabot.yml: weekly update PRs, week-old releases only)
+│                             (beside it, .github/dependabot.yml: weekly update PRs, week-old releases only;
+│                             .github/pull_request_template.md: every PR's What, Security and Checks)
 ├── lefthook.yml           07 runs the security scan on every push
 ├── .lefthook/             08 the pre-push hook script
 ├── scripts/               09 setup.sh installs the tools; scan.sh runs Gitleaks and Trivy;
@@ -90,8 +91,9 @@ travel-claims/
 ├── guides/                12 reference for people, numbered 01, 02, …
 │   ├── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template
 │   └── 02-security-trade-offs.md  accepted risks, why, and what to change for production
-├── SECURITY.md            13 how to report a vulnerability (GitHub's policy file)
-└── LICENSE                14 MIT, for the template; replace or delete it per project
+├── SECURITY.md            13 how to report a vulnerability, what happens next and what's in scope
+├── CONTRIBUTING.md        14 how a change is made, by a person or an agent
+└── LICENSE                15 MIT, for the template; replace or delete it per project
 ```
 
 ## 5. The files
