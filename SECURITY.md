@@ -14,7 +14,7 @@
 2. Report it privately: the repo's **Security** tab → **Report a vulnerability**.
 3. Include what you found, how to reproduce it, and the impact you expect.
 
-## ⏱️ What happens next
+## ⏳ What happens next
 
 1. A reply within 5 working days, confirming whether it's a vulnerability.
 2. A fix within 30 days for a high or critical issue, or a plan with a date if it needs longer.
