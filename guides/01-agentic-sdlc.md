@@ -36,7 +36,7 @@ The eight DevSecOps stages, the core security activities in each, and the open-s
 
 | # | Stage | Core components | Open-source tools |
 |:-:|-------|-----------------|-------------------|
-| 1 | Plan | Data classification · threat modelling · security requirements and architecture | OWASP Threat Dragon |
+| 1 | Plan | Data classification · threat modelling · security requirements and architecture | Mermaid (data flow diagram) · OWASP Threat Dragon · OWASP ASVS |
 | 2 | Code | Secrets detection · static analysis (SAST, SCA, IaC) · repo hardening and code review | Gitleaks · Semgrep |
 | 3 | Build | Image scanning and build gates · SBOM and signing · CI pipeline hardening | Trivy · Cosign |
 | 4 | Test | DAST, API and pen testing · security regression tests · AI security testing | OWASP ZAP · promptfoo |
@@ -95,3 +95,39 @@ travel-claims/
 | `docs/decisions.md` | Key decisions with why and the alternative; superseded, never deleted | Sometimes |
 | `docs/threat-model.md` | Data flow, data classes, top risks mapped to STRIDE and OWASP, compliance. Optional | Sometimes |
 | `docs/costs.md` | One row per resource that costs money, budget and alerts. Optional | Sometimes |
+
+## 6. A sample plan
+
+What the agent writes at step 3, here for a `travel-claims` change. It lives in `docs/plan-<name>.md` while it's built and is deleted when done.
+
+```markdown
+# Plan: receipt upload
+
+Covers spec 9 and 17.
+
+## Design
+
+- `api`: `POST /claims/{id}/receipts` checks the claimant owns the claim and returns a presigned S3 upload URL: PDF, JPEG or PNG, up to 10 MB, valid for 5 minutes.
+- Receipt bucket: private, KMS-encrypted, in `ap-southeast-2`, in a new Terraform unit `aws/receipts/`.
+- `web`: an upload form on the claim page that sends the file straight to S3.
+
+## Security risks
+
+- A claimant uploads to someone else's claim: ownership check on every request (threat model R3); abuse-case test.
+- Hidden text in a receipt: type and size checks; its text reaches the agent as data only (R1, spec 17).
+- New flow across TB1: add it to the threat model's diagram.
+
+## Phases
+
+### 1. Bucket and upload URL
+- [ ] Terraform passes fmt, validate and Checkov
+- [ ] Only the claim's owner gets an upload URL; tests cover another claimant's request
+
+### 2. Upload form
+- [ ] A claimant uploads a receipt and sees it on the claim
+- [ ] The form passes lint, typecheck and tests, and works by keyboard (WCAG 2.2 AA)
+
+## PR groups
+
+1. Phases 1–2 in one PR (about 300 lines).
+```
