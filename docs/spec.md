@@ -9,7 +9,6 @@ A worked example: `travel-claims`, in production. For a new project, replace it 
 - Goal: an AI agent decides routine claims in minutes, and handlers spend their time only on claims that need judgement.
 - Users: claimants submit and track claims; handlers review and sign off; admins manage users and limits.
 - AWS: accounts `travel-claims-dev` and `travel-claims-prod`, region `ap-southeast-2`, environments `dev` and `prod`.
-- Developer machine: Windows, with PowerShell or Git Bash.
 
 ## Stack
 
@@ -26,12 +25,12 @@ Template defaults: GitHub Actions, Terraform on AWS and the Gitleaks and Trivy p
 3. Claims the agent approves under $1,000 are paid automatically; the rest wait for a handler.
 4. A handler can approve, decline or send back a claim from the dashboard.
 5. No payment exceeds the policy limit, whatever the agent decides.
-6. All personal data stays in Australia.
 
 ## Rules
 
 - Claims hold passport, bank and medical details, so the laws in `business-context.md` apply.
 - The agent decides; deterministic code pays and enforces every limit.
+- Bedrock calls use the Australian cross-region inference profile, so claim data stays in Australia.
 - Receipts are untrusted input: text hidden in them must not change a decision.
 - Every decision is logged with its reasons, with personal data redacted.
 - AWS spend stays under $200 a month in `dev`.

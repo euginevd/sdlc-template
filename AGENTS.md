@@ -12,6 +12,7 @@ The business is described in [docs/business-context.md](docs/business-context.md
 
 ## Commands
 
+- The developer is on Windows: give commands for PowerShell or Git Bash.
 - Setup, once: `bash scripts/setup.sh`
 - Security scan, run on every push: `lefthook run pre-push`
 - Terraform, in `aws/<unit>/`: `terraform fmt -recursive && terraform init -backend=false && terraform validate`
