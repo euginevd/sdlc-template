@@ -40,7 +40,7 @@ Add these only when needed, and list them above once they exist:
 ## Conventions
 
 - One app per folder in `apps/<app>/`, each with its own dependencies, tests and README.
-- One Terraform root per deployable unit in `aws/<unit>/`, state key `<project>/<unit>.tfstate`. Start a new unit from the closest sample: `aws/iam`, `aws/storage` or `aws/api`.
+- One Terraform root per deployable unit in `aws/<unit>/`, state key `<project>/<unit>.tfstate`. Start a new unit by copying the sample, `aws/api`.
 - Names: resources `<project>-<unit>-<what>`, roles `<project>-<unit>[-<purpose>]`.
 - Every role Terraform creates has the `<project>-boundary` permissions boundary.
 - A new AWS service needs plan and deploy permissions in the bootstrap stack first.
@@ -49,7 +49,7 @@ Add these only when needed, and list them above once they exist:
 
 - `apps/<app>/`: the apps (web, API, agent)
 - `aws/<unit>/`: Terraform, one root and state per deployable unit
-- `aws/iam/`, `aws/storage/`, `aws/api/`: sample units (app role, S3 bucket, Lambda behind an HTTP API); keep the ones the project needs
+- `aws/api/`: sample unit, a Lambda behind an HTTP API; keep it, adapt it or delete it
 - `aws/bootstrap/`: the CloudFormation stack for OIDC, state and the pipeline roles
 - `.github/workflows/`: one workflow per top-level folder; plan on PR, apply after approval
 - `.lefthook/`, `lefthook.yml`: the pre-push scan
