@@ -86,7 +86,6 @@ What each file holds, the key decision behind it, and how often it changes.
 |------|--------------|---------|
 | `AGENTS.md` | Rules for every coding agent: what to read, commands, workflow, boundaries, known mistakes. Generic, so the same in every project | Rarely; agents add known mistakes |
 | `README.md` | Front page: what the project is, how to start, bootstrap, cleanup, roadmap | Once per project |
-| `SECURITY.md` | How to report a vulnerability privately, through GitHub | Never |
 | `docs/spec.md` | The project (name, problem, goal, users, AWS), its stack, what done means, rules, what's out. The one file you fill in | Per project, then per change |
 | `docs/code-standards.md` | Numbered coding rules: general, security, tests, Terraform, languages, AI, docs | Rarely, after asking |
 | `docs/status.md` | What's built, how to run it, known gaps, what's next | Every commit that changes something |
@@ -104,4 +103,5 @@ What each file holds, the key decision behind it, and how often it changes.
 | `guides/01-agentic-sdlc.md` | This guide | Rarely |
 | `guides/02-git-hooks.md` | How the pre-push scan works, setup and day to day | Rarely |
 | `guides/03-findings.md` | Log of surprises from AWS, the pipeline or the tools | When something surprises you |
+| `SECURITY.md` | How to report a vulnerability privately, through GitHub | Never |
 | `.gitignore`, `.gitattributes`, `.vscode/extensions.json` | Housekeeping: no state, secrets or builds in git; LF for scripts; recommended extensions | Rarely |
