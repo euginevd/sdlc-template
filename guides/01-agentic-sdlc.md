@@ -54,10 +54,8 @@ A typical project made from [euginevd/sdlc-template](https://github.com/euginevd
 ├── AGENTS.md              01 the agent's rules, the same for every project; read first
 ├── README.md              02 front page: what it is and how to start
 ├── docs/                  03 what the agent builds from, in reading order:
-│   ├── spec.md               the project, what we're building and what done means
-│   ├── tech-stack.md         tools, checks and how it deploys
+│   ├── spec.md               the project, its stack, what we're building, what done means
 │   ├── code-standards.md     how to write the code
-│   ├── process.md            how to plan, build, review and ship
 │   ├── status.md             what's built and what's next
 │   ├── decisions.md          what's settled and why
 │   ├── threat-model.md       data classification, threats and controls

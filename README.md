@@ -28,7 +28,7 @@ Then:
 
 1. Fill in the Project section of [docs/spec.md](docs/spec.md), and the README's title and tagline. `AGENTS.md` stays as it is: it holds no project details.
 2. Run `bash scripts/setup.sh` for the pre-push scan ([git-hooks](guides/02-git-hooks.md)), and `bash scripts/protect-main.sh` for the `main` ruleset (needs a public repo or a paid plan).
-3. Fill in [docs/spec.md](docs/spec.md), `tech-stack.md` and `status.md` under their headings. Keep `code-standards.md`, `process.md`, the workflow and the scripts as they are, and add your own entries to `decisions.md`. Keep `threat-model.md` and `costs.md` only if required.
+3. Fill in the rest of [docs/spec.md](docs/spec.md) and `status.md` under their headings. Keep `code-standards.md`, the workflow and the scripts as they are, and add your own entries to `decisions.md`. Keep `threat-model.md` and `costs.md` only if required.
 4. Keep, adapt or delete the sample Terraform unit, `aws/api`. For a new unit, copy it.
 5. Ask the agent to plan. How it all fits: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md).
 

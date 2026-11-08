@@ -49,3 +49,9 @@ Key decisions, newest last. Never delete one; supersede it with a new entry.
 
 **Why:** a new project fills in one file. Template improvements to `AGENTS.md` copy into existing projects without merge conflicts. The project name reaches Terraform from the `PROJECT_NAME` repository variable, so the code holds no placeholders.
 **Instead of:** project context in `AGENTS.md` and the project name written into each unit.
+
+## 9. Six docs: `tech-stack.md` into `spec.md`, `process.md` into `AGENTS.md`
+2026-11-08 · Accepted
+
+**Why:** the template's stack is the same for every project and already lives in `aws/AGENTS.md` and the workflow, so only the app stack is project-specific, and it belongs in the spec. `process.md` repeated `AGENTS.md`'s rules; one copy can't drift.
+**Instead of:** eight docs, with the workflow written twice.

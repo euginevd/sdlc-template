@@ -9,6 +9,14 @@
 - **Environments:** `dev` *(add `prod` when it's needed)*
 - **Developer machine:** Windows: PowerShell or Git Bash
 
+## Stack
+
+The template's defaults: GitHub and GitHub Actions, Terraform on AWS ([aws/AGENTS.md](../aws/AGENTS.md)), and the Gitleaks and Trivy pre-push scan. Add each app here.
+
+| App | Language and framework | Hosting | Checks (lint, types, tests) |
+|-----|------------------------|---------|-----------------------------|
+| | | | |
+
 ## The problem
 
 *(What's wrong or missing today, and for whom.)*
