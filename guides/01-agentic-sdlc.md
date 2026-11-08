@@ -65,11 +65,11 @@ OPERATE    9  Agent updates status and decisions, deletes the plan
 **Code**
 
 5. **Prompt the build:** *"Implement the plan for <the work>"*.
-6. **The agent writes the code**, one phase at a time: code, local checks, a fresh-subagent review, docs, commit. On push, the pre-push scan (Gitleaks, Trivy) blocks secrets, misconfigurations and vulnerable packages; the agent reads the findings, fixes them and pushes again. Then it opens a PR.
+6. **The agent writes the code**, one phase at a time: code, local checks, a fresh-subagent review, docs, and a local commit. It pushes only when the PR's phases are all done. The pre-push scan (Gitleaks, Trivy) blocks secrets, misconfigurations and vulnerable packages; the agent reads the findings, fixes them and pushes again. Then it opens one PR.
 
 **Build and test**
 
-7. **PR checks and reviews:** the workflows run the checks and the Terraform plan, and post findings on the PR. The agent fixes each finding and pushes again. You review the diff, the findings and the plan, and approve the merge; the agent merges and deletes the branch.
+7. **PR checks and reviews:** the workflows run the checks and the Terraform plan, and post findings on the PR. The agent fixes each finding on the same PR, and asks for your review only once everything passes. You review the diff and the plan, and approve the merge; the agent squash-merges and deletes the branch.
 
 **Release and deploy**
 
@@ -78,6 +78,15 @@ OPERATE    9  Agent updates status and decisions, deletes the plan
 **Operate and monitor**
 
 9. **Close the loop:** the agent updates `status.md` and `decisions.md` and deletes the plan. Surprises go in `guides/03-findings.md`. Alerts, findings and lessons become the next spec.
+
+### Cadence: how often you're asked
+
+Many commits, few PRs, so you're interrupted only at the gates:
+
+- **Commits:** one per phase, local only. These are the agent's checkpoints; you don't see them.
+- **Pushes and PRs:** one PR per plan, or one per group of phases when the plan is big. The plan says which phases go in which PR.
+- **Your reviews:** three per plan at most: approve the plan, approve each PR once its checks pass, approve the deploy.
+- **Small follow-ups:** batched into the next PR, never a PR of their own.
 
 ## 5. The template repo
 

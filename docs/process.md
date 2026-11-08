@@ -10,6 +10,7 @@ When asked to plan, write the plan to `docs/plan-<name>.md` and write no code.
 - Name the security risks the work adds (users, data, secrets, public endpoints) and how each is handled. Once there are any, keep `docs/threat-model.md` up to date.
 - Split the work into phases, each building on the last.
 - Give each phase success criteria you can verify yourself, as checkboxes.
+- Group the phases into PRs: one PR for the whole plan, or one per group of phases when it would run past a few hundred changed lines. Say which phases go in each PR.
 - Then stop and wait to be asked to build it.
 
 ## Code, Build and Test
@@ -20,7 +21,7 @@ For each change, or each phase of a plan:
 2. Run the checks in `docs/tech-stack.md` and fix what fails.
 3. Review it (below) and fix what the review finds.
 4. Update the docs it affects, `docs/status.md` always. Tick off the plan's criteria.
-5. Commit with a one-line message.
+5. Commit locally with a one-line message. Don't push yet: commits are checkpoints, not reviews.
 
 ## Review
 
@@ -31,10 +32,11 @@ The checks show the code works, not that it's fit to merge. Every change gets a 
 
 ## Release and Deploy
 
-1. Push the branch. The pre-push scan runs; fix what it finds and push again.
-2. Open a PR. The workflows run the checks and the Terraform plan.
-3. Fix every finding the checks post, and push again. Merge once every check passes and the user approves, then delete the branch.
-4. The apply runs after the user approves it in the `-apply` environment.
+1. When every phase in a PR's group is done, push the branch. The pre-push scan runs; fix what it finds and push again.
+2. Open one PR for the group. The workflows run the checks and the Terraform plan.
+3. Fix every finding the checks post, on the same PR. Ask the user to review only once every check passes, then merge when they approve, squash-merged, and delete the branch.
+4. Small follow-ups, such as doc fixes, go in the next PR, not a PR of their own.
+5. The apply runs after the user approves it in the `-apply` environment.
 
 ## Operate and Monitor
 
