@@ -50,4 +50,3 @@
 25. Each fact lives in one place; everywhere else links to it.
 26. Keep docs short: tables and one-line rules.
 27. Write what's true now. Mark future work *(planned)*.
-28. Guides are read on phones and in Google Drive: use headings and lists, not tables wider than two short columns.
