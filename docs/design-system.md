@@ -37,4 +37,5 @@ A worked example: `travel-claims`. Built on the [ArcVault design system](https:/
 13. Charts: a line for trends, a bar for comparisons; `ink-3` axes, `accent` for the series in focus, and a table view of the same numbers.
 14. Claimants: a single-column form that works at 360px wide, with numbered steps and a receipt drop zone that shows previews.
 15. Every screen has loading skeletons in its own layout, an empty state that says what to do, and an error state with a retry.
-16. Status chips: Approved, Declined, Referred and Paid; `warn` only for a payment held over the limit. Money as `$1,234.50` AUD, dates as `8 Nov 2026`.
+16. Status chips: Approved, Declined, Referred and Paid; `warn` only for a payment held over the limit.
+17. Numbers round to at most 2 decimal places (`4.25 hours`, `92.5%`); money always shows 2 (`$1,234.50` AUD). Dates as `8 Nov 2026`.
