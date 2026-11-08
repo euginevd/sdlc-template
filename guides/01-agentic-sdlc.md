@@ -85,7 +85,7 @@ Many commits, few PRs, so you're interrupted only at the gates:
 
 - **Commits:** one per phase, local only. These are the agent's checkpoints; you don't see them.
 - **Pushes and PRs:** one PR per plan, or one per group of phases when the plan is big. The plan says which phases go in which PR.
-- **Your reviews:** three per plan at most: approve the plan, approve each PR once its checks pass, approve the deploy.
+- **Your reviews:** only at the gates: the plan, each PR once its checks pass, and each deploy. A small plan is three reviews in total.
 - **Small follow-ups:** batched into the next PR, never a PR of their own.
 
 ## 5. The template repo
