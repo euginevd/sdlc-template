@@ -68,8 +68,10 @@ travel-claims/
 ├── aws/                   05 the infrastructure, as Terraform
 │   ├── bootstrap/            CloudFormation, run once: OIDC, state bucket, CI roles
 │   └── api/                  sample: Lambda behind an HTTP API, with logs
-├── .github/workflows/     06 the pipeline
-│   └── aws.yml               plan on the PR, apply after your approval
+├── .github/workflows/     06 the pipeline, one workflow per job
+│   ├── aws.yml               plan on the PR, apply after your approval
+│   ├── ci.yml                each app's lint, types and tests (example)
+│   └── security.yml          Gitleaks, Trivy and Checkov on every PR (example)
 ├── lefthook.yml           07 runs the security scan on every push
 ├── .lefthook/             08 the pre-push hook script
 ├── scripts/               09 setup.sh installs the tools; scan.sh runs Gitleaks and Trivy;
