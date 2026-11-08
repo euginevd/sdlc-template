@@ -19,7 +19,7 @@ The end-to-end flow, through the stages in section 3, for both a new project and
 | # | Stage | Who | Step |
 |:-:|-------|-----|------|
 | 1 | Plan | You | **Create the repo (new project only):** `gh repo create <project> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` |
-| 2 | Plan | You | **Update the spec docs:** `spec.md` for every change; for a new project, also `tech-stack.md` and `AGENTS.md` → Context |
+| 2 | Plan | You | **Update the spec:** `spec.md` for every change; for a new project, its Project section too |
 | 3 | Plan | You, then agent | **Prompt:** *"Plan <the work> in docs/plan-<name>.md"*. The agent writes the design, risks, phases and PR groups; no code |
 | 4 | Plan | You | **Review the plan:** ↺ ask for changes until it's right, then approve |
 | 5 | Code | You | **Prompt:** *"Implement the plan for <the work>"* |
@@ -51,10 +51,10 @@ A typical project made from [euginevd/sdlc-template](https://github.com/euginevd
 
 ```
 <project>/
-├── AGENTS.md              01 the agent's rules; every agent reads this first
+├── AGENTS.md              01 the agent's rules, the same for every project; read first
 ├── README.md              02 front page: what it is and how to start
 ├── docs/                  03 what the agent builds from, in reading order:
-│   ├── spec.md               what we're building and what done means
+│   ├── spec.md               the project, what we're building and what done means
 │   ├── tech-stack.md         tools, checks and how it deploys
 │   ├── code-standards.md     how to write the code
 │   ├── process.md            how to plan, build, review and ship
@@ -67,6 +67,7 @@ A typical project made from [euginevd/sdlc-template](https://github.com/euginevd
 │   ├── web/                  front end (example)
 │   └── api/                  backend or agent (example)
 ├── aws/                   05 the infrastructure, as Terraform
+│   ├── AGENTS.md             Terraform rules for agents
 │   ├── bootstrap/            CloudFormation, run once: OIDC, state bucket, CI roles
 │   └── api/                  sample: Lambda behind an HTTP API, with logs
 ├── .github/workflows/     06 the pipeline

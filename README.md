@@ -26,7 +26,7 @@ gh repo create <project> --template euginevd/sdlc-template --private --clone
 
 Then:
 
-1. Replace `<project>` everywhere, the README's title and tagline, and the Context section of [AGENTS.md](AGENTS.md).
+1. Fill in the Project section of [docs/spec.md](docs/spec.md), and the README's title and tagline. `AGENTS.md` stays as it is: it holds no project details.
 2. Run `bash scripts/setup.sh` for the pre-push scan ([git-hooks](guides/02-git-hooks.md)), and `bash scripts/protect-main.sh` for the `main` ruleset (needs a public repo or a paid plan).
 3. Fill in [docs/spec.md](docs/spec.md), `tech-stack.md` and `status.md` under their headings. Keep `code-standards.md`, `process.md`, the workflow and the scripts as they are, and add your own entries to `decisions.md`. Keep `threat-model.md` and `costs.md` only if required.
 4. Keep, adapt or delete the sample Terraform unit, `aws/api`. For a new unit, copy it.
@@ -64,7 +64,7 @@ Once per project, before the first deploy, as an admin in the project's AWS acco
 |:-:|-------|------|
 | 1 | **AWS Console** | CloudFormation → Create stack → Upload [bootstrap.yaml](aws/bootstrap/bootstrap.yaml) → name `<project>-bootstrap` → fill in the parameters (`CreateOidcProvider` false if the account already has GitHub's) → acknowledge IAM resources → Submit |
 | 2 | **GitHub** | Settings → Environments: create `aws-<target>-plan`, and `aws-<target>-apply` with yourself as required reviewer |
-| 3 | **GitHub** | Settings → Secrets and variables → Actions → Variables: `AWS_PLAN_ROLE_ARN`, `AWS_DEPLOY_ROLE_ARN` and `TF_STATE_BUCKET` from the stack's outputs; `AWS_TARGET` if it isn't `dev` |
+| 3 | **GitHub** | Settings → Secrets and variables → Actions → Variables: `PROJECT_NAME` (the stack's `ProjectName`), and `AWS_PLAN_ROLE_ARN`, `AWS_DEPLOY_ROLE_ARN` and `TF_STATE_BUCKET` from the stack's outputs; `AWS_TARGET` if it isn't `dev` |
 | 4 | **GitHub** | When the repo goes public: Settings → Security → turn on Private vulnerability reporting, which [SECURITY.md](SECURITY.md) points to |
 
 A new AWS service: add its permissions to the template, then CloudFormation → `<project>-bootstrap` → Update → Replace existing template.

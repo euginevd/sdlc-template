@@ -43,3 +43,9 @@ Key decisions, newest last. Never delete one; supersede it with a new entry.
 
 **Why:** one set of agent instructions that Claude Code, Codex, OpenCode, Copilot and Cursor all read. Claude Code reads `AGENTS.md` natively from v2.1.277, and skips it when a `CLAUDE.md` exists.
 **Instead of:** a `CLAUDE.md` alongside it. If Claude-only extras are ever needed, add a `CLAUDE.md` whose first line is `@AGENTS.md`.
+
+## 8. Project details in `spec.md`; `AGENTS.md` stays generic
+2026-11-08 · Accepted
+
+**Why:** a new project fills in one file. Template improvements to `AGENTS.md` copy into existing projects without merge conflicts. The project name reaches Terraform from the `PROJECT_NAME` repository variable, so the code holds no placeholders.
+**Instead of:** project context in `AGENTS.md` and the project name written into each unit.
