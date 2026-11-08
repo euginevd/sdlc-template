@@ -44,3 +44,9 @@
 
 23. Pass an explicit model ID, never a "latest" alias.
 24. Instructions give the goal, the inputs and what done looks like, not the steps. What must always happen is code.
+
+## Docs
+
+25. Each fact lives in one place; everywhere else links to it.
+26. Keep docs short: tables and one-line rules.
+27. Write what's true now. Mark future work *(planned)*.

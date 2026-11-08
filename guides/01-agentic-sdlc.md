@@ -28,30 +28,3 @@ The eight DevSecOps stages and the core security activities in each.
 | 6 | Deploy | Admission control · GitOps deployment · secure workload configuration |
 | 7 | Operate | Posture management · vulnerability management · AI posture management |
 | 8 | Monitor | Threat detection and logging · incident response · AI monitoring |
-
----
-
-## 4. Reference
-
-### 4.1 Layout and what to change in a new project
-
-The repo's shape (one repo per product, one workflow per folder, one Terraform state per unit) is set out in `AGENTS.md` → Repo layout.
-
-| Path | For | In a new project |
-|------|-----|------------------|
-| `AGENTS.md` | The agent's entry point | Rewrite Context; keep the rest |
-| `docs/CODE_STANDARDS.md`, `docs/PROCESS.md` | How to write code; what happens at each stage | As-is |
-| `docs/SPEC.md`, `TECH_STACK.md`, `STATUS.md` | What and why; tools and deploy; current state | Fill in under the headings |
-| `docs/DECISIONS.md` | Decision log; never deleted, only superseded | Keep the template's entries, add your own |
-| `apps/` | The apps | One folder per app |
-| `aws/` | Terraform units, `_template/`, `bootstrap/` | Copy `_template/` per unit |
-| `.github/workflows/aws.yml` | Plan and apply | As-is |
-| `lefthook.yml`, `.lefthook/`, `scripts/` | Pre-push scan and setup | As-is |
-| `guides/` | Reference for people, numbered `<NN>-<topic>.md` | Add per project |
-| `local/` | Personal scratch | Gitignored |
-
-### 4.2 Rules of thumb for docs
-
-- Each fact lives in one place; everywhere else links to it.
-- Keep docs short: tables and one-line rules.
-- Write what's true now. Mark future work *(planned)*.
