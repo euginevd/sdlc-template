@@ -42,14 +42,14 @@ sdlc-template/
 ├── AGENTS.md              01 the agent's rules; every agent reads this first
 ├── README.md              02 front page: what it is, how to start, the lifecycle
 ├── docs/                  03 what the agent builds from, in reading order:
-│   ├── SPEC.md               what we're building and what done means
-│   ├── TECH_STACK.md         tools, checks and how it deploys
-│   ├── CODE_STANDARDS.md     how to write the code
-│   ├── PROCESS.md            how to plan, build, review and ship
-│   ├── STATUS.md             what's built and what's next
-│   ├── DECISIONS.md          what's settled and why
-│   ├── THREAT_MODEL.md       data classification, threats and controls
-│   └── COSTS.md              what costs money, budget and alerts
+│   ├── spec.md               what we're building and what done means
+│   ├── tech-stack.md         tools, checks and how it deploys
+│   ├── code-standards.md     how to write the code
+│   ├── process.md            how to plan, build, review and ship
+│   ├── status.md             what's built and what's next
+│   ├── decisions.md          what's settled and why
+│   ├── threat-model.md       data classification, threats and controls
+│   └── costs.md              what costs money, budget and alerts
 ├── apps/                  04 the product: one folder per app (web, API, agent)
 ├── aws/                   05 the infrastructure, as Terraform
 │   ├── _template/            copy to aws/<unit>/ for each new unit
