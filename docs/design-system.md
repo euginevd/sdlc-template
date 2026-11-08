@@ -22,20 +22,23 @@ A worked example: `travel-claims`. Built on the [ArcVault design system](https:/
 ## Rules
 
 3. Calm and precise: no hype, emoji, gradients or scroll reveals; `accent` used sparingly.
-4. Use the system's Button, Badge, Card, Eyebrow, Input and Logo. Build anything new from the tokens only, and add it back to the system once it's settled.
-5. Icons: Lucide outline, stroke 2, `currentColor`.
-6. Contrast: text 4.5:1, controls and focus rings 3:1 in both themes (code-standards 16).
-7. Status is a word plus an icon, never colour alone. Motion is 0.2s at most, and none under `prefers-reduced-motion`.
-8. Words: Australian English and sentence case; buttons say what happens ("Approve claim"); errors say what to do next.
+4. Use the system's Button, Badge, Card, Eyebrow, Input and Logo. Code uses the tokens as CSS variables (`var(--ink)`), never raw values; anything new is built from them and added back to the system once settled.
+5. Icons: Lucide outline, stroke 2, `currentColor`; decorative icons are `aria-hidden`, and icon-only buttons have a label.
+6. Themes follow the device (`prefers-color-scheme`), with a toggle that sets `data-theme`; test both, and Windows contrast themes (`forced-colors`).
+7. Fonts are self-hosted `woff2` files served with the app, so no request leaves for a font CDN.
+8. WCAG 2.2 AA (code-standards 16): text 4.5:1, controls and focus rings 3:1; targets at least 24×24px; sticky parts never hide the focused element; a file picker beside every drop zone; sign-in allows paste and password managers.
+9. Status is a word plus an icon, never colour alone. Motion is 0.2s at most, and none under `prefers-reduced-motion`.
+10. Words: Australian English and sentence case; buttons say what happens ("Approve claim"); errors say what to do next.
+11. AI output is labelled: show what the agent decided, its reasons and sources, and how to ask for a person to review it (the Privacy Act's automated decision rules, business 3).
 
 ## This project
 
-9. Premium and quiet: a `bg-ink` header band with the logo, generous space on paper, and key numbers set large in Geist.
-10. Queue: a strip of four figures (waiting, decided today, median time to decision, paid this week) with mono labels and a 7-day sparkline each, then the claims table.
-11. Claim page: on the left, the claimant's story, receipt thumbnails that open full size, and a timeline of every step (submitted, screened, decided, paid); on the right, a sticky decision card with the outcome, the payout and the policy clauses it quotes.
-12. Payout bar: one horizontal bar from claimed to paid, with the deductible and anything over the limit in `bg-3`, the paid amount in `accent`, and every segment labelled.
-13. Charts: a line for trends, a bar for comparisons; `ink-3` axes, `accent` for the series in focus, and a table view of the same numbers.
-14. Claimants: a single-column form that works at 360px wide, with numbered steps and a receipt drop zone that shows previews.
-15. Every screen has loading skeletons in its own layout, an empty state that says what to do, and an error state with a retry.
-16. Status chips: Approved, Declined, Referred and Paid; `warn` only for a payment held over the limit.
-17. Numbers round to at most 2 decimal places (`4.25 hours`, `92.5%`); money always shows 2 (`$1,234.50` AUD). Dates as `8 Nov 2026`.
+12. Premium and quiet: a `bg-ink` header band with the logo, generous space on paper, and key numbers set large in Geist.
+13. Queue: a strip of four figures (waiting, decided today, median time to decision, paid this week) with mono labels and a 7-day sparkline each, then the claims table.
+14. Claim page: on the left, the claimant's story, receipt thumbnails that open full size, and a timeline of every step (submitted, screened, decided, paid); on the right, a sticky decision card with the outcome, the payout and the policy clauses it quotes.
+15. Payout bar: one horizontal bar from claimed to paid, with the deductible and anything over the limit in `bg-3`, the paid amount in `accent`, and every segment labelled.
+16. Charts: a line for trends, a bar for comparisons; `ink-3` axes, `accent` for the series in focus, and a table view of the same numbers.
+17. Claimants: a single-column form that works at 360px wide, with numbered steps and a receipt drop zone that shows previews.
+18. Every screen has loading skeletons in its own layout, an empty state that says what to do, and an error state with a retry.
+19. Status chips: Approved, Declined, Referred and Paid; `warn` only for a payment held over the limit.
+20. Numbers in tabular figures, rounded to at most 2 decimal places (`4.25 hours`, `92.5%`); money always shows 2 (`$1,234.50` AUD). Dates as `8 Nov 2026`.
