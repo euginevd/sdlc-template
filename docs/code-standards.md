@@ -29,9 +29,9 @@
 
 ## Terraform
 
-16. One root per deployable unit, with its own remote state, locked and encrypted. Never commit state.
+16. One root per deployable unit in `aws/<unit>/`, with its own remote state, locked and encrypted; copy `aws/api` to start one. Never commit state.
 17. `main.tf`, `variables.tf`, `outputs.tf`, `versions.tf`; pin Terraform and providers; commit the lock file.
-18. No hardcoded IDs, regions or ARNs. Tag once, in the provider's `default_tags`.
+18. No hardcoded IDs, regions, ARNs, project names or environments; the pipeline passes them. Name resources `${var.project}-<unit>-<what>-${var.environment}`, give every IAM role the `${var.project}-boundary` permissions boundary, and tag once in the provider's `default_tags`.
 19. snake_case; `fmt`, `validate`, `tflint` and a security scanner clean. Skip intentional findings inline, with the reason.
 20. Plan on the PR; apply only the reviewed plan, after approval. `ignore_changes` only what other systems change on purpose.
 

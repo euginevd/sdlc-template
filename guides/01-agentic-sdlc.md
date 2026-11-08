@@ -65,7 +65,6 @@ A typical project made from [euginevd/sdlc-template](https://github.com/euginevd
 │   ├── web/                  front end (example)
 │   └── api/                  backend or agent (example)
 ├── aws/                   05 the infrastructure, as Terraform
-│   ├── AGENTS.md             Terraform rules for agents
 │   ├── bootstrap/            CloudFormation, run once: OIDC, state bucket, CI roles
 │   └── api/                  sample: Lambda behind an HTTP API, with logs
 ├── .github/workflows/     06 the pipeline
@@ -86,7 +85,6 @@ What each file holds, the key decision behind it, and how often it changes.
 | File | What's in it | Changes |
 |------|--------------|---------|
 | `AGENTS.md` | Rules for every coding agent: what to read, commands, workflow, boundaries, known mistakes. Generic, so the same in every project | Rarely; agents add known mistakes |
-| `aws/AGENTS.md` | Terraform rules: one root per unit, naming, permissions boundary, no project names in code | Rarely |
 | `README.md` | Front page: what the project is, how to start, bootstrap, cleanup, roadmap | Once per project |
 | `SECURITY.md` | How to report a vulnerability privately, through GitHub | Never |
 | `docs/spec.md` | The project (name, problem, goal, users, AWS), its stack, what done means, rules, what's out. The one file you fill in | Per project, then per change |
