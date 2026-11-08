@@ -30,13 +30,32 @@
 
 ```mermaid
 flowchart LR
-  claimant([Claimant]) --> web
-  handler([Handler]) --> web
-  web --> api
-  api <--> agent
-  agent --> claude{{Claude on Bedrock}}
-  api --> db[(Claims database)]
-  api --> bank[Bank API]
+  claimant([Claimant])
+  handler([Handler])
+
+  subgraph aws ["AWS account, ap-southeast-2"]
+    cognito[Cognito sign-in]
+    web["web<br/>S3 and CloudFront"]
+    api["api<br/>Lambda, HTTP API"]
+    agent["agent<br/>Lambda"]
+    db[(Claims database)]
+    bucket[(Receipt bucket)]
+  end
+
+  subgraph external ["External services"]
+    claude{{"Claude on Bedrock<br/>Australian profile"}}
+    bank[Bank API]
+  end
+
+  claimant & handler --> cognito
+  claimant & handler --> web
+  web -- "HTTPS, token" --> api
+  api -- "claim as data" --> agent
+  agent -- "decision" --> api
+  agent --> claude
+  api --> db
+  api --> bucket
+  api -- "payment under the limit" --> bank
 ```
 
 <sub>Full data flow and trust boundaries: [threat-model.md](docs/threat-model.md).</sub>
