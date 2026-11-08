@@ -64,15 +64,6 @@ def findings(tool, data):
     )
 
 
-def skips(tool, data):
-    if tool != "checkov":
-        return 0
-    return sum(
-        (b.get("summary") or {}).get("skipped", 0)
-        for b in (data if isinstance(data, list) else [data])
-    )
-
-
 def parse(tool, report, out):
     try:
         text = pathlib.Path(report).read_text(encoding="utf-8").strip()
@@ -80,19 +71,13 @@ def parse(tool, report, out):
     except (OSError, json.JSONDecodeError):
         data = None
     if data is None:
-        summary = {"tool": tool, "error": True, "count": 0, "top": [], "skips": 0}
+        summary = {"tool": tool, "error": True, "count": 0, "top": []}
     else:
         items = [(rel(f), int(line), rule, msg) for f, line, rule, msg in findings(tool, data)]
         for f, line, rule, msg in items[:50]:
             print(f"::error file={esc(f)},line={line},title={esc(tool + ' ' + rule)}::{esc(msg)}")
         top = [f"{rule}: {msg} ({f}:{line})" for f, line, rule, msg in items[:3]]
-        summary = {
-            "tool": tool,
-            "error": False,
-            "count": len(items),
-            "top": top,
-            "skips": skips(tool, data),
-        }
+        summary = {"tool": tool, "error": False, "count": len(items), "top": top}
     pathlib.Path(out).write_text(json.dumps(summary), encoding="utf-8")
 
 
@@ -107,7 +92,7 @@ def comment(folder, sha):
         s = (
             json.loads(path.read_text(encoding="utf-8"))
             if path.exists()
-            else {"error": True, "count": 0, "top": [], "skips": 0}
+            else {"error": True, "count": 0, "top": []}
         )
         if s["error"]:
             failed += 1
@@ -120,8 +105,6 @@ def comment(folder, sha):
             result = f"**{s['count']} found:**<br>" + "<br>".join(cell(t) for t in s["top"]) + more
         else:
             result = "Pass"
-        if s.get("skips"):
-            result += f", {s['skips']} skips with reasons"
         rows.append(f"| {check} ({tool.capitalize()}) | {result} |")
     status = "all passed" if not failed else f"{failed} failed"
     print(f"{MARKER}\n### Security checks: {status} ({sha[:7]})\n")
