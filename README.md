@@ -58,7 +58,7 @@ Once per AWS account (`dev`, then `prod`), as an admin:
 
 ## 🆕 New project
 
-1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` and `bash scripts/protect-main.sh` (Actions limits, squash-only merges, GitHub's security features and the `main` ruleset). A private repo needs a paid GitHub plan for the ruleset and the approval environments; a public repo gets them free.
+1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` and `bash scripts/protect-main.sh` (Actions limits, squash-only merges, GitHub's security features and the `main` ruleset; rerun it after changing it). A private repo needs a paid GitHub plan for the ruleset and the approval environments; a public repo gets them free.
 2. Replace the worked example: `business-context.md` per business; `spec.md`, `status.md`, this README and the root `pyproject.toml` name (then `uv lock`) per project; `decisions.md`. Keep `design-system.md`, `threat-model.md` and `costs.md` only if needed. Replace or delete `LICENSE` (MIT, for the template).
 3. Keep `AGENTS.md`, `code-standards.md`, the workflow and the scripts as they are.
 4. Ask the agent to plan. The full flow: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md), section 2.
