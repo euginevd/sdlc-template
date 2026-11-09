@@ -35,7 +35,7 @@ Step 1 in full, for a new project:
 1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` and `bash scripts/protect-main.sh` (Actions limits, squash-only merges, GitHub's security features and the `main` ruleset; rerun it after changing it). A private repo needs a paid GitHub plan for the ruleset and the approval environments; a public repo gets them free. On a public repo, also turn on everything under Settings → Advanced Security except **Agentic autofix**, which uses AI credits; the script can't set Automatic dependency submission, Malware alerts, the AI scans or Copilot Autofix, as they have no API.
 2. Replace the worked example, keeping its structure: `business-context.md` per business; `spec.md`, `status.md`, the README and the root `pyproject.toml` name (then `uv lock`) per project; `decisions.md`. Keep `design-system.md`, `threat-model.md` and `costs.md` only if needed. Replace or delete `LICENSE`.
 3. Keep `AGENTS.md`, `code-standards.md`, the workflows and the scripts as they are.
-4. Bootstrap AWS: the steps at the top of [bootstrap.yaml](../aws/bootstrap/bootstrap.yaml).
+4. Bootstrap AWS: the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml).
 
 ## 3. The stages
 
@@ -95,6 +95,7 @@ travel-claims/
 │   ├── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template
 │   ├── 02-security-trade-offs.md  accepted risks, why, and what to change for production
 │   ├── 03-secure-agentic-sdlc-end-to-end.md  the end-to-end story for security architects: who does what, guardrails, audit trail
+│   ├── 04-file-notes.md      one line per repo file: what it is and why it's there
 │   └── assets/               the guides' diagrams as PNG; diagrams.py rebuilds them
 ├── SECURITY.md            13 how to report a vulnerability, what happens next and what's in scope
 ├── CONTRIBUTING.md        14 how a change is made, by a person or an agent
