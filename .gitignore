@@ -15,3 +15,5 @@ __pycache__/
 .coverage
 coverage/
 *.tsbuildinfo
+.claude/settings.local.json
+.claude/worktrees/
