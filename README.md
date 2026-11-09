@@ -8,7 +8,7 @@
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-OIDC-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-Cloud-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
 
-[Claimants](#-claimants) · [Handlers](#️-handlers) · [Apps](#-apps)
+[Claimants](#-claimants) · [Handlers](#️-handlers) · [Apps](#-apps) · [Costs](#-costs)
 
 </div>
 
@@ -69,5 +69,9 @@ flowchart LR
 | `web` | Claimants submit and track claims; handlers review them | S3 and CloudFront |
 | `api` | Claims, receipts, decisions and payments | Lambda behind an HTTP API |
 | `agent` | Decides each claim against the policy wording | Lambda, Claude on Bedrock |
+
+## 💰 Costs
+
+About **$165 a month** in `dev` (budget $200), mostly Claude on Bedrock; `prod` grows with claim volume. Tooling is free on a public repo. Details: [costs.md](docs/costs.md).
 
 Developers: [AGENTS.md](AGENTS.md), then [docs/](docs/).
