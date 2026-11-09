@@ -67,12 +67,12 @@ How tests run: `uv run pytest` (or CI on every PR) → finds tests in apps/ → 
 How they fit: open a PR → ci + security + codeql run → aws plans → review → merge → aws deploys dev.
 
 1. **pull_request_template.md**: pre-fills every PR: what changed, security impact, checks ticked. Fixed name.
-   - *CODEOWNERS* (not used): auto-requests reviewers per path; not needed with one owner.
-2. **dependabot.yml**: weekly update PRs for actions, Python, Terraform; also waits 7 days. Fixed name.
-3. **workflows/ci.yml**: every PR: lint, type-check and test only the apps the PR changed.
-4. **workflows/security.yml**: the pre-push scan again (hooks can be skipped) + Checkov, Semgrep; weekly.
-5. **workflows/codeql.yml**: GitHub's code scanning for bugs and vulnerabilities; PRs, main, weekly.
-6. **workflows/aws.yml**: Terraform plan + cost on PRs; deploys dev on merge, prod by hand after approval.
+2. **CODEOWNERS**: auto-requests reviewers per path; optional, worth it once a team shares the repo.
+3. **dependabot.yml**: weekly update PRs for actions, Python, Terraform; also waits 7 days. Fixed name.
+4. **workflows/ci.yml**: every PR: lint, type-check and test only the apps the PR changed.
+5. **workflows/security.yml**: the pre-push scan again (hooks can be skipped) + Checkov, Semgrep; weekly.
+6. **workflows/codeql.yml**: GitHub's code scanning for bugs and vulnerabilities; PRs, main, weekly.
+7. **workflows/aws.yml**: Terraform plan + cost on PRs; deploys dev on merge, prod by hand after approval.
 
 ## 7. Cloud (infra/)
 
