@@ -1,16 +1,16 @@
 name: aws
 
-# One Terraform root per unit in aws/<unit>/: plan with a read-only role, apply after approval.
+# One Terraform root per unit in infra/aws/<unit>/: plan with a read-only role, apply after approval.
 # dev: planned on every PR, applied on merge to main; prod: a manual run with target prod.
 # Repo variables: PROJECT_NAME, optional AWS_REGION (default ap-southeast-2).
 # Per environment, from the bootstrap stack: AWS_PLAN_ROLE_ARN, AWS_DEPLOY_ROLE_ARN, TF_STATE_BUCKET.
 # Cost comment: secret INFRACOST_API_KEY; optional variables MONTHLY_COST_LIMIT (warns above it) and COST_CURRENCY (default USD).
 on:
   pull_request:
-    paths: [aws/**, '!aws/bootstrap/**', apps/**, .github/workflows/aws.yml]
+    paths: [infra/aws/**, '!infra/aws/bootstrap/**', apps/**, .github/workflows/aws.yml]
   push:
     branches: [main]
-    paths: [aws/**, '!aws/bootstrap/**', apps/**, .github/workflows/aws.yml]
+    paths: [infra/aws/**, '!infra/aws/bootstrap/**', apps/**, .github/workflows/aws.yml]
   workflow_dispatch:
     inputs:
       target:
@@ -19,7 +19,7 @@ on:
         options: [dev, prod]
         default: dev
       unit:
-        description: Unit folder under aws/, or all
+        description: Unit folder under infra/aws/, or all
         type: string
         default: all
       action:
@@ -55,24 +55,24 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      # Manual run: the chosen unit, or all. Workflow change: every unit. Otherwise: units whose aws/ or apps/ folder changed.
+      # Manual run: the chosen unit, or all. Workflow change: every unit. Otherwise: units whose infra/aws/ or apps/ folder changed.
       - id: units
         env:
           EVENT: ${{ github.event_name }}
           INPUT_UNIT: ${{ inputs.unit }}
           BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
-          all=$(find aws -mindepth 1 -maxdepth 1 -type d ! -name bootstrap ! -name '_*' -printf '%f\n')
+          all=$(find infra/aws -mindepth 1 -maxdepth 1 -type d ! -name bootstrap ! -name '_*' -printf '%f\n')
           if [ "$EVENT" = workflow_dispatch ] && [ "$INPUT_UNIT" = all ]; then
             units="$all"
           elif [ "$EVENT" = workflow_dispatch ]; then
-            units=$(echo "$INPUT_UNIT" | grep -Fx "$all" || { echo "No unit aws/$INPUT_UNIT"; exit 1; })
+            units=$(echo "$INPUT_UNIT" | grep -Fx "$all" || { echo "No unit infra/aws/$INPUT_UNIT"; exit 1; })
           else
             changed=$(git diff --name-only "$BASE" "$GITHUB_SHA" 2>/dev/null || true)
             if [ -z "${BASE//0/}" ] || echo "$changed" | grep -qx .github/workflows/aws.yml; then
               units="$all"
             else
-              units=$(echo "$changed" | sed -n 's|^\(aws\|apps\)/\([^/]*\)/.*|\2|p' | sort -u | grep -Fx "$all" || true)
+              units=$(echo "$changed" | sed -n -E 's#^(infra/aws|apps)/([^/]+)/.*#\2#p' | sort -u | grep -Fx "$all" || true)
             fi
           fi
           echo "units=$(echo "$units" | jq -R . | jq -sc 'map(select(length > 0))')" >> "$GITHUB_OUTPUT"
@@ -93,7 +93,7 @@ jobs:
         unit: ${{ fromJson(needs.detect.outputs.units) }}
     defaults:
       run:
-        working-directory: aws/${{ matrix.unit }}
+        working-directory: infra/aws/${{ matrix.unit }}
     # Passed to the shell as a variable, never pasted into the script.
     env:
       UNIT: ${{ matrix.unit }}
@@ -153,12 +153,12 @@ jobs:
           trap 'rm -f plan.json infracost.json' EXIT
           [ -n "$INFRACOST_API_KEY" ] || { echo "No INFRACOST_API_KEY secret, so no cost estimate."; exit 0; }
           docker run --rm -e INFRACOST_API_KEY -e INFRACOST_CURRENCY -e INFRACOST_SKIP_UPDATE_CHECK=true -v "$PWD:/unit" --entrypoint infracost infracost/infracost:0.10.47@sha256:76ad6948e83bffb4b6127c9cae13faea068981bcb2b081526920d9bb88a399e1 diff --path /unit/plan.json --format json --out-file /unit/infracost.json || true
-          python3 ../../scripts/cost-report.py parse "$UNIT" infracost.json plan.json "cost-$UNIT.json"
+          python3 ../../../scripts/cost-report.py parse "$UNIT" infracost.json plan.json "cost-$UNIT.json"
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: cost-${{ matrix.unit }}
-          path: aws/${{ matrix.unit }}/cost-${{ matrix.unit }}.json
+          path: infra/aws/${{ matrix.unit }}/cost-${{ matrix.unit }}.json
           if-no-files-found: ignore
           retention-days: 1
 
@@ -167,8 +167,8 @@ jobs:
         with:
           name: tfplan-${{ matrix.unit }}
           path: |
-            aws/${{ matrix.unit }}/tfplan
-            aws/${{ matrix.unit }}/*.zip
+            infra/aws/${{ matrix.unit }}/tfplan
+            infra/aws/${{ matrix.unit }}/*.zip
           if-no-files-found: ignore
           retention-days: 1
 
@@ -211,7 +211,8 @@ jobs:
   apply:
     needs: [detect, plan]
     # Release: only main is applied, so a manual run can't deploy an unreviewed branch.
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.PROJECT_NAME != ''
+    # Runs even when some plans failed: a unit without a saved plan skips, so ready units still apply.
+    if: always() && !cancelled() && needs.detect.result == 'success' && needs.detect.outputs.units != '[]' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.PROJECT_NAME != ''
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: aws-${{ inputs.target || 'dev' }}-apply
@@ -224,7 +225,7 @@ jobs:
         unit: ${{ fromJson(needs.detect.outputs.units) }}
     defaults:
       run:
-        working-directory: aws/${{ matrix.unit }}
+        working-directory: infra/aws/${{ matrix.unit }}
     # Passed to the shell as a variable, never pasted into the script.
     env:
       UNIT: ${{ matrix.unit }}
@@ -237,7 +238,7 @@ jobs:
         continue-on-error: true
         with:
           name: tfplan-${{ matrix.unit }}
-          path: aws/${{ matrix.unit }}
+          path: infra/aws/${{ matrix.unit }}
 
       - id: has_plan
         run: echo "found=$([ -f tfplan ] && echo true || echo false)" >> "$GITHUB_OUTPUT"

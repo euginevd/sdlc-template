@@ -1,7 +1,7 @@
 [project]
 name = "api"
 version = "0.1.0"
-description = "Sample API: the health check behind aws/api's /health route"
+description = "Sample API: the health check behind infra/aws/api's /health route"
 requires-python = ">=3.13,<3.14"
 dependencies = []
 

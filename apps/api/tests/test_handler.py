@@ -10,7 +10,7 @@ def test_health_returns_ok() -> None:
 
 
 def test_health_returns_nothing_from_the_request() -> None:
-    # /health is public (aws/api, CKV_AWS_309), so it must never echo what it's sent.
+    # /health is public (infra/aws/api, CKV_AWS_309), so it must never echo what it's sent.
     event: dict[str, object] = {
         "queryStringParameters": {"q": "<script>"},
         "headers": {"x": "secret"},

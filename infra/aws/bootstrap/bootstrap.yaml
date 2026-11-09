@@ -1,5 +1,7 @@
 # Once per AWS account (dev, then prod), by a person, never the agent: the apply environment is the deploy gate.
 # 1. CloudFormation: deploy this file as stack <ProjectName>-bootstrap.
+#    Repos created after 2026-07-15 send GitHub's immutable OIDC subject: set GitHubOwnerId and GitHubRepoId
+#    from: gh api repos/<owner>/<repo> --jq '.owner.id, .id'
 # 2. GitHub environments: aws-<Target>-plan, and aws-<Target>-apply with a required reviewer, main only.
 # 3. GitHub variables: PROJECT_NAME on the repo; this stack's outputs on the environments (see Outputs).
 # Deploy: a merge to main applies to dev after approval; prod is a manual run of the aws workflow.
@@ -21,6 +23,16 @@ Parameters:
   GitHubRepo:
     Type: String
     Description: Repository name
+  GitHubOwnerId:
+    Type: String
+    Default: ''
+    AllowedPattern: '[0-9]*'
+    Description: The owner's numeric ID, for a repo with GitHub's immutable OIDC subject; empty for the name-only subject
+  GitHubRepoId:
+    Type: String
+    Default: ''
+    AllowedPattern: '[0-9]*'
+    Description: The repo's numeric ID, for a repo with GitHub's immutable OIDC subject; empty for the name-only subject
   Target:
     Type: String
     Default: dev
@@ -33,6 +45,7 @@ Parameters:
 
 Conditions:
   CreateOidc: !Equals [!Ref CreateOidcProvider, 'true']
+  ImmutableSubject: !Not [!Equals [!Ref GitHubRepoId, '']]
 
 Resources:
 
@@ -118,7 +131,11 @@ Resources:
             Condition:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
-                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubOwner}/${GitHubRepo}:environment:aws-${Target}-apply'
+                # The immutable subject names the owner and repo by ID too, so a recreated repo of the same name can't assume it.
+                token.actions.githubusercontent.com:sub: !If
+                  - ImmutableSubject
+                  - !Sub 'repo:${GitHubOwner}@${GitHubOwnerId}/${GitHubRepo}@${GitHubRepoId}:environment:aws-${Target}-apply'
+                  - !Sub 'repo:${GitHubOwner}/${GitHubRepo}:environment:aws-${Target}-apply'
       Policies:
         - PolicyName: terraform-state
           PolicyDocument:
@@ -175,7 +192,7 @@ Resources:
                 Condition:
                   StringEquals:
                     iam:PassedToService: lambda.amazonaws.com
-              # aws/api: functions, the HTTP API and their log groups.
+              # infra/aws/api: functions, the HTTP API and their log groups.
               - Sid: LambdaProjectFunctions
                 Effect: Allow
                 Action: lambda:*
@@ -243,7 +260,11 @@ Resources:
             Condition:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
-                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubOwner}/${GitHubRepo}:environment:aws-${Target}-plan'
+                # The immutable subject names the owner and repo by ID too, so a recreated repo of the same name can't assume it.
+                token.actions.githubusercontent.com:sub: !If
+                  - ImmutableSubject
+                  - !Sub 'repo:${GitHubOwner}@${GitHubOwnerId}/${GitHubRepo}@${GitHubRepoId}:environment:aws-${Target}-plan'
+                  - !Sub 'repo:${GitHubOwner}/${GitHubRepo}:environment:aws-${Target}-plan'
       Policies:
         - PolicyName: terraform-plan
           PolicyDocument:

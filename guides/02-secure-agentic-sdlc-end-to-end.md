@@ -1,6 +1,6 @@
 # The secure agentic SDLC, end to end
 
-For cloud security architects: what changes when AI agents write the code, where the risks move, and how this template keeps people accountable and every change checked and recorded. Read it top to bottom; each section builds on the last. The running example is `travel-claims`, the claims app in `docs/`. The how-to is in [01-agentic-sdlc.md](01-agentic-sdlc.md); the risks the template accepts are in [02-security-trade-offs.md](02-security-trade-offs.md).
+For cloud security architects: what changes when AI agents write the code, where the risks move, and how this template keeps people accountable and every change checked and recorded. Read it top to bottom; each section builds on the last. The running example is `travel-claims`, the claims app in `docs/`. The how-to is in [01-agentic-sdlc.md](01-agentic-sdlc.md); the risks the template accepts are in [03-security-trade-offs.md](03-security-trade-offs.md).
 
 ## 1. How we got here
 
@@ -66,7 +66,7 @@ Not every guardrail is equally strong. From weakest to strongest:
 | 2 | **Checked** | Pre-push scan (Gitleaks, Trivy) | Yes, by skipping the hook; the PR checks run the same scans |
 | 3 | **Enforced** | Required PR checks and the protected `main` ruleset | Not through a PR: GitHub blocks the merge |
 | 4 | **Limited** | AWS only in the pipeline, by OIDC with no stored keys; a read-only plan role | Not from a PR: it has no access to use |
-| 5 | **Approved** | You approve the merge and every deploy | In the template, yes: it works as you on GitHub ([trade-off 1](02-security-trade-offs.md)) |
+| 5 | **Approved** | You approve the merge and every deploy | In the template, yes: it works as you on GitHub ([trade-off 1](03-security-trade-offs.md)) |
 
 The rule of thumb: **anything that matters must be enforced or limited, not just asked.** The weak spot is identity. While the agent works under your GitHub account, layers 3 and 5 hold only as long as it follows the rules. The fix is separation of duties, applied to agents (section 8).
 
@@ -124,7 +124,7 @@ The [OWASP Top 10 for Agentic Applications (2026)](https://genai.owasp.org/resou
 | Unexpected code execution | Generated code runs something unsafe | Semgrep and CodeQL on every PR, tests in pinned containers, safe-by-design code standards |
 | Leaked secrets | The agent reads, prints or commits a secret | Rule 20, Gitleaks before push and on every PR, GitHub push protection on public repos |
 | Too much trust in the agent | People approve without reading | The PR security summary, independent review, gates before each action |
-| Shared identity | The agent acts as the developer on GitHub | [Trade-off 1](02-security-trade-offs.md): accepted for a solo project; a separate agent identity for production |
+| Shared identity | The agent acts as the developer on GitHub | [Trade-off 1](03-security-trade-offs.md): accepted for a solo project; a separate agent identity for production |
 
 ### The name
 

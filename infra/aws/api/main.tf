@@ -11,7 +11,7 @@ locals {
 # The app's code from apps/api; it has no third-party packages, so the source is the whole bundle.
 data "archive_file" "handler" {
   type        = "zip"
-  source_dir  = "${path.module}/../../apps/api/src"
+  source_dir  = "${path.module}/../../../apps/api/src"
   output_path = "${path.module}/handler.zip"
   excludes    = ["**/__pycache__/**"]
 }
