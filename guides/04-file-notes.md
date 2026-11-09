@@ -56,6 +56,7 @@ How they fit: `apps/<name>/` is one app; src/ holds the code, tests/ checks it; 
 3. **apps/api/src/api/py.typed**: empty; tells type checkers the package ships its type hints.
 4. **apps/api/tests/test_handler.py**: pytest checks: one that it works, one that it's safe.
 5. **.coverage**: git-ignored; pytest-cov's record of tested lines; under 80% fails the run.
+6. **.pytest_cache/, .ruff_cache/, \_\_pycache\_\_/**: git-ignored tool caches for speed; safe to delete.
 
 How tests run: `uv run pytest` (or CI on every PR) → finds tests in apps/ → runs them → writes .coverage → fails if any test fails or coverage < 80%.
 
