@@ -37,13 +37,14 @@ How they fit: setup.sh → `lefthook install` writes .git/hooks/pre-push → on 
 4. **.lefthook/pre-push-scan.sh**: collects the pushed commits' files and diffs, then calls scan.sh.
 5. **scripts/scan.sh**: gitleaks (secrets) + Trivy (packages, IaC); a finding blocks the push.
 6. **.vscode/extensions.json**: VS Code suggests the Trivy + Semgrep extensions; flags issues as you type.
+7. **.claude/**: Claude Code's local folder (settings, worktrees); not committed; rules live in AGENTS.md.
 
 Other scripts/ (run by hand or by CI, not hooks):
 
-7. **scripts/protect-main.sh**: by hand once: locks main, squash-only merges, GitHub security features.
-8. **scripts/pr-findings.sh**: lists a PR's open review threads and alerts; replies and resolves them.
-9. **scripts/security-report.py**: CI: turns scanner results into PR annotations + one summary comment.
-10. **scripts/cost-report.py**: CI: turns Infracost results into PR annotations + one cost comment.
+8. **scripts/protect-main.sh**: by hand once: locks main, squash-only merges, GitHub security features.
+9. **scripts/pr-findings.sh**: lists a PR's open review threads and alerts; replies and resolves them.
+10. **scripts/security-report.py**: CI: turns scanner results into PR annotations + one summary comment.
+11. **scripts/cost-report.py**: CI: turns Infracost results into PR annotations + one cost comment.
 
 ## 5. App code
 
