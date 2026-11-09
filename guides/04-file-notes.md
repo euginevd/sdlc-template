@@ -16,8 +16,9 @@ One line per repo file: what it is, why we need it.
 2. **CONTRIBUTING.md**: how anyone (person or agent) sets up and makes a change: plan, checks, PR.
 3. **AGENTS.md**: rules every coding agent follows; a standard name most AI tools read.
 4. **docs/**: project context agents read and keep current, as AGENTS.md lists: spec, decisions, status.
-5. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
-6. **LICENSE**: MIT: anyone may use, copy or change the code, keeping the notice; no warranty.
+5. **guides/**: how-to guides for people, numbered 01, 02, …; assets/ holds their diagrams.
+6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
+7. **LICENSE**: MIT: anyone may use, copy or change the code, keeping the notice; no warranty.
 
 ## 3. Git basics
 
