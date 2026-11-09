@@ -211,7 +211,8 @@ jobs:
   apply:
     needs: [detect, plan]
     # Release: only main is applied, so a manual run can't deploy an unreviewed branch.
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.PROJECT_NAME != ''
+    # Runs even when some plans failed: a unit without a saved plan skips, so ready units still apply.
+    if: always() && !cancelled() && needs.detect.result == 'success' && needs.detect.outputs.units != '[]' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.PROJECT_NAME != ''
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: aws-${{ inputs.target || 'dev' }}-apply
