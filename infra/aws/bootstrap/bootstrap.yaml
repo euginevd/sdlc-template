@@ -175,7 +175,7 @@ Resources:
                 Condition:
                   StringEquals:
                     iam:PassedToService: lambda.amazonaws.com
-              # aws/api: functions, the HTTP API and their log groups.
+              # infra/aws/api: functions, the HTTP API and their log groups.
               - Sid: LambdaProjectFunctions
                 Effect: Allow
                 Action: lambda:*

@@ -12,7 +12,7 @@ updates:
     cooldown: { default-days: 7 }
     groups: { python: { patterns: ["*"] } }
   - package-ecosystem: terraform
-    directories: ["/aws/*"]
+    directories: ["/infra/aws/*"]
     schedule: { interval: weekly }
     cooldown: { default-days: 7 }
     groups: { terraform: { patterns: ["*"] } }

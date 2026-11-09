@@ -72,10 +72,11 @@ travel-claims/
 │   └── plan-<name>.md        the plan being built (per plan; deleted when done)
 ├── apps/                  04 the product: one folder per app
 │   ├── web/                  front end (example)
-│   └── api/                  sample: the health check behind aws/api
-├── aws/                   05 the infrastructure, as Terraform
-│   ├── bootstrap/            CloudFormation, run once: OIDC, state bucket, CI roles
-│   └── api/                  sample: apps/api on Lambda behind an HTTP API, with logs
+│   └── api/                  sample: the health check behind infra/aws/api
+├── infra/                 05 the infrastructure, one folder per cloud
+│   └── aws/                  Terraform, one folder per unit
+│       ├── bootstrap/        CloudFormation, run once: OIDC, state bucket, CI roles
+│       └── api/              sample: apps/api on Lambda behind an HTTP API, with logs
 ├── .github/workflows/     06 the pipeline, one workflow per concern
 │   ├── aws.yml               plan on the PR with a cost comment (Infracost), apply after your approval
 │   ├── ci.yml                each app's format, lint, types and tests, for the apps a PR changes
@@ -128,7 +129,7 @@ Covers spec 9 and 17.
 ## Design
 
 - `api`: `POST /claims/{id}/receipts` checks the claimant owns the claim and returns a presigned S3 upload URL: PDF, JPEG or PNG, up to 10 MB, valid for 5 minutes.
-- Receipt bucket: private, KMS-encrypted, in `ap-southeast-2`, in a new Terraform unit `aws/receipts/`.
+- Receipt bucket: private, KMS-encrypted, in `ap-southeast-2`, in a new Terraform unit `infra/aws/receipts/`.
 - `web`: an upload form on the claim page that sends the file straight to S3.
 
 ## Security risks

@@ -35,7 +35,7 @@ jobs:
               "") ;;
               apps/web/*) web=true ;;
               apps/* | *.py | pyproject.toml | uv.lock | .python-version) python=true ;;
-              *.md | docs/* | guides/* | LICENSE | aws/* | .vscode/*) ;;
+              *.md | docs/* | guides/* | LICENSE | infra/* | .vscode/*) ;;
               *) python=true; web=true ;;
             esac
           done <<< "$files"
