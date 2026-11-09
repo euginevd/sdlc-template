@@ -89,7 +89,7 @@ travel-claims/
 ├── .lefthook/             08 the pre-push hook script
 ├── scripts/               09 setup.sh installs the tools; scan.sh runs Gitleaks and Trivy;
 │                             security-report.py and cost-report.py build the PR comments; pr-findings.sh lists a PR's findings to fix or answer; protect-main.sh hardens the repo and sets the main ruleset, safe to rerun
-├── .vscode/               10 the Trivy and Semgrep extensions, for your review
+├── .vscode/               10 recommended extensions: Trivy, Semgrep, Ruff, Python, Terraform
 ├── pyproject.toml         11 the Python workspace and tool settings, with uv.lock and .python-version
 ├── guides/                12 reference for people, numbered 01, 02, …
 │   ├── 01-agentic-sdlc.md    this guide: the lifecycle, workflow and template

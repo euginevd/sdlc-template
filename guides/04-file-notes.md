@@ -23,7 +23,7 @@ One line per repo file: what it is, why we need it.
 ## 3. Git basics
 
 1. **.git/**: git's own database (history, config, hooks); hidden in VS Code, never edit by hand.
-2. **.gitignore**: files git never tracks: secrets (.env, *.tfvars), Terraform state, build output, caches.
+2. **.gitignore**: files git never tracks: secrets (.env*, *.tfvars), Terraform state, build output, caches.
 3. **.gitattributes**: line-ending rules; forces LF on .sh so bash scripts work on Windows clones.
 4. **.dockerignore**: keeps secrets, .git, caches and docs out of Docker images; smaller and safer.
 
@@ -36,15 +36,16 @@ How they fit: setup.sh → `lefthook install` writes .git/hooks/pre-push → on 
 3. **.git/hooks/pre-push**: hidden; the only place git looks; per clone, written by `lefthook install`.
 4. **.lefthook/pre-push-scan.sh**: collects the pushed commits' files and diffs, then calls scan.sh.
 5. **scripts/scan.sh**: gitleaks (secrets) + Trivy (packages, IaC); a finding blocks the push.
-6. **.vscode/extensions.json**: VS Code suggests the Trivy + Semgrep extensions; flags issues as you type.
-7. **.claude/**: Claude Code's folder; local settings and worktrees git-ignored; rules live in AGENTS.md.
+6. **.vscode/extensions.json**: VS Code suggests scanner, Ruff, Python, Terraform extensions; flags issues as you type.
+7. **.editorconfig**: editor defaults for people and agents: LF, UTF-8, indent size, final newline.
+8. **.claude/**: Claude Code's folder; local settings and worktrees git-ignored; rules live in AGENTS.md.
 
 Other scripts/ (run by hand or by CI, not hooks):
 
-8. **scripts/protect-main.sh**: by hand once: locks main, squash-only merges, GitHub security features.
-9. **scripts/pr-findings.sh**: lists a PR's open review threads and alerts; replies and resolves them.
-10. **scripts/security-report.py**: CI: turns scanner results into PR annotations + one summary comment.
-11. **scripts/cost-report.py**: CI: turns Infracost results into PR annotations + one cost comment.
+9. **scripts/protect-main.sh**: by hand once: locks main, squash-only merges, GitHub security features.
+10. **scripts/pr-findings.sh**: lists a PR's open review threads and alerts; replies and resolves them.
+11. **scripts/security-report.py**: CI: turns scanner results into PR annotations + one summary comment.
+12. **scripts/cost-report.py**: CI: turns Infracost results into PR annotations + one cost comment.
 
 ## 5. App code
 
@@ -66,6 +67,7 @@ How tests run: `uv run pytest` (or CI on every PR) → finds tests in apps/ → 
 How they fit: open a PR → ci + security + codeql run → aws plans → review → merge → aws deploys dev.
 
 1. **pull_request_template.md**: pre-fills every PR: what changed, security impact, checks ticked. Fixed name.
+   - *CODEOWNERS* (not used): auto-requests reviewers per path; not needed with one owner.
 2. **dependabot.yml**: weekly update PRs for actions, Python, Terraform; also waits 7 days. Fixed name.
 3. **workflows/ci.yml**: every PR: lint, type-check and test only the apps the PR changed.
 4. **workflows/security.yml**: the pre-push scan again (hooks can be skipped) + Checkov, Semgrep; weekly.
