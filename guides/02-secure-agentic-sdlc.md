@@ -1,10 +1,13 @@
 # The secure agentic SDLC, end to end
 
-For cloud security architects: what changes when AI agents write the code, where the risks move, and how this template keeps people accountable and every change checked and recorded. Read it top to bottom; each section builds on the last. The running example is `travel-claims`, the claims app in `docs/`. The how-to is in [01-agentic-sdlc.md](01-agentic-sdlc.md); the risks the template accepts are in [03-security-trade-offs.md](03-security-trade-offs.md).
+For anyone learning the practice, and cloud security architects in particular: what changes when AI agents write the code, where the risks move, and how this template keeps people accountable and every change checked and recorded. Read it top to bottom; each section builds on the last. The running example is `travel-claims`, the claims app in `docs/`. How to use the template is in [01-using-the-template.md](01-using-the-template.md); the risks the template accepts are in [03-security-trade-offs.md](03-security-trade-offs.md).
 
 ## 1. How we got here
 
-![From waterfall to the secure agentic SDLC](assets/evolution.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/evolution-dark.png">
+  <img src="assets/evolution.png" alt="From waterfall to the secure agentic SDLC">
+</picture>
 
 Each way of building software fixed the biggest gap in the one before it. Agile fixed waterfall's late feedback, DevOps automated agile's slow releases, and DevSecOps moved security from the end into every stage. AI-assisted coding then sped up typing, but people still wrote and drove every change.
 
@@ -28,7 +31,10 @@ The middle path is **spec-driven development**: people decide the what and the w
 
 ## 3. An agent is a model inside a harness
 
-![An agent is a model inside a harness](assets/harness.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/harness-dark.png">
+  <img src="assets/harness.png" alt="An agent is a model inside a harness">
+</picture>
 
 A model on its own only produces text. The harness around it is what you secure:
 
@@ -40,7 +46,10 @@ Treat the agent like any other non-human identity: scope what it can reach, and 
 
 ## 4. Who does what
 
-![The secure agentic SDLC: who does what](assets/lifecycle.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/lifecycle-dark.png">
+  <img src="assets/lifecycle.png" alt="The secure agentic SDLC: who does what">
+</picture>
 
 Every stage has three parts: the agent does the work, controls check it automatically, and a person decides where it matters. The receipt-upload change, stage by stage:
 
@@ -98,9 +107,22 @@ Measure outcomes, not lines of code or PR counts:
 
 If throughput rises while the change failure rate rises too, the agents are amplifying a gap. Tighten the checks before speeding up.
 
-## 8. What's next
+## 8. The DevSecOps stages: covered and next
 
-The template covers what most teams need first. The next steps, in the order most teams add them:
+The eight DevSecOps stages, the core security activities in each, the open-source tools most teams reach for, and how far the template goes.
+
+| # | Stage | Core components | Open-source tools | In the template |
+|:-:|-------|-----------------|-------------------|-----------------|
+| 1 | Plan | Data classification · threat modelling · security requirements and architecture | Mermaid · Threat Dragon · ASVS | Yes: business context, threat model, ASVS level in the spec |
+| 2 | Code | Secrets detection · static analysis (SAST, SCA, IaC) · repo hardening and code review | Gitleaks · Semgrep · CodeQL | Yes: all three, plus a protected `main` and subagent review |
+| 3 | Build | Image scanning and build gates · SBOM and signing · CI pipeline hardening | Trivy · Cosign | Partly: Trivy, an SBOM and pinned actions; signing is next |
+| 4 | Test | DAST, API and pen testing · security regression tests · AI security testing | OWASP ZAP · promptfoo | Partly: unit and abuse-case tests; DAST and AI evals are next |
+| 5 | Release | Artifact re-scan and promotion by digest · infrastructure plan review · release approval | Checkov · Trivy | Yes: Checkov, the Terraform plan and a required approval |
+| 6 | Deploy | Admission control · GitOps deployment · secure workload configuration | Argo CD · Kyverno | Pipeline-only deploys with separate roles; the tools are for Kubernetes |
+| 7 | Operate | Posture management · vulnerability management · AI posture management | Prowler · Trivy Operator | Partly: weekly rescans and Dependabot; posture management is next |
+| 8 | Monitor | Threat detection and logging · incident response · AI monitoring | Falco · Wazuh | Next |
+
+The next steps, in the order most teams add them:
 
 - **Give the agent its own identity.** A separate GitHub identity, and required approval from someone else, so the audit trail separates agent from human and no one approves their own change.
 - **Prove what ships.** Sign images and attach build provenance (Cosign, SLSA), so the artifact in production is provably the one that passed the checks.
@@ -128,7 +150,7 @@ The [OWASP Top 10 for Agentic Applications (2026)](https://genai.owasp.org/resou
 
 ### The name
 
-**Secure agentic SDLC** is this guide's name for the practice; the industry's broader term is **agentic software development**. ADLC is avoided because it also means building AI agents as a product.
+**Secure agentic SDLC** is this guide's name for the practice; the industry's emerging term is **agentic software development** (Forrester, Gartner), with no single standard yet. Keeping "SDLC" in the name says existing security controls still apply. It draws on AWS's [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering), spec-driven development (GitHub Spec Kit), [AGENTS.md](https://agents.md), DevSecOps and the NIST SSDF. Avoid **ADLC**: it's used both for this and for building AI agents as a product.
 
 ### Sources
 

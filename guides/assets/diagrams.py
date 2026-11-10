@@ -1,7 +1,9 @@
 """Builds the guide diagrams as HTML and renders each to a PNG beside this file.
 
 Usage: python -I guides/assets/diagrams.py [name ...]
-Needs Google Chrome and a network connection for the fonts (Geist, Inter, Geist Mono).
+Each renders in light and dark (<name>.png, <name>-dark.png); social.png is the repo's
+social preview, light only. Needs Google Chrome and a network connection for the fonts
+(Geist, Geist Mono, Instrument Serif).
 """
 
 import os
@@ -15,24 +17,36 @@ CHROME = os.environ.get("CHROME", r"C:\Program Files\Google\Chrome\Application\c
 WIDTH = 1600
 FONTS = (
     "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700"
-    "&family=Geist+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap"
+    "&family=Geist+Mono:wght@400;500;700&family=Instrument+Serif&display=swap"
 )
+THEMES = ("light", "dark")
 
-# Colours, type and spacing from the ArcVault design system.
+# Colours, type and spacing from docs/design-system.md, in light and dark.
 CSS = """
 :root {
-  --bg: #fbf7f0; --bg-2: #fffdfa; --bg-3: #f3ece0; --bg-ink: #17120c;
-  --on-ink: #f6efe3; --on-ink-2: #b0a492;
-  --ink: #1b1610; --ink-2: #6e6457; --ink-3: #9a8e7e;
-  --line: rgba(27, 22, 16, .10); --line-2: rgba(27, 22, 16, .16);
-  --line-ink: rgba(246, 239, 227, .14);
-  --accent: oklch(0.58 0.155 196); --accent-2: oklch(0.68 0.135 172);
-  --teal-deep: #0c5c68; --warn-dark: oklch(0.80 0.13 74);
-  --accent-weak: color-mix(in oklab, var(--accent) 28%, transparent);
-  --mint-tint: color-mix(in oklab, var(--accent-2) 11%, var(--bg-2));
+  --bg: oklch(0.985 0.002 90); --bg-2: oklch(1 0 0); --bg-3: oklch(0.965 0.003 90);
+  --bg-ink: oklch(0.21 0.006 90); --on-ink: oklch(0.97 0.003 90); --on-ink-2: oklch(0.78 0.004 90);
+  --ink: oklch(0.21 0.006 90); --ink-2: oklch(0.45 0.006 90); --ink-3: oklch(0.62 0.005 90);
+  --line: oklch(0.91 0.004 90); --line-2: oklch(0.86 0.004 90);
+  --line-ink: oklch(1 0 0 / .14);
+  --accent: oklch(0.50 0.17 262); --accent-2: oklch(0.78 0.10 262);
+  --teal-deep: oklch(0.50 0.17 262); --warn-dark: oklch(0.80 0.13 75);
+  --accent-weak: color-mix(in oklab, var(--accent) 24%, transparent);
+  --mint-tint: color-mix(in oklab, var(--accent) 5%, var(--bg-2));
+  --fs: 'Instrument Serif', Georgia, serif;
   --fd: 'Geist', system-ui, sans-serif;
-  --fb: 'Inter', system-ui, sans-serif;
+  --fb: 'Geist', system-ui, sans-serif;
   --fm: 'Geist Mono', ui-monospace, monospace;
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.16 0.004 90); --bg-2: oklch(0.20 0.004 90); --bg-3: oklch(0.13 0.004 90);
+  --bg-ink: oklch(0.25 0.006 262); --on-ink: oklch(0.97 0.003 90); --on-ink-2: oklch(0.78 0.004 90);
+  --ink: oklch(0.95 0.003 90); --ink-2: oklch(0.74 0.004 90); --ink-3: oklch(0.58 0.004 90);
+  --line: oklch(0.28 0.004 90); --line-2: oklch(0.34 0.004 90);
+  --line-ink: oklch(1 0 0 / .12);
+  --accent: oklch(0.74 0.12 262); --accent-2: oklch(0.80 0.10 262);
+  --teal-deep: oklch(0.74 0.12 262);
+  --mint-tint: color-mix(in oklab, var(--accent) 6%, var(--bg-2));
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--bg); }
@@ -40,20 +54,14 @@ html, body { margin: 0; background: var(--bg); }
   width: __W__px; padding: 64px 72px 60px; position: relative; overflow: hidden;
   background: var(--bg); color: var(--ink); font-family: var(--fb);
 }
-.page::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background-image: radial-gradient(var(--line) 1px, transparent 1.2px);
-  background-size: 26px 26px;
-  -webkit-mask-image: radial-gradient(ellipse 70% 45% at 85% 0%, #000 0%, transparent 70%);
-}
 .eyebrow {
   font-family: var(--fm); font-size: 13px; letter-spacing: .18em; text-transform: uppercase;
   font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 12px;
 }
 .eyebrow::before { content: ""; width: 28px; height: 1px; background: var(--accent); }
 h1 {
-  font-family: var(--fd); font-weight: 600; font-size: 46px; letter-spacing: -.03em;
-  line-height: 1.04; margin: 16px 0 0; max-width: 30ch;
+  font-family: var(--fs); font-weight: 400; font-size: 60px; letter-spacing: -.01em;
+  line-height: 1.02; margin: 16px 0 0; max-width: 30ch;
 }
 .lead {
   color: var(--ink-2); font-size: 19px; line-height: 1.55; margin: 14px 0 0; max-width: 68ch;
@@ -108,15 +116,19 @@ def icon(name: str, color: str = "currentColor", size: int = 20) -> str:
 
 
 def page(css: str, body: str) -> str:
-    """A whole HTML document: the shared styles, this diagram's styles and its body."""
+    """A whole HTML document: the shared styles, this diagram's styles and its body.
+
+    The theme is filled in at render time, through the __THEME__ placeholder.
+    """
     head = f'<meta charset="utf-8"><link rel="stylesheet" href="{FONTS}">'
     head += f"<style>{CSS}{css}</style>"
     content = f'<body><div class="page">{body}</div></body>'
-    return f'<!doctype html><html lang="en"><head>{head}</head>{content}</html>'
+    html = '<!doctype html><html lang="en" data-theme="__THEME__">'
+    return f"{html}<head>{head}</head>{content}</html>"
 
 
 def foot(number: str) -> str:
-    return f'<div class="foot"><span>SDLC-TEMPLATE · GUIDES/03</span><span>{number}</span></div>'
+    return f'<div class="foot"><span>SDLC-TEMPLATE · GUIDES/02</span><span>{number}</span></div>'
 
 
 def header(eyebrow: str, title: str, lead: str) -> str:
@@ -152,7 +164,7 @@ EVOLUTION_CSS = """
 .gap p { margin: 6px 0 0; font-size: 15px; line-height: 1.45; color: var(--ink-2); }
 .era.now { padding-top: 0; }
 .era.now .card {
-  background: var(--bg-ink); color: var(--on-ink); border-radius: 18px;
+  background: var(--bg-ink); color: var(--on-ink); border-radius: 12px;
   padding: 30px 20px 22px; margin-top: 4px;
 }
 .era.now .dot {
@@ -166,7 +178,7 @@ EVOLUTION_CSS = """
 .era.now .gap p { color: var(--on-ink-2); }
 .who {
   margin-top: 40px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-  padding: 18px 22px; border: 1px solid var(--line); border-radius: 14px;
+  padding: 18px 22px; border: 1px solid var(--line); border-radius: 8px;
   background: var(--bg-2); font-size: 16px; color: var(--ink-2);
 }
 .who b { color: var(--ink); font-weight: 600; }
@@ -260,7 +272,7 @@ HARNESS_CSS = """
   display: grid; grid-template-columns: 1fr 1.05fr 1fr; gap: 22px; align-items: stretch;
 }
 .card {
-  border: 1px solid var(--line); background: var(--bg-2); border-radius: 18px;
+  border: 1px solid var(--line); background: var(--bg-2); border-radius: 12px;
   padding: 26px 26px 24px;
 }
 .card h3 {
@@ -270,7 +282,7 @@ HARNESS_CSS = """
 .card .sub { color: var(--ink-2); font-size: 15px; margin: 0 0 14px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {
-  font-family: var(--fm); font-size: 13px; padding: 6px 10px; border-radius: 6px;
+  font-family: var(--fm); font-size: 13px; padding: 6px 10px; border-radius: 4px;
   border: 1px solid var(--line-2); color: var(--ink); background: var(--bg);
 }
 .agent {
@@ -288,7 +300,7 @@ HARNESS_CSS = """
 .agent p { color: var(--on-ink-2); font-size: 15px; margin: 16px 0 0; }
 .rails {
   margin-top: 22px; border: 1px solid var(--line); background: var(--bg-2);
-  border-radius: 18px; padding: 26px 26px 28px;
+  border-radius: 12px; padding: 26px 26px 28px;
 }
 .rails .top { display: flex; align-items: baseline; justify-content: space-between; }
 .rails h3 {
@@ -387,7 +399,7 @@ def harness() -> str:
 LIFECYCLE_CSS = """
 .strip {
   margin-top: 36px; display: flex; align-items: center; gap: 12px; padding: 14px 20px;
-  border-radius: 14px; background: var(--bg-3); font-size: 15.5px; color: var(--ink-2);
+  border-radius: 8px; background: var(--bg-3); font-size: 15.5px; color: var(--ink-2);
 }
 .strip b { color: var(--ink); font-weight: 600; }
 .strip .label { color: var(--teal-deep); }
@@ -396,7 +408,7 @@ LIFECYCLE_CSS = """
   padding: 0 22px 12px; display: flex; align-items: center; gap: 10px; color: var(--ink-2);
 }
 .h.p {
-  background: var(--bg-ink); color: var(--on-ink); border-radius: 18px 18px 0 0;
+  background: var(--bg-ink); color: var(--on-ink); border-radius: 12px 12px 0 0;
   padding-top: 18px;
 }
 .c {
@@ -419,19 +431,19 @@ LIFECYCLE_CSS = """
   flex-direction: column; align-items: flex-start; justify-content: center; gap: 6px;
   font-weight: 500;
 }
-.c.p.last { border-radius: 0 0 18px 18px; }
+.c.p.last { border-radius: 0 0 12px 12px; }
 .tag {
   font-family: var(--fm); font-size: 12px; letter-spacing: .16em; font-weight: 700;
   color: var(--accent); display: inline-flex; gap: 8px; align-items: center;
 }
 .tag.hard { color: var(--warn-dark); }
-.c.p.hard { box-shadow: inset 0 0 0 2px var(--warn-dark); border-radius: 6px; }
+.c.p.hard { box-shadow: inset 0 0 0 2px var(--warn-dark); border-radius: 4px; }
 .c.p.auto { color: var(--on-ink-2); font-weight: 400; }
 .c.p.auto .tag { color: var(--accent-2); }
 .notes { margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .note {
   display: flex; gap: 14px; align-items: flex-start; padding: 18px 22px;
-  border: 1px solid var(--line); border-radius: 14px; background: var(--bg-2);
+  border: 1px solid var(--line); border-radius: 8px; background: var(--bg-2);
   font-size: 15.5px; line-height: 1.5; color: var(--ink-2);
 }
 .note b {
@@ -553,6 +565,35 @@ def lifecycle() -> str:
     return page(LIFECYCLE_CSS, body)
 
 
+# 4. Social preview -------------------------------------------------------------------------------
+SOCIAL_CSS = """
+.page { height: 640px; padding: 72px 80px; display: flex; flex-direction: column; }
+.page h1 { font-size: 76px; max-width: 16ch; margin-top: 22px; }
+.page .lead { font-size: 24px; max-width: 46ch; margin-top: 20px; }
+.row { margin-top: auto; display: flex; gap: 10px; flex-wrap: wrap; }
+.row span {
+  font-family: var(--fm); font-size: 15px; padding: 7px 12px; border-radius: 4px;
+  border: 1px solid var(--line-2); color: var(--ink-2); background: var(--bg-2);
+}
+.row span.on { color: var(--on-ink); background: var(--bg-ink); border-color: var(--bg-ink); }
+"""
+
+
+def social() -> str:
+    stages = ["Plan", "Code", "Build and test", "Release", "Deploy", "Operate"]
+    row = "".join(f"<span>{s}</span>" for s in stages)
+    body = (
+        header(
+            "sdlc-template",
+            "Agents do the work. Controls check it. People decide.",
+            "A starter for the secure agentic SDLC: agent rules, spec-driven docs, "
+            "security checks and Terraform on AWS.",
+        )
+        + f'<div class="row"><span class="on">AGENTS.md</span>{row}</div>'
+    )
+    return page(SOCIAL_CSS, body)
+
+
 # Rendering ---------------------------------------------------------------------------------------
 MEASURE = (
     "<script>document.fonts.ready.then(() => {document.title = "
@@ -573,30 +614,38 @@ def file_url(path: str) -> str:
     return "file:///" + path.replace("\\", "/")
 
 
-def render(name: str, html: str, tmp: str) -> None:
+def render(name: str, html: str, tmp: str, width: int = WIDTH) -> None:
     """Measures the page once its fonts load, then screenshots it at that height, at 2x."""
+    html = html.replace(f"width: {WIDTH}px", f"width: {width}px")
     src = os.path.join(tmp, name + ".html")
     probe = os.path.join(tmp, name + "-probe.html")
     with open(src, "w", encoding="utf-8") as f:
         f.write(html)
     with open(probe, "w", encoding="utf-8") as f:
         f.write(html.replace("</body>", MEASURE + "</body>"))
-    dom = chrome([f"--window-size={WIDTH},3000", "--dump-dom", file_url(probe)])
+    dom = chrome([f"--window-size={width},3000", "--dump-dom", file_url(probe)])
     height = int(dom.split("<title>")[1].split("</title>")[0])
     out = os.path.join(HERE, name + ".png")
-    size = f"--window-size={WIDTH},{height}"
+    size = f"--window-size={width},{height}"
     chrome([size, "--force-device-scale-factor=2", f"--screenshot={out}", file_url(src)])
-    print(f"{name}.png  {WIDTH}x{height}")
+    print(f"{name}.png  {width}x{height}")
 
 
 DIAGRAMS: dict[str, Callable[[], str]] = {
     "evolution": evolution,
     "harness": harness,
     "lifecycle": lifecycle,
+    "social": social,
 }
 
 if __name__ == "__main__":
     wanted = sys.argv[1:] or list(DIAGRAMS)
     with tempfile.TemporaryDirectory() as tmp:
         for name in wanted:
-            render(name, DIAGRAMS[name](), tmp)
+            html = DIAGRAMS[name]()
+            if name == "social":
+                render(name, html.replace("__THEME__", "light"), tmp, width=1280)
+                continue
+            for theme in THEMES:
+                suffix = "" if theme == "light" else "-dark"
+                render(name + suffix, html.replace("__THEME__", theme), tmp)

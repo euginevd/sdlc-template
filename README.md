@@ -15,7 +15,10 @@
 
 <br>
 
-<img src="guides/assets/lifecycle.png" width="880" alt="The secure agentic SDLC in six stages, Plan, Code, Build and test, Release, Deploy, Operate and monitor, showing for each what the agent does, what the automatic controls check, and what people decide.">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="guides/assets/lifecycle-dark.png">
+  <img src="guides/assets/lifecycle.png" width="880" alt="The secure agentic SDLC in six stages, Plan, Code, Build and test, Release, Deploy, Operate and monitor, showing for each what the agent does, what the automatic controls check, and what people decide.">
+</picture>
 
 </div>
 
@@ -28,7 +31,7 @@ bash scripts/setup.sh        # tools and the pre-push scan
 bash scripts/protect-main.sh # GitHub security features and the main ruleset
 ```
 
-Then replace the worked example in `docs/` with your own project, and ask your agent to *"Update spec"* and *"Plan <the work>"*. Full steps: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md), section 2.
+Then replace the worked example in `docs/` with your own project, and ask your agent to *"Update spec"* and *"Plan <the work>"*. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md).
 
 ## What you get
 
@@ -55,8 +58,8 @@ Then replace the worked example in `docs/` with your own project, and ask your a
 
 ## Guides
 
-1. [The agentic SDLC](guides/01-agentic-sdlc.md): the workflow, the stages and every file in the template.
-2. [The secure agentic SDLC, end to end](guides/02-secure-agentic-sdlc-end-to-end.md): what changes when agents write the code, for security architects.
+1. [Using the template](guides/01-using-the-template.md): the workflow with its prompts, starting a project, and every file.
+2. [The secure agentic SDLC, end to end](guides/02-secure-agentic-sdlc.md): the practice, from how we got here to the gates, guardrails, audit trail and what comes next.
 3. [Security trade-offs](guides/03-security-trade-offs.md): the risks the template accepts, and the fix for production.
 
 To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md); report vulnerabilities through [SECURITY.md](SECURITY.md). MIT licence.
