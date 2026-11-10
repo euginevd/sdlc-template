@@ -77,7 +77,7 @@ Not every guardrail is equally strong. From weakest to strongest:
 | 4 | **Limited** | AWS only in the pipeline, by OIDC with no stored keys; a read-only plan role | Not from a PR: it has no access to use |
 | 5 | **Approved** | You approve the merge and every deploy | In the template, yes: it works as you on GitHub ([trade-off 1](03-security-trade-offs.md)) |
 
-The rule of thumb: **anything that matters must be enforced or limited, not just asked.** The weak spot is identity. While the agent works under your GitHub account, layers 3 and 5 hold only as long as it follows the rules. The fix is separation of duties, applied to agents (section 8).
+The rule of thumb: **anything that matters must be enforced or limited, not just asked.** The weak spot is identity: while the agent works as you, layers 3 and 5 hold only as long as it follows the rules. Section 8 has the fix.
 
 ## 6. The audit trail: every stage leaves a record
 
@@ -93,11 +93,11 @@ Because each stage writes its output to Git, the lifecycle produces its own evid
 | What ran in production? | The Terraform plan and apply logs, and the SBOM built for each change to `main` |
 | What did we learn? | `docs/status.md`, `docs/decisions.md` and the next spec change |
 
-Three limits to know. GitHub keeps workflow logs and artifacts, including the SBOM, for 90 days by default, so export what an assessment needs. While the agent works as you, the record can't tell its actions from yours. And nothing yet proves the deployed artifact is the one that was checked. Section 8 covers the last two.
+Three limits to know. GitHub keeps workflow logs and artifacts, including the SBOM, for 90 days by default, so export what an assessment needs. The record can't tell the agent's actions from yours (the identity gap in section 5). And nothing yet proves the deployed artifact is the one that was checked. Section 8 covers the last two.
 
 ## 7. Two loops, and what to measure
 
-- **The inner loop is fast and automatic.** Push, a check fails, the agent fixes the cause, push again, until green. This is where agents save the most time, so the checks must be fast: a PR runs only the jobs for the apps it changes, and Gitleaks and Semgrep check only what it adds, while `main` and a weekly run still scan everything. A docs-only PR finishes in under a minute.
+- **The inner loop is fast and automatic.** Push, a check fails, the agent fixes the cause, push again, until green. This is where agents save the most time, so the checks must be fast: a PR checks only what it changes, while `main` and a weekly run still scan everything ([trade-off 5](03-security-trade-offs.md)). A docs-only PR finishes in under a minute.
 - **The outer loop is slow and human.** What you learn in production, from incidents, rescans and users, becomes the next change to the spec.
 
 Measure outcomes, not lines of code or PR counts:
@@ -109,7 +109,7 @@ If throughput rises while the change failure rate rises too, the agents are ampl
 
 ## 8. The DevSecOps stages: covered and next
 
-The eight DevSecOps stages, the core security activities in each, the open-source tools most teams reach for, and how far the template goes.
+The eight DevSecOps stages, the core security activities in each, the open-source tools most teams reach for, and how far the template goes. The six stages in section 4 are the same, with Build and Test, and Operate and Monitor, each run as one.
 
 | # | Stage | Core components | Open-source tools | In the template |
 |:-:|-------|-----------------|-------------------|-----------------|
@@ -122,11 +122,11 @@ The eight DevSecOps stages, the core security activities in each, the open-sourc
 | 7 | Operate | Posture management · vulnerability management · AI posture management | Prowler · Trivy Operator | Partly: weekly rescans and Dependabot; posture management is next |
 | 8 | Monitor | Threat detection and logging · incident response · AI monitoring | Falco · Wazuh | Next |
 
-The next steps, in the order most teams add them:
+The next steps, in the order most teams add them, including the gaps in the table:
 
 - **Give the agent its own identity.** A separate GitHub identity, and required approval from someone else, so the audit trail separates agent from human and no one approves their own change.
-- **Prove what ships.** Sign images and attach build provenance (Cosign, SLSA), so the artifact in production is provably the one that passed the checks.
-- **Test the running app and the AI.** DAST and API tests (OWASP ZAP), and evals and red-team tests for the AI features (promptfoo), on every change.
+- **Prove what ships** (stage 3). Sign images and attach build provenance (SLSA), so the artifact in production is provably the one that passed the checks.
+- **Test the running app and the AI** (stage 4), on every change.
 - **Release behind flags.** Roll out to some users first and roll back automatically on errors, with a person approving the full rollout.
 - **Operate with agents.** An agent that watches service levels, triages alerts and drafts the fix, with an on-call engineer owning the incident.
 
