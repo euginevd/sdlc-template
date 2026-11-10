@@ -1,77 +1,62 @@
 <div align="center">
 
-# travel-claims
+# sdlc-template
 
-**An AI agent decides routine travel insurance claims in minutes, so handlers spend their time only on claims that need judgement.**
+**Start every project with AI coding agents that plan before they code, and checks that catch what they miss.**
 
-![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-OIDC-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
-![AWS](https://img.shields.io/badge/AWS-Cloud-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+<img src="https://img.shields.io/badge/Terraform-7B42BC?style=flat-square&logo=terraform&logoColor=white" alt="Terraform">
+<img src="https://img.shields.io/badge/AWS-FF9900?style=flat-square" alt="AWS">
+<img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white" alt="GitHub Actions">
+<img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
+<img src="https://img.shields.io/badge/uv-DE5FE9?style=flat-square&logo=uv&logoColor=white" alt="uv">
+<img src="https://img.shields.io/badge/Trivy-1904DA?style=flat-square&logo=trivy&logoColor=white" alt="Trivy">
 
-[Claimants](#-claimants) · [Handlers](#️-handlers) · [Apps](#-apps) · [Costs](#-costs)
+[Quick start](#quick-start) · [What you get](#what-you-get) · [Built with](#built-with) · [Guides](#guides)
+
+<br>
+
+<img src="guides/assets/lifecycle.png" width="880" alt="The secure agentic SDLC in six stages, Plan, Code, Build and test, Release, Deploy, Operate and monitor, showing for each what the agent does, what the automatic controls check, and what people decide.">
 
 </div>
 
-> This is [sdlc-template](https://github.com/euginevd/sdlc-template), with `travel-claims` as its worked example. To start a project from it: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md), section 2.
+## Quick start
 
-## 🧳 Claimants
-
-1. Sign in and start a claim: tell us what happened, then add your receipts (PDF, JPEG or PNG).
-2. Track it on the claim page: **Submitted**, then **Approved**, **Declined** or **Referred** to a handler, then **Paid**.
-3. Every decision shows its reasons and the policy wording it relies on. Not happy with it? Ask for a person to review it.
-
-## 🗂️ Handlers
-
-1. The queue shows what's waiting, decided today and paid this week.
-2. Open a claim to see the claimant's story, the receipts and the agent's decision with its reasons.
-3. Approve, decline or send it back. Claims the agent approves under $1,000 are paid automatically *(in `dev`; `prod` after the bank's sign-off)*; everything else waits for you.
-
-## 📦 Apps
-
-```mermaid
-flowchart LR
-  users([Claimants and handlers])
-
-  web["<b>web</b><br/>S3 + CloudFront"]
-  cognito["<b>Cognito</b>"]
-  api["<b>api</b><br/>Lambda + HTTP API"]
-  agent["<b>agent</b><br/>Lambda"]
-  db[("Claims<br/>database")]
-  bucket[("Receipt<br/>bucket")]
-
-  claude{{"Claude on<br/>Bedrock"}}
-  bank["Bank API"]
-
-  users --> web
-  web -->|sign in| cognito
-  web -->|requests| api
-  api -->|claims| db
-  api -->|receipts| bucket
-  api -->|decide claim| agent
-  agent -->|prompt| claude
-  api -->|payments| bank
-
-  classDef person fill:#fef3c7,stroke:#d97706,color:#1f2937
-  classDef app fill:#dbeafe,stroke:#2563eb,color:#1f2937
-  classDef store fill:#dcfce7,stroke:#16a34a,color:#1f2937
-  classDef external fill:#f3f4f6,stroke:#6b7280,color:#1f2937,stroke-dasharray:4 3
-
-  class users person
-  class web,cognito,api,agent app
-  class db,bucket store
-  class claude,bank external
+```bash
+gh repo create my-project --template euginevd/sdlc-template --private --clone
+cd my-project
+bash scripts/setup.sh        # tools and the pre-push scan
+bash scripts/protect-main.sh # GitHub security features and the main ruleset
 ```
 
-<sub>Full data flow and trust boundaries: [threat-model.md](docs/threat-model.md).</sub>
+Then replace the worked example in `docs/` with your own project, and ask your agent to *"Update spec"* and *"Plan <the work>"*. Full steps: [guides/01-agentic-sdlc.md](guides/01-agentic-sdlc.md), section 2.
 
-| App | What | Runs on |
-|-----|------|---------|
-| `web` | Claimants submit and track claims; handlers review them | S3 and CloudFront |
-| `api` | Claims, receipts, decisions and payments | Lambda behind an HTTP API |
-| `agent` | Decides each claim against the policy wording | Lambda, Claude on Bedrock |
+## What you get
 
-## 💰 Costs
+| | |
+|---|---|
+| **Agent rules** | [AGENTS.md](AGENTS.md), read by Claude Code, Codex, Cursor, Copilot and most coding agents: plan before code, build in reviewed phases, one PR per plan, never push to `main` |
+| **Spec-driven docs** | [docs/](docs/): business context, spec, plan, threat model, decisions, design system and costs, which the agent reads and keeps current |
+| **Security checks** | A scan on every push, and on every PR: SAST, secrets, dependencies, IaC and a security summary comment the agent fixes from |
+| **Infrastructure** | Terraform on AWS through GitHub OIDC: plan with a read-only role, apply with approval, `dev` on merge and `prod` by hand |
+| **A worked example** | `travel-claims`, an insurance claims app, in [docs/](docs/) and [apps/api/](apps/api/), to replace with your own |
 
-About **$165 a month** in `dev` (budget $200), mostly Claude on Bedrock; `prod` grows with claim volume. Tooling is free on a public repo. Details: [costs.md](docs/costs.md).
+## Built with
 
-Developers: [AGENTS.md](AGENTS.md), then [docs/](docs/).
+| Tool | What it does here | Where |
+|------|-------------------|-------|
+| Terraform | AWS infrastructure, one root per app | [infra/aws/](infra/aws/) |
+| GitHub Actions | App checks, security scans, Terraform plan and apply | [.github/workflows/](.github/workflows/) |
+| Python, uv | Apps, scripts and one locked workspace | [pyproject.toml](pyproject.toml) |
+| Semgrep, CodeQL | Static analysis | [security.yml](.github/workflows/security.yml), [codeql.yml](.github/workflows/codeql.yml) |
+| Gitleaks | Secrets in code and history | [scan.sh](scripts/scan.sh) |
+| Trivy, Checkov | Vulnerable packages, images and IaC misconfiguration | [security.yml](.github/workflows/security.yml) |
+| Infracost | Cost of each Terraform change, as a PR comment | [aws.yml](.github/workflows/aws.yml) |
+| Lefthook, Dependabot | The pre-push scan; weekly package updates | [lefthook.yml](lefthook.yml), [dependabot.yml](.github/dependabot.yml) |
+
+## Guides
+
+1. [The agentic SDLC](guides/01-agentic-sdlc.md): the workflow, the stages and every file in the template.
+2. [The secure agentic SDLC, end to end](guides/02-secure-agentic-sdlc-end-to-end.md): what changes when agents write the code, for security architects.
+3. [Security trade-offs](guides/03-security-trade-offs.md): the risks the template accepts, and the fix for production.
+
+To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md); report vulnerabilities through [SECURITY.md](SECURITY.md). MIT licence.
