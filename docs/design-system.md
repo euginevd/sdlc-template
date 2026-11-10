@@ -1,43 +1,74 @@
 # Design system
 
-A worked example: `travel-claims`. Built on the [ArcVault design system](https://claude.ai/artifact/SWnGNCZKAxQBhxJ68cv5ao): the part an app uses, then the project's own choices. Optional: delete it if the project has no UI.
+The template's house style: premium, minimal and quiet, with motion and imagery used on purpose. A project keeps it, swaps the tokens for its brand, or replaces it; "This project" is the `travel-claims` worked example. Optional: delete it if the project has no UI. The UI rules every project follows are in `code-standards.md` (25–29).
+
+## Principles
+
+1. Content first: type, space and alignment do the work, not boxes, colour or effects.
+2. One accent, used for what's interactive or in focus. Everything else is neutral.
+3. Motion explains a change (where something came from, what just happened) and never decorates.
+4. Real over generic: real data, real photography, real words. Nothing that looks generated.
 
 ## Tokens
 
-| Token | Value | Use |
-|-------|-------|-----|
-| `bg` | `#fbf7f0` | Page |
-| `bg-2` | `#fffdfa` | Cards and panels |
-| `bg-3` | `#f3ece0` | Sunken zones, table headers, excluded amounts |
-| `bg-ink` / `on-ink` | `#17120c` / `#f6efe3` | Header band, primary buttons |
-| `ink` | `#1b1610` | Headings, primary text, large numbers |
-| `ink-2` | `#6e6457` | Body and secondary text |
-| `ink-3` | `#9a8e7e` | Input borders, chart axes; never essential text |
-| `accent` | `oklch(0.58 0.155 196)` | Focus rings, active states, the series in focus |
-| `warn` | `#b0700f` | Regulatory and deadline callouts, held payments |
+Colours in OKLCH, light and dark, following the system setting with a toggle.
 
-1. Type: Geist 600 for headings and numbers, Inter for body, Geist Mono uppercase for labels. App sizes: `h1` 2rem, `h2` 1.5rem, `h3` 1.14rem, body 1rem, tables 0.92rem.
-2. Spacing on the 8px scale (4–48px); radii 6px for tags, 14px for cards, pills for buttons. Cards take a 1px `line`; `shadow` is for menus and dialogs only.
+| Token | Light | Dark | Use |
+|-------|-------|------|-----|
+| `bg` | `oklch(0.985 0.002 90)` | `oklch(0.16 0.004 90)` | Page |
+| `surface` | `oklch(1 0 0)` | `oklch(0.20 0.004 90)` | Panels, dialogs, inputs |
+| `sunken` | `oklch(0.965 0.003 90)` | `oklch(0.13 0.004 90)` | Table headers, wells, skeletons |
+| `line` | `oklch(0.91 0.004 90)` | `oklch(0.28 0.004 90)` | 1px dividers and borders |
+| `ink` | `oklch(0.21 0.006 90)` | `oklch(0.95 0.003 90)` | Headings, primary text, figures |
+| `ink-2` | `oklch(0.45 0.006 90)` | `oklch(0.74 0.004 90)` | Body and secondary text |
+| `ink-3` | `oklch(0.62 0.005 90)` | `oklch(0.58 0.004 90)` | Placeholders, axes; never essential text |
+| `accent` | `oklch(0.50 0.17 262)` | `oklch(0.74 0.12 262)` | Primary action, links, focus, selection |
+| `positive` / `caution` / `critical` | `oklch(0.52 0.12 155)` / `oklch(0.62 0.13 75)` / `oklch(0.55 0.18 28)` | +0.2 lightness | Status only, always with a word and icon |
 
-## Rules
+5. Type: Instrument Serif for page titles and hero lines only; Geist for everything else; Geist Mono for IDs and code. Scale 12, 14, 16, 20, 25, 32, 40, 56px; line height 1.5 body, 1.15 headings; −0.02em tracking at 32px and up; tabular figures in every number.
+6. Space: 4px base (4, 8, 12, 16, 24, 32, 48, 64, 96). Layout: 12 columns, content up to 1280px, text up to 68ch.
+7. Radius: 4px chips and inputs, 8px buttons and cards, 12px dialogs.
+8. Depth: hairline `line` borders and `sunken` fills, not shadows. One shadow, for overlays only: `0 1px 2px oklch(0 0 0 / 0.06), 0 8px 24px oklch(0 0 0 / 0.08)`.
 
-3. Calm and precise: no hype, emoji, gradients or scroll reveals; `accent` used sparingly.
-4. Use the system's Button, Badge, Card, Eyebrow, Input and Logo. Code uses the tokens as CSS variables (`var(--ink)`), never raw values; anything new is built from them and added back to the system once settled.
-5. Icons: Lucide outline, stroke 2, `currentColor`; decorative icons are `aria-hidden`, and icon-only buttons have a label.
-6. Fonts are self-hosted `woff2` files served with the app, so no request leaves for a font CDN.
-7. WCAG 2.2 AA (code-standards 16): text 4.5:1, controls and focus rings 3:1; targets at least 24×24px; sticky parts never hide the focused element; a file picker beside every drop zone; sign-in allows paste and password managers.
-8. Status is a word plus an icon, never colour alone. Motion is 0.2s at most, and none under `prefers-reduced-motion`.
-9. Words: Australian English and sentence case; buttons say what happens ("Approve claim"); errors say what to do next.
-10. AI output is labelled: show what the agent decided, its reasons and sources, and how to ask for a person to review it (the Privacy Act's automated decision rules, business 3).
+## Motion
+
+9. Durations: 120ms for hover and press, 200ms for menus and enter/exit, 320ms for view changes. Easing `cubic-bezier(0.2, 0, 0, 1)` in, the reverse out.
+10. Animate only `transform` and `opacity`. Pressed buttons scale to 0.98; lists stagger in by 20ms a row, at most 8 rows.
+11. Page changes use the View Transitions API: an item morphs from the list into its page and back.
+12. Key figures count up once on first load. Skeletons pulse their opacity; no shimmer gradients.
+13. Never: scroll-triggered reveals, parallax, looping decoration or motion that blocks input.
+
+## Imagery
+
+14. Editorial documentary photography: real places, natural light, people unposed. No stock smiles and no AI-generated people or scenes.
+15. Images go on public pages, sign-in and empty states, full-bleed or in large crops. Work screens carry data, not pictures.
+16. AVIF with a WebP fallback, `srcset` sizes, lazy below the fold, and a blurred placeholder until loaded.
+17. No illustrations. Icons: Lucide outline at 1.5 stroke, `currentColor`, 16 or 20px.
+
+## Components
+
+18. Built from the tokens on accessible headless primitives: Button (primary, secondary, ghost, danger), Input, Select, Checkbox, Tabs, Table, Badge, Card, Dialog, Toast, Tooltip, Skeleton and EmptyState. Anything new is built from these and added here once settled.
+19. One primary button per view. Tables have comfortable (48px) and compact (40px) rows, with sticky headers.
+
+## Not this
+
+20. Purple-blue gradients, gradient text, glassmorphism and glows.
+21. Emoji, sparkle icons and "AI-powered" badges.
+22. A centred hero over three feature cards; every block in a shadowed rounded card.
+23. Placeholder copy, stock illustration and generated images.
+
+## Words
+
+24. Plain and specific, in sentence case. Buttons say what happens ("Approve claim"); errors say what to do next.
 
 ## This project
 
-11. Premium and quiet: a `bg-ink` header band with the logo, generous space on paper, and key numbers set large in Geist.
-12. Queue: a strip of four figures (waiting, decided today, median time to decision, paid this week) with mono labels and a 7-day sparkline each, then the claims table.
-13. Claim page: on the left, the claimant's story, receipt thumbnails that open full size, and a timeline of every step (submitted, screened, decided, paid); on the right, a sticky decision card with the outcome, the payout and the policy clauses it quotes.
-14. Payout bar: one horizontal bar from claimed to paid, with the deductible and anything over the limit in `bg-3`, the paid amount in `accent`, and every segment labelled.
-15. Charts: a line for trends, a bar for comparisons; `ink-3` axes, `accent` for the series in focus, and a table view of the same numbers.
-16. Claimants: a single-column form that works at 360px wide, with numbered steps and a receipt drop zone that shows previews.
-17. Every screen has loading skeletons in its own layout, an empty state that says what to do, and an error state with a retry.
-18. Status chips: Approved, Declined, Referred and Paid; `warn` only for a payment held over the limit.
-19. Numbers in tabular figures, rounded to at most 2 decimal places (`4.25 hours`, `92.5%`); money always shows 2 (`$1,234.50` AUD). Dates as `8 Nov 2026`.
+25. Locale: Australian English, AUD, dates as `8 Nov 2026`. Numbers rounded to at most 2 decimal places (`4.25 hours`, `92.5%`); money always shows 2 (`$1,234.50`).
+26. Shell: a quiet left sidebar on `bg` with the logo and four links; page titles in Instrument Serif.
+27. Sign-in and claimant landing: a full-bleed travel photograph on one side, the form on the other.
+28. Queue: four large figures (waiting, decided today, median time to decision, paid this week) with a 7-day sparkline each, then the claims table in compact rows. A row opens its claim through a view transition.
+29. Claim page: on the left, the claimant's story, receipt thumbnails that open full size, and a timeline (submitted, screened, decided, paid). On the right, a sticky decision card with the outcome, the payout, the agent's reasons and the policy clauses it quotes.
+30. Payout bar: one bar from claimed to paid. The deductible and anything over the limit are in `sunken`, the paid amount in `accent`, and every segment is labelled.
+31. Charts: a line for trends, a bar for comparisons, `ink-3` axes, `accent` for the series in focus, and a table view of the same numbers.
+32. Claim form: one column that works at 360px wide, numbered steps, and a receipt drop zone with previews.
+33. Status: Approved (`positive`), Declined (`critical`), Referred (`caution`), Paid (`ink`); each a word and an icon.
