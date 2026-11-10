@@ -46,6 +46,14 @@ A model on its own only produces text. The harness around it is what you secure:
 
 Treat the agent like any other non-human identity: scope what it can reach, and assume it can be wrong or manipulated.
 
+**One agent or many?** Lifecycle diagrams often show an agent per stage: triage, architect, coder, QA, reviewer, release, SRE. In practice the industry settles on a simpler rule: **one agent writes; subagents review, search and verify; nothing agentic deploys.**
+
+- **Keep the writing in one agent.** Agents that split a coding task make conflicting assumptions, because each sees only part of the context ([Cognition](https://cognition.ai/blog/dont-build-multi-agents)); start with one agent and add more only when the task needs it ([Anthropic](https://www.anthropic.com/engineering/building-effective-agents)).
+- **Use a subagent for an independent view or less access.** A reviewer with fresh context isn't anchored on the author's reasoning, and it can be read-only. A search subagent keeps file dumps out of the main context and returns only the conclusion.
+- **Parallel agents cost more.** Anthropic's multi-agent research system used about 15 times the tokens of a chat; it pays off for broad, independent work like research, less for tightly coupled work like code ([Anthropic](https://www.anthropic.com/engineering/multi-agent-research-system)).
+
+So the roles in section 4 are hats one agent wears, with a fresh subagent for review, and the pipeline, not an agent, for deploys.
+
 ## 4. Who does what
 
 <picture>
@@ -53,14 +61,14 @@ Treat the agent like any other non-human identity: scope what it can reach, and 
   <img src="assets/lifecycle.png" alt="The secure agentic SDLC: who does what">
 </picture>
 
-Every stage has three parts: the agent does the work, controls check it automatically, and a person decides where it matters. The receipt-upload change, stage by stage:
+Every stage has three parts: the agent does the work, controls check it automatically, and a person decides where it matters. The receipt-upload change, stage by stage, with the role the agent plays and, in a team, who signs off:
 
-1. **Plan.** The agent updates the spec, writes the plan with its security risks and phases, and adds the upload flow to the threat model. *Gate: you approve.*
-2. **Code.** The agent builds each phase with tests; a second agent reviews the diff. The pre-push scan catches secrets and vulnerable packages.
-3. **Build and test.** The agent opens a PR; the required checks run. It fixes every finding at its cause and pushes again. *No person: the checks decide.*
-4. **Release.** You read the diff and the security summary. *Gate: you approve, then the agent merges.*
-5. **Deploy.** The agent can't deploy. The pipeline plans with a read-only role and applies with a separate one. *Hard gate: GitHub holds the apply until you approve; production runs only by hand.*
-6. **Operate and monitor.** Weekly rescans and Dependabot keep checking what's shipped; findings become the next change. *Gate: you own incidents.*
+1. **Plan** *(triage and architect)*. The agent updates the spec, writes the plan with its security risks and phases, and adds the upload flow to the threat model. *Gate: you approve; in a team, the product owner and tech lead.*
+2. **Code** *(coder, then reviewer)*. The agent builds each phase with tests; a fresh review subagent checks the diff. The pre-push scan catches secrets and vulnerable packages.
+3. **Build and test** *(QA)*. The agent opens a PR; the required checks run. It fixes every finding at its cause and pushes again. *No person: the checks decide.*
+4. **Release** *(answers review comments)*. You read the diff and the security summary. *Gate: you approve, then the agent merges; in a team, an engineer other than the author.*
+5. **Deploy** *(no agent)*. The agent can't deploy. The pipeline plans with a read-only role and applies with a separate one. *Hard gate: GitHub holds the apply until you approve; production runs only by hand; in a team, the release manager.*
+6. **Operate and monitor** *(SRE, next)*. Weekly rescans and Dependabot keep checking what's shipped; findings become the next change. *Gate: you own incidents; in a team, the on-call engineer.*
 
 Why keep people at all, if every check is green? Because checks prove the code matches the plan, not that the plan was right. An agent can't be accountable when it breaks. And some calls are judgement: an architecture trade-off, delaying a release, accepting a risk to customers. Two rules keep the gates meaningful:
 
@@ -143,7 +151,7 @@ The next steps, in the order most teams add them, including the gaps in the tabl
 - **Give the agent its own identity.** A separate GitHub identity, and required approval from someone else, so the audit trail separates agent from human and no one approves their own change.
 - **Prove what ships** (stage 3). Sign images and attach build provenance ([SLSA](https://slsa.dev)), so the artifact in production is provably the one that passed the checks.
 - **Test the running app and the AI** (stage 4), on every change.
-- **Release behind flags.** Roll out to some users first and roll back automatically on errors, with a person approving the full rollout.
+- **Release behind flags.** Roll out to some users first and roll back automatically on errors, with a person approving the full rollout. The pipeline promotes and rolls back, not an agent.
 - **Operate with agents.** An agent that watches service levels, triages alerts and drafts the fix, with an on-call engineer owning the incident.
 
 Each follows the same pattern: the agent does the work, a control checks it, a person decides.
