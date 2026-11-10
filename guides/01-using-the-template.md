@@ -1,10 +1,10 @@
 # Using the template
 
-How to use this repo: start a project, run the workflow with your coding agent, and know what every file is for. For developers. Why it's built this way, and how it keeps agents safe, is in [02-secure-agentic-sdlc.md](02-secure-agentic-sdlc.md).
+How to use this repo: start a project, run the workflow with your coding agent, and know what every file is for. For developers. The risks it accepts are in [02-security-trade-offs.md](02-security-trade-offs.md).
 
 ## 1. Workflow
 
-**A new project starts at step 1; every later change, such as a feature or a fix, starts at step 2.** You write the spec, the agent plans and builds from it, and every gate feeds findings back to the agent (↺) until the work is clean. The prompts are in italics.
+**A new project starts at step 1; every later change, such as a feature or a fix, starts at step 2.** You write the spec, the agent plans and builds from it, and every gate feeds findings back to the agent (↺) until the work is clean. A small, low-risk change skips steps 3 and 4 ([AGENTS.md](../AGENTS.md) rule 11). The prompts are in italics.
 
 | # | Stage | Who | Step |
 |:-:|-------|-----|------|
@@ -28,8 +28,8 @@ Step 1 in full:
 2. Kickoff: replace the worked example in `docs/`, keeping its structure. The agent drafts each doc from your notes and you approve it, in this order; nothing is planned until all are approved ([AGENTS.md](../AGENTS.md) rule 15).
    1. **Per client**, reused for the same client's next project: `business-context.md` (who they are, regulators, data rules, risk appetite) and, if there's UI, `design-system.md` (their brand). Confirm the client has no coding standards that override `code-standards.md`.
    2. **Per project:** `spec.md`, then `threat-model.md` and `costs.md`.
-   3. **Agreed with the client:** start `decisions.md` with whether they accept the trade-offs in [03-security-trade-offs.md](03-security-trade-offs.md) and who owns the code, then the big architecture choices. Replace `LICENSE` to match, or delete it.
-3. Rename for the project: the README, `status.md` and the root `pyproject.toml` name (then `uv lock`).
+   3. **Agreed with the client:** start `decisions.md` with whether they accept the trade-offs in [03-security-trade-offs.md](02-security-trade-offs.md) and who owns the code, then the big architecture choices. Replace `LICENSE` to match, or delete it.
+3. Rename for the project: the README and its images in `guides/assets/`, `status.md` and the root `pyproject.toml` name (then `uv lock`).
 4. Keep `AGENTS.md`, `code-standards.md`, the workflows and the scripts as they are.
 5. Bootstrap AWS: the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml).
 
@@ -71,7 +71,7 @@ travel-claims/
    5. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
    6. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built (design, risks, phases, PR groups) and its screens; deleted when done.
    7. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
-5. **guides/**: for people: 01 this template, 02 the secure agentic SDLC, 03 its trade-offs; assets/ holds the diagrams, `social.png` (the repo's social preview) and `diagrams.py`, which renders them in light and dark.
+5. **guides/**: for people: 01 this template, 02 the risks it accepts; assets/ holds the README's hero image and `social.png`, the repo's social preview.
 6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
 7. **LICENSE**: MIT; anyone may use, copy or change the code, keeping the notice; replace it per project.
 
