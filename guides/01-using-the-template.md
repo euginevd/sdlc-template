@@ -1,6 +1,6 @@
 # Using the template
 
-How to take a project from an empty repo to a deployed app with your coding agent: what you say, what the agent does, and what you decide, for a fast `prototype` or a gated `production` project. For developers. The risks the template accepts are in [02-security-trade-offs.md](02-security-trade-offs.md); the plan skeleton and a tour of every file are in the appendices.
+How to take a project from an empty repo to a deployed app with your coding agent: what you say, what the agent does, and what you decide, for a fast `prototype` or a gated `production` project. For developers. The risks the template accepts are in [02-security-trade-offs.md](02-security-trade-offs.md); a tour of every file is in the appendix.
 
 The prompts are in italics. They're suggestions: the agent works from [AGENTS.md](../AGENTS.md), so your own words do the same job.
 
@@ -53,13 +53,13 @@ One prompt takes a piece of work from idea to `dev`. You watch and steer; nothin
 
 | You say | The agent | You |
 |---------|-----------|-----|
-| *"Build `<the work>`"* | Adds the work to the spec if it's new, writes a short plan (appendix A) and starts building without waiting | Interrupt if the direction is wrong |
+| *"Build `<the work>`"* | Adds the work to the spec if it's new, writes a short plan and starts building without waiting | Interrupt if the direction is wrong |
 | | Builds each phase: code, tests for the main path and anything touching auth, money or personal data, the checks, `status.md`, a local commit | |
 | | Has a fresh subagent review the whole branch, fixes what it blocks, updates `decisions.md`, deletes the plan and pushes; the pre-push scan runs | |
 | | Opens a PR, fixes the findings from the checks and the security summary ([AGENTS.md](../AGENTS.md) rule 13), and squash-merges once they pass | |
 | | The pipeline deploys to `dev` and checks `/health`; the agent reports what was built, what passed and what was skipped | Try it in `dev`; say what to change next |
 
-Ask for more whenever you want it: *"review the plan with me first"*, *"add a threat model"*, *"wait for me before merging"*. The agent goes back to asking before the project takes real users, customer data, payments or a `prod` deploy (section 7).
+Ask for more whenever you want it: *"review the plan with me first"*, *"add a threat model"*, *"wait for me before merging"*.
 
 ## 5. Build for production
 
@@ -68,7 +68,7 @@ The same loop, with you at each gate and every finding fed back to the agent (�
 | # | Stage | You say | The agent | You |
 |:-:|-------|---------|-----------|-----|
 | 1 | Plan | *"Update spec: `<what's changing>`"* | Edits `spec.md` and shows the change | ↺ Correct it, then approve |
-| 2 | Plan | *"Plan `<the work>`"* | Writes the plan (appendix A), updates the threat model and mocks up any screens; no code, then stops | ↺ Ask for changes, then approve |
+| 2 | Plan | *"Plan `<the work>`"* | Writes the plan, updates the threat model and mocks up any screens; no code, then stops | ↺ Ask for changes, then approve |
 | 3 | Code | *"Implement the plan"* | Builds each phase: code, tests with abuse cases, the checks, a fresh subagent review, `status.md`, a local commit. After the last one, reviews the whole branch, updates `decisions.md` and deletes the plan and mockups | |
 | 4 | Code | | Pushes; the pre-push scan runs. ↺ Fixes findings, then opens a PR with its Security line | |
 | 5 | Build and test | | ↺ Fixes what the PR checks find: the security summary, code scanning, the Terraform plan and the cost comment; asks for review once they pass | |
@@ -98,58 +98,24 @@ The agent stops and asks before a prototype takes real users, customer data, pay
 4. You go through the trade-offs: each gets its production fix, or a named person accepts it.
 5. You add the required reviewer to `aws-dev-apply`, and bootstrap the `prod` account with a reviewer on `aws-prod-apply`.
 
-## Appendix A. The plan
-
-The skeleton for `docs/plan-<name>.md` ([AGENTS.md](../AGENTS.md) rule 11). Keep it to a page or two; delete a section that doesn't apply.
-
-```markdown
-# Plan: <name>
-
-Spec items: <numbers>. Profile: <prototype or production>.
-
-## Design
-
-What changes and how, in a few lines: the apps, units and data it touches, and what it leaves alone.
-
-## Security risks
-
-Each risk with its control and its threat-model ID, or "None: touches no users, data, auth or endpoints".
-
-## Phases
-
-### 1. <what this phase delivers>
-
-- [ ] <a result someone can check>
-- [ ] Tests cover it, abuse cases included (prototype: the main path)
-- [ ] Checks pass and the subagent review is clean (prototype: one review, after the last phase)
-
-## PR groups
-
-1. Phases 1–2: <title>
-
-## Ask first
-
-New AWS services, costs or rule changes that need a yes before building (AGENTS.md rule 19). New packages, each checked as rule 18 says.
-```
-
-## Appendix B. The files
+## Appendix. The files
 
 For learning your way around a project made from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template): the layout, then one line per file on what it is and why it's there, foundations first.
 
 ```
 travel-claims/
-├── pyproject.toml   uv.lock   .python-version     B.1 Python packages
-├── README.md   AGENTS.md   CONTRIBUTING.md  …      B.2 docs for people and agents
+├── pyproject.toml   uv.lock   .python-version     A.1 Python packages
+├── README.md   AGENTS.md   CONTRIBUTING.md  …      A.2 docs for people and agents
 ├── docs/   guides/
-├── .gitignore   .gitattributes   .dockerignore     B.3 git and ignore files
-├── lefthook.yml   .lefthook/   scripts/            B.4 local tools
+├── .gitignore   .gitattributes   .dockerignore     A.3 git and ignore files
+├── lefthook.yml   .lefthook/   scripts/            A.4 local tools
 ├── .vscode/   .editorconfig
-├── apps/                                           B.5 app code, one folder per app
-├── .github/                                        B.6 CI/CD
-└── infra/aws/                                      B.7 cloud
+├── apps/                                           A.5 app code, one folder per app
+├── .github/                                        A.6 CI/CD
+└── infra/aws/                                      A.7 cloud
 ```
 
-### B.1 uv (Python packages)
+### A.1 uv (Python packages)
 
 1. **pyproject.toml**: the file you edit for packages, Python version and tool settings (ruff, pyright, pytest).
 2. **apps/api/pyproject.toml**: the api app's own settings; shares the root lock and .venv.
@@ -157,7 +123,7 @@ travel-claims/
 4. **uv.lock**: generated exact versions + hashes, so every install is identical. Never edit.
 5. **.venv/**: the installed packages; git-ignored, rebuild with `uv sync`.
 
-### B.2 Docs (.md files)
+### A.2 Docs (.md files)
 
 1. **README.md**: the GitHub front page: what the project is and what's in it.
 2. **CONTRIBUTING.md**: how anyone (person or agent) sets up and makes a change: plan, checks, PR.
@@ -168,20 +134,20 @@ travel-claims/
    3. **code-standards.md**: numbered coding rules the pipeline can't check; changes rarely.
    4. **status.md**: what's built, how to run it, known gaps, what's next; every change.
    5. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
-   6. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built (design, risks, phases, PR groups) and its screens; deleted when done.
+   6. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built (design, risks, phases, PR groups) and its screens; deleted when done. **skeleton-plan.md**: the outline each plan is copied from.
    7. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
-5. **guides/**: for people: 01 this template and the plan skeleton agents copy, 02 the risks it accepts; assets/ holds the README's hero image and `social.png`, the repo's social preview.
+5. **guides/**: for people: 01 this template, 02 the risks it accepts; assets/ holds the README's hero image and `social.png`, the repo's social preview.
 6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
 7. **LICENSE**: MIT; anyone may use, copy or change the code, keeping the notice; replace it per project.
 
-### B.3 Git and ignore files
+### A.3 Git and ignore files
 
 1. **.git/**: git's own database (history, config, hooks); hidden in VS Code, never edit by hand.
 2. **.gitignore**: files git never tracks: secrets (.env*, *.tfvars), Terraform state, build output, caches.
 3. **.gitattributes**: forces LF on .sh so bash works on Windows; collapses lock files in PR diffs.
 4. **.dockerignore**: keeps secrets, .git, caches and docs out of Docker images; smaller and safer.
 
-### B.4 Local tools (hooks, editor, scripts)
+### A.4 Local tools (hooks, editor, scripts)
 
 How the push scan works: setup.sh → `lefthook install` writes .git/hooks/pre-push → `git push` runs it → lefthook reads lefthook.yml → pre-push-scan.sh → scan.sh passes or blocks.
 
@@ -201,9 +167,9 @@ Other scripts, run by hand or by CI:
 11. **scripts/security-report.py**: CI: turns scanner results into PR annotations + one summary comment.
 12. **scripts/cost-report.py**: CI: turns Infracost results into PR annotations + one cost comment.
 
-### B.5 App code
+### A.5 App code
 
-One folder per app in apps/. Python: pyproject.toml (B.1) + `src/<name>/` + tests/; Node: package.json + src/ + tests/.
+One folder per app in apps/. Python: pyproject.toml (A.1) + `src/<name>/` + tests/; Node: package.json + src/ + tests/.
 
 1. **apps/api/src/api/handler.py**: the function AWS Lambda calls for each request.
 2. **apps/api/src/api/\_\_init\_\_.py**: empty; marks the folder as a Python package so it can be imported.
@@ -214,7 +180,7 @@ One folder per app in apps/. Python: pyproject.toml (B.1) + `src/<name>/` + test
 
 How tests run: `uv run pytest`, or CI on every PR → runs the tests in apps/ → writes .coverage → fails on any failed test or coverage under 80%.
 
-### B.6 CI/CD (.github/)
+### A.6 CI/CD (.github/)
 
 How a change ships: open a PR → ci, security and codeql run → aws plans → review → merge → aws deploys dev.
 
@@ -226,7 +192,7 @@ How a change ships: open a PR → ci, security and codeql run → aws plans → 
 6. **workflows/codeql.yml**: GitHub's code scanning for bugs and vulnerabilities; PRs, main, weekly.
 7. **workflows/aws.yml**: Terraform plan + cost on PRs; on merge, plans every unit and deploys the changed ones to dev after approval; prod by hand.
 
-### B.7 Cloud (infra/aws/)
+### A.7 Cloud (infra/aws/)
 
 How it deploys: bootstrap once by hand → aws.yml plans the changed units on PRs → applies after approval.
 

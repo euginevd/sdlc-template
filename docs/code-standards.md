@@ -23,8 +23,8 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 
 ## Tests
 
-11. Add tests with each change, including the abuse cases in `threat-model.md` (a prototype: `AGENTS.md` rule 24). Stub models, cloud and paid services.
-12. Keep test coverage at 80% or more; CI fails below it. A prototype tests less: `AGENTS.md` rule 24.
+11. Add tests with each change, including the abuse cases in `threat-model.md`. Stub models, cloud and paid services.
+12. Keep test coverage at 80% or more; CI fails below it. A prototype's tests and coverage: `AGENTS.md` rule 24.
 
 ## Terraform
 
