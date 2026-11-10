@@ -31,7 +31,7 @@ bash scripts/setup.sh        # tools and the pre-push scan
 bash scripts/protect-main.sh # GitHub security features and the main ruleset
 ```
 
-Then replace the worked example in `docs/` with your own project, and ask your agent to *"Update spec"* and *"Plan <the work>"*. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md).
+Then kick off: your agent drafts the business context, spec, and if they apply the threat model, costs and design system, from your notes. You approve each, and record which [trade-offs](guides/02-security-trade-offs.md) you accept in `docs/decisions.md`, before the first *"Plan <the work>"*. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md), section 2.
 
 ## What you get
 
@@ -41,7 +41,7 @@ Then replace the worked example in `docs/` with your own project, and ask your a
 | **Spec-driven docs** | [docs/](docs/): business context, spec, plan, threat model, decisions, design system and costs, which the agent reads and keeps current |
 | **Security checks** | A scan on every push, and on every PR: SAST, secrets, dependencies, IaC and a security summary comment the agent fixes from |
 | **Infrastructure** | Terraform on AWS through GitHub OIDC: plan with a read-only role, apply with approval, `dev` on merge and `prod` by hand |
-| **A worked example** | `travel-claims`, an insurance claims app, in [docs/](docs/) and [apps/api/](apps/api/), to replace with your own |
+| **A worked example** | `travel-claims`, an insurance claims app, described in [docs/](docs/) to replace with your own; [apps/api/](apps/api/) is a sample Lambda with a `/health` route |
 
 ## Built with
 
@@ -59,7 +59,6 @@ Then replace the worked example in `docs/` with your own project, and ask your a
 ## Guides
 
 1. [Using the template](guides/01-using-the-template.md): the workflow with its prompts, starting a project, and every file.
-2. [The secure agentic SDLC, end to end](guides/02-secure-agentic-sdlc.md): the practice, from how we got here to the gates, guardrails, audit trail and what comes next.
-3. [Security trade-offs](guides/03-security-trade-offs.md): the risks the template accepts, and the fix for production.
+2. [Security trade-offs](guides/02-security-trade-offs.md): the risks the template accepts, and the fix for production.
 
 To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md); report vulnerabilities through [SECURITY.md](SECURITY.md). MIT licence.

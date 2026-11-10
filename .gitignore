@@ -25,3 +25,6 @@ coverage/
 .claude/settings.local.json
 .claude/worktrees/
 .DS_Store
+
+# Local notes and drafts, never committed (the SDLC explainer and its diagram renderer)
+.local/

@@ -1,14 +1,14 @@
 # Using the template
 
-How to use this repo: start a project, run the workflow with your coding agent, and know what every file is for. For developers. Why it's built this way, and how it keeps agents safe, is in [02-secure-agentic-sdlc.md](02-secure-agentic-sdlc.md).
+How to use this repo: start a project, run the workflow with your coding agent, and know what every file is for. For developers. The risks it accepts are in [02-security-trade-offs.md](02-security-trade-offs.md).
 
 ## 1. Workflow
 
-**A new project starts at step 1; every later change, such as a feature or a fix, starts at step 2.** You write the spec, the agent plans and builds from it, and every gate feeds findings back to the agent (↺) until the work is clean. The prompts are in italics.
+**A new project starts at step 1; every later change, such as a feature or a fix, starts at step 2.** You write the spec, the agent plans and builds from it, and every gate feeds findings back to the agent (↺) until the work is clean. A small, low-risk change skips steps 3 and 4 ([AGENTS.md](../AGENTS.md) rule 11). The prompts are in italics.
 
 | # | Stage | Who | Step |
 |:-:|-------|-----|------|
-| 1 | Plan | Developer | **Create the repo:** from the template, once (section 2) |
+| 1 | Plan | Developer, agent | **Create the repo and kick off:** once per project; you approve the kickoff docs before the first plan (section 2) |
 | 2 | Plan | Developer, agent | **Update the spec:** *"Update spec"*. ↺ Correct it until it says what you want |
 | 3 | Plan | Agent | **Plan:** *"Plan <the work>"*. The agent writes the plan, threat model and any UI mockups; no code |
 | 4 | Plan | Developer | **Review the plan:** ↺ ask for changes to the plan, threat model and mockups, then approve |
@@ -25,9 +25,13 @@ How to use this repo: start a project, run the workflow with your coding agent, 
 Step 1 in full:
 
 1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` and `bash scripts/protect-main.sh` (Actions limits, squash-only merges, GitHub's security features and the `main` ruleset; rerun it after changing it). A private repo needs a paid GitHub plan for the ruleset and the approval environments; a public repo gets them free. On a public repo, also turn on everything under Settings → Advanced Security except **Agentic autofix**, which uses AI credits; the script can't set Automatic dependency submission, Malware alerts, the AI scans or Copilot Autofix, as they have no API.
-2. Replace the worked example, keeping its structure: `business-context.md` per business; `spec.md`, `status.md`, the README and the root `pyproject.toml` name (then `uv lock`) per project; `decisions.md`. Keep `design-system.md`, `threat-model.md` and `costs.md` only if needed. Replace or delete `LICENSE`.
-3. Keep `AGENTS.md`, `code-standards.md`, the workflows and the scripts as they are.
-4. Bootstrap AWS: the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml).
+2. Kickoff: replace the worked example in `docs/`, keeping its structure. The agent drafts each doc from your notes and you approve it, in this order; nothing is planned until all are approved ([AGENTS.md](../AGENTS.md) rule 15).
+   1. **Per business**, reused for its next project: `business-context.md` (who it is, regulators, data rules, risk appetite) and, if there's UI, `design-system.md` (its brand). Check it has no coding standards that override `code-standards.md`.
+   2. **Per project:** `spec.md`, then `threat-model.md` and `costs.md`.
+   3. **Decisions:** start `decisions.md` with which of the trade-offs in [02-security-trade-offs.md](02-security-trade-offs.md) you accept and who owns the code, then the big architecture choices. Replace `LICENSE` to match, or delete it.
+3. Rename for the project: the README and its images in `guides/assets/`, `status.md` and the root `pyproject.toml` name (then `uv lock`).
+4. Keep `AGENTS.md`, `code-standards.md`, the workflows and the scripts as they are.
+5. Bootstrap AWS: the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml).
 
 ## 3. The files
 
@@ -67,7 +71,7 @@ travel-claims/
    5. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
    6. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built (design, risks, phases, PR groups) and its screens; deleted when done.
    7. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
-5. **guides/**: for people: 01 this template, 02 the secure agentic SDLC, 03 its trade-offs; assets/ holds the diagrams and `diagrams.py`, which renders them in light and dark.
+5. **guides/**: for people: 01 this template, 02 the risks it accepts; assets/ holds the README's hero image and `social.png`, the repo's social preview.
 6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
 7. **LICENSE**: MIT; anyone may use, copy or change the code, keeping the notice; replace it per project.
 
