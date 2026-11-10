@@ -67,7 +67,7 @@ travel-claims/
    5. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
    6. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built (design, risks, phases, PR groups) and its screens; deleted when done.
    7. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
-5. **guides/**: for people: 01 this template, 02 the secure agentic SDLC, 03 its trade-offs; assets/ holds the diagrams and `diagrams.py`, which renders them in light and dark.
+5. **guides/**: for people: 01 this template, 02 the secure agentic SDLC, 03 its trade-offs; assets/ holds the diagrams, `social.png` (the repo's social preview) and `diagrams.py`, which renders them in light and dark.
 6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
 7. **LICENSE**: MIT; anyone may use, copy or change the code, keeping the notice; replace it per project.
 

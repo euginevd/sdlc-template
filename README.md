@@ -41,7 +41,7 @@ Then replace the worked example in `docs/` with your own project, and ask your a
 | **Spec-driven docs** | [docs/](docs/): business context, spec, plan, threat model, decisions, design system and costs, which the agent reads and keeps current |
 | **Security checks** | A scan on every push, and on every PR: SAST, secrets, dependencies, IaC and a security summary comment the agent fixes from |
 | **Infrastructure** | Terraform on AWS through GitHub OIDC: plan with a read-only role, apply with approval, `dev` on merge and `prod` by hand |
-| **A worked example** | `travel-claims`, an insurance claims app, in [docs/](docs/) and [apps/api/](apps/api/), to replace with your own |
+| **A worked example** | `travel-claims`, an insurance claims app, described in [docs/](docs/) to replace with your own; [apps/api/](apps/api/) is a sample Lambda with a `/health` route |
 
 ## Built with
 
