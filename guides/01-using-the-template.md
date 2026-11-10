@@ -1,24 +1,14 @@
-# Secure agentic SDLC
+# Using the template
 
-## 1. Overview
+How to use this repo: start a project, run the workflow with your coding agent, and know what every file is for. For developers. Why it's built this way, and how it keeps agents safe, is in [02-secure-agentic-sdlc.md](02-secure-agentic-sdlc.md).
 
-**The secure agentic SDLC is the software development lifecycle with AI coding agents as developers and security built into every stage.**
+## 1. Workflow
 
-- **People** own the what and the why: approving the spec, the plan, the merge and the deploy. You're accountable for what ships, so anything that should last goes in a doc, not chat, and the agent shows evidence before you approve.
-- **Agents** own the how: they plan, write, test and review the code, inside written rules.
-- **Controls** check every change before it ships: the pre-push scan, the security checks and summary on every PR, an independent review, a protected `main`, the Terraform plan and an approval gate.
-
-The industry's emerging term is **agentic software development** (Forrester, Gartner), with no single standard yet; keeping "SDLC" in the name says existing security controls still apply. It draws on AWS's [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering), spec-driven development (GitHub Spec Kit), [AGENTS.md](https://agents.md), DevSecOps and the NIST Secure Software Development Framework (SSDF).
-
-> **Note:** avoid the term ADLC. It's used both for this and for building AI agents as a product (the Agent Development Lifecycle).
-
-## 2. Workflow: spec-driven development
-
-The end-to-end flow, through the stages in section 3, for both a new project and each change after it: **a new project starts at step 1; every later change, such as a feature or a fix, starts at step 2.** You write the spec, the agent plans and builds from it, and every gate feeds findings back to the agent (↺) until the work is clean.
+**A new project starts at step 1; every later change, such as a feature or a fix, starts at step 2.** You write the spec, the agent plans and builds from it, and every gate feeds findings back to the agent (↺) until the work is clean. The prompts are in italics.
 
 | # | Stage | Who | Step |
 |:-:|-------|-----|------|
-| 1 | Plan | Developer, agent | **Create the repo:** `gh repo create travel-claims --template euginevd/sdlc-template --private --clone` |
+| 1 | Plan | Developer | **Create the repo:** from the template, once (section 2) |
 | 2 | Plan | Developer, agent | **Update the spec:** *"Update spec"*. ↺ Correct it until it says what you want |
 | 3 | Plan | Agent | **Plan:** *"Plan <the work>"*. The agent writes the plan, threat model and any UI mockups; no code |
 | 4 | Plan | Developer | **Review the plan:** ↺ ask for changes to the plan, threat model and mockups, then approve |
@@ -30,46 +20,33 @@ The end-to-end flow, through the stages in section 3, for both a new project and
 | 10 | Deploy | Developer, pipeline | **Apply:** you approve the plan; it deploys (`dev` on merge, `prod` by hand) and checks `/health` |
 | 11 | Operate and monitor | Agent, developer | **Close the loop:** the agent updates status and decisions; findings feed step 2 |
 
-Step 1 in full, for a new project:
+## 2. Starting a project
+
+Step 1 in full:
 
 1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` and `bash scripts/protect-main.sh` (Actions limits, squash-only merges, GitHub's security features and the `main` ruleset; rerun it after changing it). A private repo needs a paid GitHub plan for the ruleset and the approval environments; a public repo gets them free. On a public repo, also turn on everything under Settings → Advanced Security except **Agentic autofix**, which uses AI credits; the script can't set Automatic dependency submission, Malware alerts, the AI scans or Copilot Autofix, as they have no API.
 2. Replace the worked example, keeping its structure: `business-context.md` per business; `spec.md`, `status.md`, the README and the root `pyproject.toml` name (then `uv lock`) per project; `decisions.md`. Keep `design-system.md`, `threat-model.md` and `costs.md` only if needed. Replace or delete `LICENSE`.
 3. Keep `AGENTS.md`, `code-standards.md`, the workflows and the scripts as they are.
 4. Bootstrap AWS: the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml).
 
-## 3. The stages
-
-The eight DevSecOps stages, the core security activities in each, and the open-source tools most teams reach for. Who does what is in the workflow (section 2).
-
-| # | Stage | Core components | Open-source tools |
-|:-:|-------|-----------------|-------------------|
-| 1 | Plan | Data classification · threat modelling · security requirements and architecture | Mermaid · Threat Dragon · ASVS |
-| 2 | Code | Secrets detection · static analysis (SAST, SCA, IaC) · repo hardening and code review | Gitleaks · Semgrep · CodeQL |
-| 3 | Build | Image scanning and build gates · SBOM and signing · CI pipeline hardening | Trivy · Cosign |
-| 4 | Test | DAST, API and pen testing · security regression tests · AI security testing | OWASP ZAP · promptfoo |
-| 5 | Release | Artifact re-scan and promotion by digest · infrastructure plan review · release approval | Checkov · Trivy |
-| 6 | Deploy | Admission control · GitOps deployment · secure workload configuration | Argo CD · Kyverno |
-| 7 | Operate | Posture management · vulnerability management · AI posture management | Prowler · Trivy Operator |
-| 8 | Monitor | Threat detection and logging · incident response · AI monitoring | Falco · Wazuh |
-
-## 4. The template repo
+## 3. The files
 
 A project made from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template): the layout, then one line per file on what it is and why it's there, foundations first.
 
 ```
 travel-claims/
-├── pyproject.toml   uv.lock   .python-version     4.1 Python packages
-├── README.md   AGENTS.md   CONTRIBUTING.md  …      4.2 docs for people and agents
+├── pyproject.toml   uv.lock   .python-version     3.1 Python packages
+├── README.md   AGENTS.md   CONTRIBUTING.md  …      3.2 docs for people and agents
 ├── docs/   guides/
-├── .gitignore   .gitattributes   .dockerignore     4.3 git and ignore files
-├── lefthook.yml   .lefthook/   scripts/            4.4 local tools
+├── .gitignore   .gitattributes   .dockerignore     3.3 git and ignore files
+├── lefthook.yml   .lefthook/   scripts/            3.4 local tools
 ├── .vscode/   .editorconfig
-├── apps/                                           4.5 app code, one folder per app
-├── .github/                                        4.6 CI/CD
-└── infra/aws/                                      4.7 cloud
+├── apps/                                           3.5 app code, one folder per app
+├── .github/                                        3.6 CI/CD
+└── infra/aws/                                      3.7 cloud
 ```
 
-### 4.1 uv (Python packages)
+### 3.1 uv (Python packages)
 
 1. **pyproject.toml**: the file you edit for packages, Python version and tool settings (ruff, pyright, pytest).
 2. **apps/api/pyproject.toml**: the api app's own settings; shares the root lock and .venv.
@@ -77,7 +54,7 @@ travel-claims/
 4. **uv.lock**: generated exact versions + hashes, so every install is identical. Never edit.
 5. **.venv/**: the installed packages; git-ignored, rebuild with `uv sync`.
 
-### 4.2 Docs (.md files)
+### 3.2 Docs (.md files)
 
 1. **README.md**: the GitHub front page: what the project is and what's in it.
 2. **CONTRIBUTING.md**: how anyone (person or agent) sets up and makes a change: plan, checks, PR.
@@ -90,18 +67,18 @@ travel-claims/
    5. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
    6. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built (design, risks, phases, PR groups) and its screens; deleted when done.
    7. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
-5. **guides/**: how-to guides for people (01–03); assets/ holds their diagrams.
+5. **guides/**: for people: 01 this template, 02 the secure agentic SDLC, 03 its trade-offs; assets/ holds the diagrams and `diagrams.py`, which renders them in light and dark.
 6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
 7. **LICENSE**: MIT; anyone may use, copy or change the code, keeping the notice; replace it per project.
 
-### 4.3 Git and ignore files
+### 3.3 Git and ignore files
 
 1. **.git/**: git's own database (history, config, hooks); hidden in VS Code, never edit by hand.
 2. **.gitignore**: files git never tracks: secrets (.env*, *.tfvars), Terraform state, build output, caches.
 3. **.gitattributes**: forces LF on .sh so bash works on Windows; collapses lock files in PR diffs.
 4. **.dockerignore**: keeps secrets, .git, caches and docs out of Docker images; smaller and safer.
 
-### 4.4 Local tools (hooks, editor, scripts)
+### 3.4 Local tools (hooks, editor, scripts)
 
 How the push scan works: setup.sh → `lefthook install` writes .git/hooks/pre-push → `git push` runs it → lefthook reads lefthook.yml → pre-push-scan.sh → scan.sh passes or blocks.
 
@@ -121,9 +98,9 @@ Other scripts, run by hand or by CI:
 11. **scripts/security-report.py**: CI: turns scanner results into PR annotations + one summary comment.
 12. **scripts/cost-report.py**: CI: turns Infracost results into PR annotations + one cost comment.
 
-### 4.5 App code
+### 3.5 App code
 
-One folder per app in apps/. Python: pyproject.toml (4.1) + `src/<name>/` + tests/; Node: package.json + src/ + tests/.
+One folder per app in apps/. Python: pyproject.toml (3.1) + `src/<name>/` + tests/; Node: package.json + src/ + tests/.
 
 1. **apps/api/src/api/handler.py**: the function AWS Lambda calls for each request.
 2. **apps/api/src/api/\_\_init\_\_.py**: empty; marks the folder as a Python package so it can be imported.
@@ -134,7 +111,7 @@ One folder per app in apps/. Python: pyproject.toml (4.1) + `src/<name>/` + test
 
 How tests run: `uv run pytest`, or CI on every PR → runs the tests in apps/ → writes .coverage → fails on any failed test or coverage under 80%.
 
-### 4.6 CI/CD (.github/)
+### 3.6 CI/CD (.github/)
 
 How a change ships: open a PR → ci, security and codeql run → aws plans → review → merge → aws deploys dev.
 
@@ -146,7 +123,7 @@ How a change ships: open a PR → ci, security and codeql run → aws plans → 
 6. **workflows/codeql.yml**: GitHub's code scanning for bugs and vulnerabilities; PRs, main, weekly.
 7. **workflows/aws.yml**: Terraform plan + cost on PRs; deploys dev on merge, prod by hand after approval.
 
-### 4.7 Cloud (infra/aws/)
+### 3.7 Cloud (infra/aws/)
 
 How it deploys: bootstrap once by hand → aws.yml plans each unit on PRs → applies after approval.
 
