@@ -8,7 +8,7 @@ How to use this repo: start a project, run the workflow with your coding agent, 
 
 | # | Stage | Who | Step |
 |:-:|-------|-----|------|
-| 1 | Plan | Developer | **Create the repo:** from the template, once (section 2) |
+| 1 | Plan | Developer, agent | **Create the repo and kick off:** once per project; you approve the client's and the project's docs before the first plan (section 2) |
 | 2 | Plan | Developer, agent | **Update the spec:** *"Update spec"*. ↺ Correct it until it says what you want |
 | 3 | Plan | Agent | **Plan:** *"Plan <the work>"*. The agent writes the plan, threat model and any UI mockups; no code |
 | 4 | Plan | Developer | **Review the plan:** ↺ ask for changes to the plan, threat model and mockups, then approve |
@@ -25,9 +25,13 @@ How to use this repo: start a project, run the workflow with your coding agent, 
 Step 1 in full:
 
 1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` and `bash scripts/protect-main.sh` (Actions limits, squash-only merges, GitHub's security features and the `main` ruleset; rerun it after changing it). A private repo needs a paid GitHub plan for the ruleset and the approval environments; a public repo gets them free. On a public repo, also turn on everything under Settings → Advanced Security except **Agentic autofix**, which uses AI credits; the script can't set Automatic dependency submission, Malware alerts, the AI scans or Copilot Autofix, as they have no API.
-2. Replace the worked example, keeping its structure: `business-context.md` per business; `spec.md`, `status.md`, the README and the root `pyproject.toml` name (then `uv lock`) per project; `decisions.md`. Keep `design-system.md`, `threat-model.md` and `costs.md` only if needed. Replace or delete `LICENSE`.
-3. Keep `AGENTS.md`, `code-standards.md`, the workflows and the scripts as they are.
-4. Bootstrap AWS: the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml).
+2. Kickoff: replace the worked example in `docs/`, keeping its structure. The agent drafts each doc from your notes and you approve it, in this order; nothing is planned until all are approved ([AGENTS.md](../AGENTS.md) rule 15).
+   1. **Per client**, reused for the same client's next project: `business-context.md` (who they are, regulators, data rules, risk appetite) and, if there's UI, `design-system.md` (their brand). Confirm the client has no coding standards that override `code-standards.md`.
+   2. **Per project:** `spec.md`, then `threat-model.md` and `costs.md`.
+   3. **Agreed with the client:** start `decisions.md` with whether they accept the trade-offs in [03-security-trade-offs.md](03-security-trade-offs.md) and who owns the code, then the big architecture choices. Replace `LICENSE` to match, or delete it.
+3. Rename for the project: the README, `status.md` and the root `pyproject.toml` name (then `uv lock`).
+4. Keep `AGENTS.md`, `code-standards.md`, the workflows and the scripts as they are.
+5. Bootstrap AWS: the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml).
 
 ## 3. The files
 

@@ -31,7 +31,7 @@ bash scripts/setup.sh        # tools and the pre-push scan
 bash scripts/protect-main.sh # GitHub security features and the main ruleset
 ```
 
-Then replace the worked example in `docs/` with your own project, and ask your agent to *"Update spec"* and *"Plan <the work>"*. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md).
+Then kick off: your agent drafts the client's business context and design system, and the project's spec, threat model and costs, from your notes; you approve each, and record the client's acceptance of the [trade-offs](guides/03-security-trade-offs.md) in `docs/decisions.md`, before the first *"Plan <the work>"*. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md), section 2.
 
 ## What you get
 

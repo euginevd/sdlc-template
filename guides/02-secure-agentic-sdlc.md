@@ -110,6 +110,7 @@ Because each stage writes its output to Git, the lifecycle produces its own evid
 | Question | Record |
 |----------|--------|
 | What was asked for? | `docs/spec.md`, and the PR that changed it |
+| Which risks did the client accept? | `docs/decisions.md`, against the template's trade-offs |
 | How was it designed, and what could go wrong? | `docs/plan-<name>.md` and `docs/threat-model.md` |
 | What changed? | The commits and the PR diff |
 | What was checked, and what did it find? | The required checks and the PR's security summary |
