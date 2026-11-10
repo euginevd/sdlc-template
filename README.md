@@ -31,7 +31,7 @@ bash scripts/setup.sh        # tools and the pre-push scan
 bash scripts/protect-main.sh # GitHub security features and the main ruleset
 ```
 
-Then kick off: your agent asks whether this is a `prototype` or `production`, then drafts the business context, spec, and if they apply the threat model, costs and design system, from your notes. You approve each, and record which [trade-offs](guides/02-security-trade-offs.md) you accept in `docs/decisions.md`, before the first piece of work. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md), sections 1 to 3.
+Then kick off: your agent asks whether this is a `prototype` or `production`, then drafts the business context and spec from your notes, with a design system and a mockup of the MVP if there's UI, and for production the threat model and costs that apply. You approve each, and record which [trade-offs](guides/02-security-trade-offs.md) you accept in `docs/decisions.md`, before the first piece of work. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md), sections 1 to 3.
 
 ## What you get
 

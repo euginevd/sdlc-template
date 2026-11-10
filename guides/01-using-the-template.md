@@ -11,8 +11,8 @@ The agent asks for this first, and it decides how the rest of the guide plays ou
 | | `prototype`: a working MVP, fast | `production`: secure and gated |
 |---|---|---|
 | For | No real users, customer data or payments | Anything that has them |
-| Kickoff docs | Business context, spec, the decision | Those, plus the threat model, costs and design system that apply |
-| Plan | Short; the agent keeps building | You approve it, with its threat model and mockups |
+| Kickoff docs | Business context, spec, the decision; with UI, the design system and an MVP mockup | Those, plus the threat model and costs that apply |
+| Plan | Short; the agent keeps building, with no further mockups unless asked | You approve it, with its threat model and a mockup of each screen |
 | Tests | Main paths and anything sensitive, 50% coverage | Every change, abuse cases included, 80% coverage |
 | When unsure | The agent takes the simpler option, says so in its report and keeps going | The agent asks you |
 | Review | One subagent review per branch | One per phase, then you review the PR |
@@ -35,12 +35,13 @@ Once per project, by you.
 
 ## 3. Kick off
 
-Once per project. The repo arrives holding the `travel-claims` worked example; kickoff replaces it with your project, keeping each doc's structure. Nothing is planned until you've approved the kickoff docs.
+Once per project. The repo arrives holding the `travel-claims` worked example; kickoff replaces it with your project, keeping each doc's structure. Nothing is planned until you've approved the kickoff docs, and for a project with UI that includes how the MVP will look.
 
 | You say | The agent | You |
 |---------|-----------|-----|
 | *"Kick off `<name>`: `<your notes on the business, the problem, the users and the stack>`"* | Asks whether it's a `prototype` or `production`, then drafts `business-context.md` and `spec.md` from your notes, with `Profile` in the spec | Answer, then correct each draft until it says what you want |
-| | `production` only: drafts `threat-model.md` and `costs.md` if they apply, and `design-system.md` if there's UI | Approve each |
+| | If there's UI: drafts `design-system.md`, keeping the house style, swapping its tokens for your brand or replacing it, then mocks up the MVP's main screens from it in `docs/mockups/mvp.html` | Open the mockup in a browser; ask for changes until both are what you want, then approve |
+| | `production` only: drafts `threat-model.md` and `costs.md` if they apply | Approve each |
 | | Starts `decisions.md` with the profile, the trade-offs you accept and who owns the code, then the big architecture choices | Say which trade-offs you accept; a prototype accepts them all |
 | *"Rename the project"* | Renames the README, `status.md` and the root `pyproject.toml` (then `uv lock`); for a prototype sets `fail_under = 50` | Replace `LICENSE` to match the owner, or delete it; replace the images in `guides/assets/` |
 | | Opens one PR with all of it | Approve it and the agent merges; a prototype's merges once checks pass |
@@ -93,7 +94,7 @@ The same loop, with you at each gate and every finding fed back to the agent (â†
 The agent stops and asks before a prototype takes real users, customer data, payments or a `prod` deploy. Say *"Make this project production"* and it works through the list in a PR; the two GitHub settings are yours.
 
 1. `Profile` in `spec.md` becomes `production`, with a new decision in `decisions.md`.
-2. The agent drafts the threat model and costs, and the design system if there's UI, for you to approve.
+2. The agent drafts the threat model and costs for you to approve.
 3. `fail_under` goes back to 80, and the agent adds the tests that were skipped, abuse cases included.
 4. You go through the trade-offs: each gets its production fix, or a named person accepts it.
 5. You add the required reviewer to `aws-dev-apply`, and bootstrap the `prod` account with a reviewer on `aws-prod-apply`.
