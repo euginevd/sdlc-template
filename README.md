@@ -31,7 +31,7 @@ bash scripts/setup.sh        # tools and the pre-push scan
 bash scripts/protect-main.sh # GitHub security features and the main ruleset
 ```
 
-Then kick off: your agent drafts the business context, spec, and if they apply the threat model, costs and design system, from your notes. You approve each, and record which [trade-offs](guides/02-security-trade-offs.md) you accept in `docs/decisions.md`, before the first *"Plan <the work>"*. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md), section 2.
+Then kick off: your agent asks whether this is a `prototype`, built for speed with fewer gates, or `production`. It drafts the business context, spec, and if they apply the threat model, costs and design system, from your notes. You approve each, and record which [trade-offs](guides/02-security-trade-offs.md) you accept in `docs/decisions.md`, before the first *"Plan <the work>"*. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md), section 2.
 
 ## What you get
 
@@ -58,7 +58,7 @@ Then kick off: your agent drafts the business context, spec, and if they apply t
 
 ## Guides
 
-1. [Using the template](guides/01-using-the-template.md): the workflow with its prompts, starting a project, and every file.
+1. [Using the template](guides/01-using-the-template.md): the workflow with its prompts, starting a project, every file, and the plan skeleton.
 2. [Security trade-offs](guides/02-security-trade-offs.md): the risks the template accepts, and the fix for production.
 
 To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md); report vulnerabilities through [SECURITY.md](SECURITY.md). MIT licence.

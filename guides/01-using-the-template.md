@@ -4,11 +4,11 @@ How to use this repo: start a project, run the workflow with your coding agent, 
 
 ## 1. Workflow
 
-**A new project starts at step 1; every later change, such as a feature or a fix, starts at step 2.** You write the spec, the agent plans and builds from it, and every gate feeds findings back to the agent (↺) until the work is clean. A small, low-risk change skips steps 3 and 4 ([AGENTS.md](../AGENTS.md) rule 11). The prompts are in italics.
+**A new project starts at step 1; every later change, such as a feature or a fix, starts at step 2.** You write the spec, the agent plans and builds from it, and every gate feeds findings back to the agent (↺) until the work is clean. A small, low-risk change skips steps 3 and 4 ([AGENTS.md](../AGENTS.md) rule 11). The table is the `production` path; a `prototype` skips the approvals in steps 4 and 9 and, for `dev`, 10 (section 2). The prompts are in italics.
 
 | # | Stage | Who | Step |
 |:-:|-------|-----|------|
-| 1 | Plan | Developer, agent | **Create the repo and kick off:** once per project; you approve the kickoff docs before the first plan (section 2) |
+| 1 | Plan | Developer, agent | **Create the repo and kick off:** once per project; you pick its profile, `prototype` or `production`, and approve the kickoff docs before the first plan (section 2) |
 | 2 | Plan | Developer, agent | **Update the spec:** *"Update spec"*. ↺ Correct it until it says what you want |
 | 3 | Plan | Agent | **Plan:** *"Plan <the work>"*. The agent writes the plan, threat model and any UI mockups; no code |
 | 4 | Plan | Developer | **Review the plan:** ↺ ask for changes to the plan, threat model and mockups, then approve |
@@ -24,14 +24,27 @@ How to use this repo: start a project, run the workflow with your coding agent, 
 
 Step 1 in full:
 
-1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` and `bash scripts/protect-main.sh` (Actions limits, squash-only merges, GitHub's security features and the `main` ruleset; rerun it after changing it). A private repo needs a paid GitHub plan for the ruleset and the approval environments; a public repo gets them free. On a public repo, also turn on everything under Settings → Advanced Security except **Agentic autofix**, which uses AI credits; the script can't set Automatic dependency submission, Malware alerts, the AI scans or Copilot Autofix, as they have no API.
-2. Kickoff: replace the worked example in `docs/`, keeping its structure. The agent drafts each doc from your notes and you approve it, in this order; nothing is planned until all are approved ([AGENTS.md](../AGENTS.md) rule 15).
+1. `gh repo create <name> --template euginevd/sdlc-template --private --clone`, then `bash scripts/setup.sh` and `bash scripts/protect-main.sh` (Actions limits, squash-only merges, GitHub's security features and the `main` ruleset; rerun it after changing it). A private repo needs a paid GitHub plan for the ruleset and the approval environments; a public repo gets them free, but anyone signed in to GitHub can download its Terraform plans (trade-offs 9), so keep a repo that deploys to AWS private. On a public repo, also turn on everything under Settings → Advanced Security except **Agentic autofix**, which uses AI credits; the script can't set Automatic dependency submission, Malware alerts, the AI scans or Copilot Autofix, as they have no API.
+2. Kickoff: replace the worked example in `docs/`, keeping its structure. The agent first asks for the project's profile, then drafts each doc from your notes and you approve it, in this order; nothing is planned until all are approved ([AGENTS.md](../AGENTS.md) rule 15).
+
+   | | `prototype`: a working MVP, fast | `production`: secure and gated |
+   |---|---|---|
+   | For | No real users, customer data or payments | Anything that has them |
+   | Kickoff docs | Business context, spec, the decision | All that apply, below |
+   | Plan | Short; the agent keeps building | You approve it, with its threat model and mockups |
+   | Tests | Main paths and anything sensitive, 50% coverage | Every change, abuse cases included, 80% coverage |
+   | Review | One subagent review per branch | One per phase, then you review the PR |
+   | Merge and deploy | The agent merges once checks pass; `dev` deploys unattended | You approve each PR and each deploy |
+   | Trade-offs | All accepted, 14 and 15 included | Each fixed, or accepted by a named person |
+
+   Both keep the scans, the required checks, no pushes to `main` and deploys only through the pipeline. For a prototype, set `fail_under = 50` in `pyproject.toml` and leave the required reviewer off the `aws-dev-apply` environment. To make it `production`, which the agent asks about before real users, customer data, payments or a `prod` deploy: change `Profile` in the spec, add a decision, set `fail_under` back to 80, add the reviewer and work through the trade-offs.
+
    1. **Per business**, reused for its next project: `business-context.md` (who it is, regulators, data rules, risk appetite) and, if there's UI, `design-system.md` (its brand). Check it has no coding standards that override `code-standards.md`.
    2. **Per project:** `spec.md`, then `threat-model.md` and `costs.md`.
-   3. **Decisions:** start `decisions.md` with which of the trade-offs in [02-security-trade-offs.md](02-security-trade-offs.md) you accept and who owns the code, then the big architecture choices. Replace `LICENSE` to match, or delete it.
+   3. **Decisions:** start `decisions.md` with the profile, which of the trade-offs in [02-security-trade-offs.md](02-security-trade-offs.md) you accept and who owns the code, then the big architecture choices. Replace `LICENSE` to match, or delete it.
 3. Rename for the project: the README and its images in `guides/assets/`, `status.md` and the root `pyproject.toml` name (then `uv lock`).
 4. Keep `AGENTS.md`, `code-standards.md`, the workflows and the scripts as they are.
-5. Bootstrap AWS: the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml).
+5. Bootstrap AWS: the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml). Set `BudgetEmail` to be emailed as the account's spend nears its monthly budget.
 
 ## 3. The files
 
@@ -71,7 +84,7 @@ travel-claims/
    5. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
    6. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built (design, risks, phases, PR groups) and its screens; deleted when done.
    7. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
-5. **guides/**: for people: 01 this template, 02 the risks it accepts; assets/ holds the README's hero image and `social.png`, the repo's social preview.
+5. **guides/**: for people: 01 this template and the plan skeleton agents copy, 02 the risks it accepts; assets/ holds the README's hero image and `social.png`, the repo's social preview.
 6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
 7. **LICENSE**: MIT; anyone may use, copy or change the code, keeping the notice; replace it per project.
 
@@ -98,7 +111,7 @@ How the push scan works: setup.sh → `lefthook install` writes .git/hooks/pre-p
 Other scripts, run by hand or by CI:
 
 9. **scripts/protect-main.sh**: by hand once, rerun after changes: locks main, squash-only merges, security features.
-10. **scripts/pr-findings.sh**: lists a PR's open review threads and alerts; replies and resolves them.
+10. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open review threads and alerts; replies and resolves threads.
 11. **scripts/security-report.py**: CI: turns scanner results into PR annotations + one summary comment.
 12. **scripts/cost-report.py**: CI: turns Infracost results into PR annotations + one cost comment.
 
@@ -120,21 +133,55 @@ How tests run: `uv run pytest`, or CI on every PR → runs the tests in apps/ �
 How a change ships: open a PR → ci, security and codeql run → aws plans → review → merge → aws deploys dev.
 
 1. **pull_request_template.md**: pre-fills every PR: what changed, security impact, checks. Fixed name.
-2. **CODEOWNERS**: auto-requests reviewers per path; optional, worth it once a team shares the repo.
+2. **CODEOWNERS** *(not included)*: auto-requests reviewers per path; add it once a team shares the repo.
 3. **dependabot.yml**: weekly update PRs for actions, Python, Terraform; waits 7 days too. Fixed name.
 4. **workflows/ci.yml**: every PR: lint, type-check and test only the apps the PR changed.
-5. **workflows/security.yml**: the pre-push scan again (hooks can be skipped) + Checkov, Semgrep; weekly.
+5. **workflows/security.yml**: the pre-push scan again (hooks can be skipped) + Checkov, Semgrep, terraform validate; weekly.
 6. **workflows/codeql.yml**: GitHub's code scanning for bugs and vulnerabilities; PRs, main, weekly.
-7. **workflows/aws.yml**: Terraform plan + cost on PRs; deploys dev on merge, prod by hand after approval.
+7. **workflows/aws.yml**: Terraform plan + cost on PRs; on merge, plans every unit and deploys the changed ones to dev after approval; prod by hand.
 
 ### 3.7 Cloud (infra/aws/)
 
-How it deploys: bootstrap once by hand → aws.yml plans each unit on PRs → applies after approval.
+How it deploys: bootstrap once by hand → aws.yml plans the changed units on PRs → applies after approval.
 
-1. **bootstrap/bootstrap.yaml**: CloudFormation, by hand once per account: GitHub login, roles, state bucket.
+1. **bootstrap/bootstrap.yaml**: CloudFormation, by hand once per account: GitHub login, roles, state bucket, budget emails.
 2. **`<unit>/`**: one Terraform folder per deployable unit (e.g. api/), each with its own state.
    1. **versions.tf**: pins the Terraform and provider versions.
    2. **variables.tf**: inputs (project, environment, region), set by the pipeline.
    3. **main.tf**: the unit's resources, e.g. Lambda, API Gateway, roles, logs.
    4. **outputs.tf**: values printed after deploy, e.g. a URL.
    5. **.terraform.lock.hcl**: uv.lock for Terraform: exact provider versions + hashes. Never edit.
+
+## 4. The plan
+
+The skeleton for `docs/plan-<name>.md` ([AGENTS.md](../AGENTS.md) rule 11). Keep it to a page or two; delete a section that doesn't apply.
+
+```markdown
+# Plan: <name>
+
+Spec items: <numbers>. Profile: <prototype or production>.
+
+## Design
+
+What changes and how, in a few lines: the apps, units and data it touches, and what it leaves alone.
+
+## Security risks
+
+Each risk with its control and its threat-model ID, or "None: touches no users, data, auth or endpoints".
+
+## Phases
+
+### 1. <what this phase delivers>
+
+- [ ] <a result someone can check>
+- [ ] Tests cover it, abuse cases included (prototype: the main path)
+- [ ] Checks pass and the subagent review is clean (prototype: one review, after the last phase)
+
+## PR groups
+
+1. Phases 1–2: <title>
+
+## Ask first
+
+New AWS services, costs or rule changes that need a yes before building (AGENTS.md rule 19). New packages, each checked as rule 18 says.
+```

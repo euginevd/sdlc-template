@@ -12,6 +12,6 @@ A worked example: `travel-claims` in `dev`. Optional: delete it if the project h
 
 ## Budget and alerts
 
-6. `dev` budget: spec 19. AWS Budgets emails the team at 80% and 100%.
+6. `dev` budget: spec 19. AWS Budgets emails the team when the account's actual spend passes 80% and 100% of it, set by `BudgetEmail` and `MonthlyBudgetUsd` on the bootstrap stack.
 7. `prod` budget: set after the first full month of real claims.
 8. Each PR that changes `infra/aws/` gets a cost comment: the monthly estimate, the change and the top drivers, each with a saving where one applies. It warns above the `MONTHLY_COST_LIMIT` variable and excludes usage, such as model tokens and data transfer.

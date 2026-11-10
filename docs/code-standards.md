@@ -23,8 +23,8 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 
 ## Tests
 
-11. Add tests with each change, including the abuse cases in `threat-model.md`. Stub models, cloud and paid services.
-12. Keep test coverage at 80% or more for new code.
+11. Add tests with each change, including the abuse cases in `threat-model.md` (a prototype: `AGENTS.md` rule 24). Stub models, cloud and paid services.
+12. Keep test coverage at 80% or more; CI fails below it. A prototype tests less: `AGENTS.md` rule 24.
 
 ## Terraform
 
@@ -34,7 +34,7 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 ## Languages
 
 15. Python: the newest version the deploy runtime supports, `uv run` for everything, `ruff` to lint and format, `pyright` in strict mode; one workspace member per app in the root `pyproject.toml`.
-16. TypeScript: strict mode, never `any`; ESLint with `jsx-a11y` and Prettier; `save-exact` and a `before=` date a week back in the app's `.npmrc`. The server for web pages sends a strict CSP with `frame-ancestors 'none'`, `nosniff` and `no-referrer`.
+16. TypeScript: strict mode, never `any`; ESLint with `jsx-a11y` and Prettier; `save-exact=true` and `min-release-age=7` in the app's `.npmrc`. The server for web pages sends a strict CSP with `frame-ancestors 'none'`, `nosniff` and `no-referrer`.
 
 ## AI and agents
 

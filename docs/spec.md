@@ -4,6 +4,8 @@ A worked example: `travel-claims`, in production. For a new project, replace it 
 
 ## Project
 
+Profile: `production` (`prototype` or `production`, [AGENTS.md](../AGENTS.md) rule 15).
+
 1. Name: `travel-claims`
 2. Problem: claims handlers work through a queue of travel insurance claims by hand, so simple claims wait days to be paid.
 3. Goal: an AI agent decides routine claims in minutes, and handlers spend their time only on claims that need judgement.
