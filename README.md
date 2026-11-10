@@ -31,16 +31,17 @@ bash scripts/setup.sh        # tools and the pre-push scan
 bash scripts/protect-main.sh # GitHub security features and the main ruleset
 ```
 
-Then kick off: your agent asks whether this is a `prototype`, built for speed with fewer gates, or `production`. It drafts the business context, spec, and if they apply the threat model, costs and design system, from your notes. You approve each, and record which [trade-offs](guides/02-security-trade-offs.md) you accept in `docs/decisions.md`, before the first *"Plan <the work>"*. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md), sections 1 to 3.
+Then kick off: your agent asks whether this is a `prototype`, built for speed with fewer gates, or `production`. It drafts the business context, spec, and if they apply the threat model, costs and design system, from your notes. You approve each, and record which [trade-offs](guides/02-security-trade-offs.md) you accept in `docs/decisions.md`, before the first piece of work. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md), sections 1 to 3.
 
 ## What you get
 
 | | |
 |---|---|
+| **Two profiles** | `prototype`: speed first, with full autonomy for the agent to plan, build, merge and deploy to `dev`. `production`: approval first, with you signing off the plan, each PR and each deploy |
 | **Agent rules** | [AGENTS.md](AGENTS.md), read by Claude Code, Codex, Cursor, Copilot and most coding agents: plan before code, build in reviewed phases, one PR per plan, never push to `main` |
 | **Spec-driven docs** | [docs/](docs/): business context, spec, plan, threat model, decisions, design system and costs, which the agent reads and keeps current |
 | **Security checks** | A scan on every push, and on every PR: SAST, secrets, dependencies, IaC and a security summary comment the agent fixes from |
-| **Infrastructure** | Terraform on AWS through GitHub OIDC: plan with a read-only role, apply with approval, `dev` on merge and `prod` by hand |
+| **Infrastructure** | Terraform on AWS through GitHub OIDC: plan with a read-only role, apply with approval, `dev` on merge (unattended for a prototype) and `prod` by hand |
 | **A worked example** | `travel-claims`, an insurance claims app, described in [docs/](docs/) to replace with your own; [apps/api/](apps/api/) is a sample Lambda with a `/health` route |
 
 ## Built with

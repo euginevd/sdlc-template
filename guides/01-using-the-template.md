@@ -14,11 +14,12 @@ The agent asks for this first, and it decides how the rest of the guide plays ou
 | Kickoff docs | Business context, spec, the decision | Those, plus the threat model, costs and design system that apply |
 | Plan | Short; the agent keeps building | You approve it, with its threat model and mockups |
 | Tests | Main paths and anything sensitive, 50% coverage | Every change, abuse cases included, 80% coverage |
+| When unsure | The agent takes the simpler option, says so in its report and keeps going | The agent asks you |
 | Review | One subagent review per branch | One per phase, then you review the PR |
 | Merge and deploy | The agent merges once checks pass; `dev` deploys unattended | You approve each PR and each deploy |
 | Trade-offs | All accepted, 14 and 15 included | Each fixed, or accepted by a named person |
 
-Both keep the pre-push scan, the PR security checks, the required checks, no pushes to `main`, no reading of secrets, and deploys only through the pipeline. In both, the agent asks before a new AWS service or anything that adds cost.
+Both keep the pre-push scan, the PR security checks, the required checks, no pushes to `main`, no reading of secrets, and deploys only through the pipeline. In both, the agent asks before a new AWS service, anything that adds cost or a change to its rules. A prototype's agent stops for you only then, at kickoff, and before the project takes real users, customer data, payments or a `prod` deploy.
 
 ## 2. Set up the repo
 
@@ -42,7 +43,7 @@ Once per project. The repo arrives holding the `travel-claims` worked example; k
 | | `production` only: drafts `threat-model.md` and `costs.md` if they apply, and `design-system.md` if there's UI | Approve each |
 | | Starts `decisions.md` with the profile, the trade-offs you accept and who owns the code, then the big architecture choices | Say which trade-offs you accept; a prototype accepts them all |
 | *"Rename the project"* | Renames the README, `status.md` and the root `pyproject.toml` (then `uv lock`); for a prototype sets `fail_under = 50` | Replace `LICENSE` to match the owner, or delete it; replace the images in `guides/assets/` |
-| | Opens one PR with all of it | Approve it; the agent merges |
+| | Opens one PR with all of it | Approve it and the agent merges; a prototype's merges once checks pass |
 
 `business-context.md` and `design-system.md` describe the business, so its next project reuses them. Check they hold no coding standards that override `code-standards.md`.
 

@@ -1,6 +1,6 @@
 # Spec
 
-A worked example: `travel-claims`, in production. For a new project, replace it by hand or ask the agent to draft one from your notes. The user approves every change.
+A worked example: `travel-claims`, in production. For a new project, replace it by hand or ask the agent to draft one from your notes. The user approves every change; a prototype's agent adds the work it's asked to build without waiting ([AGENTS.md](../AGENTS.md) rule 24).
 
 ## Project
 

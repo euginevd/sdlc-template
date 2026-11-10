@@ -2,7 +2,7 @@
 
 # Contributing
 
-**Every change, by a person or a coding agent, goes through the same plan, checks and review.**
+**Every change, by a person or a coding agent, goes through the same checks; the project's profile sets how much planning and approval it needs.**
 
 [Setup](#setup) · [Making a change](#making-a-change) · [Pull requests](#pull-requests)
 
@@ -23,6 +23,6 @@
 
 1. One PR per plan, filled in from the template, including its **Security** line.
 2. Every check passes and the security summary is clean; fix findings at their cause.
-3. Update the branch if `main` has moved, then squash-merge.
+3. Update the branch if `main` has moved, then squash-merge: once approved in a `production` project, once checks pass in a `prototype`.
 
 Security issues go through [SECURITY.md](SECURITY.md), never a public issue or PR.
