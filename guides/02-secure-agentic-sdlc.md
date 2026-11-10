@@ -11,7 +11,7 @@ For anyone learning the practice, and cloud security architects in particular: w
 
 Each way of building software fixed the biggest gap in the one before it. Agile fixed waterfall's late feedback, DevOps automated agile's slow releases, and DevSecOps moved security from the end into every stage. AI-assisted coding then sped up typing, but people still wrote and drove every change.
 
-The **secure agentic SDLC** is the next step: agents plan, write, test and fix the code, every DevSecOps control stays, and people make the decisions that matter. Nothing earlier is thrown away. Agents are new workers on the same pipeline, and the practices still map to the NIST Secure Software Development Framework (SSDF).
+The **secure agentic SDLC** is the next step: agents plan, write, test and fix the code, every DevSecOps control stays, and people make the decisions that matter. Nothing earlier is thrown away. Agents are new workers on the same pipeline, and the practices still map to the NIST [Secure Software Development Framework](https://csrc.nist.gov/pubs/sp/800/218/final) (SSDF), and its [AI profile](https://csrc.nist.gov/pubs/sp/800/218/a/final).
 
 The name is this guide's; the industry's emerging term is **agentic software development** (Forrester, Gartner), with no single standard yet. Keeping "SDLC" in the name says existing security controls still apply. It draws on AWS's [AI-DLC](https://builder.aws.com/content/3KjWpM4sqd5f0zjUtE67OfUa7rk/ai-driven-development-life-cycle-ai-dlc-on-aws-a-new-approach-to-software-engineering), spec-driven development (GitHub Spec Kit), [AGENTS.md](https://agents.md), DevSecOps and the NIST SSDF. Avoid **ADLC**: it's used both for this and for building AI agents as a product.
 
@@ -141,18 +141,9 @@ The eight DevSecOps stages, the core security activities in each, the open-sourc
 The next steps, in the order most teams add them, including the gaps in the table:
 
 - **Give the agent its own identity.** A separate GitHub identity, and required approval from someone else, so the audit trail separates agent from human and no one approves their own change.
-- **Prove what ships** (stage 3). Sign images and attach build provenance (SLSA), so the artifact in production is provably the one that passed the checks.
+- **Prove what ships** (stage 3). Sign images and attach build provenance ([SLSA](https://slsa.dev)), so the artifact in production is provably the one that passed the checks.
 - **Test the running app and the AI** (stage 4), on every change.
 - **Release behind flags.** Roll out to some users first and roll back automatically on errors, with a person approving the full rollout.
 - **Operate with agents.** An agent that watches service levels, triages alerts and drafts the fix, with an on-call engineer owning the incident.
 
 Each follows the same pattern: the agent does the work, a control checks it, a person decides.
-
-## Sources
-
-- [METR: early-2025 AI and experienced open-source developer productivity](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/)
-- [DORA: State of AI-assisted Software Development 2025](https://dora.dev/research/ai/)
-- [OWASP Top 10 for Agentic Applications for 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)
-- [NIST SP 800-218, Secure Software Development Framework](https://csrc.nist.gov/pubs/sp/800/218/final), and [SP 800-218A](https://csrc.nist.gov/pubs/sp/800/218/a/final) for AI
-- [SLSA: supply-chain levels for software artifacts](https://slsa.dev)
-- [AGENTS.md](https://agents.md)
