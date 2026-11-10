@@ -43,7 +43,7 @@ Once per project. The repo arrives holding the `travel-claims` worked example; k
 | | If there's UI: drafts `design-system.md`, keeping the house style, swapping its tokens for your brand or replacing it, then mocks up the MVP's main screens from it in `docs/mockups/mvp.html` | Open the mockup in a browser; ask for changes until both are what you want, then approve |
 | | `production` only: drafts `threat-model.md` and `costs.md` if they apply | Approve each |
 | | Starts `decisions.md` with the profile, the trade-offs you accept and who owns the code, then the big architecture choices | Say which trade-offs you accept; a prototype accepts them all |
-| *"Rename the project"* | Renames the README, `status.md` and the root `pyproject.toml` (then `uv lock`); for a prototype sets `fail_under = 50` | Replace `LICENSE` to match the owner, or delete it; replace the images in `guides/assets/` |
+| *"Rename the project"* | Renames the README, `status.md` and the root `pyproject.toml` (then `uv lock`); for a prototype sets `fail_under = 50` | Replace `LICENSE` to match the owner, or delete it; replace the images in `guides/assets/`. In a private project, delete `CONTRIBUTING.md` and `social.png`, which serve a public repo |
 | | Opens one PR with all of it | Approve it and the agent merges; a prototype's merges once checks pass |
 
 `business-context.md` and `design-system.md` describe the business, so its next project reuses them. Check they hold no coding standards that override `code-standards.md`.
@@ -108,7 +108,7 @@ travel-claims/
 ├── pyproject.toml   uv.lock   .python-version     A.1 Python packages
 ├── README.md   AGENTS.md   CONTRIBUTING.md  …      A.2 docs for people and agents
 ├── docs/   guides/
-├── .gitignore   .gitattributes   .dockerignore     A.3 git and ignore files
+├── .gitignore   .gitattributes                     A.3 git and ignore files
 ├── lefthook.yml   .lefthook/   scripts/            A.4 local tools
 ├── .vscode/   .editorconfig
 ├── apps/                                           A.5 app code, one folder per app
@@ -146,27 +146,25 @@ travel-claims/
 1. **.git/**: git's own database (history, config, hooks); hidden in VS Code, never edit by hand.
 2. **.gitignore**: files git never tracks: secrets (.env*, *.tfvars), Terraform state, build output, caches.
 3. **.gitattributes**: forces LF on .sh so bash works on Windows; collapses lock files in PR diffs.
-4. **.dockerignore**: keeps secrets, .git, caches and docs out of Docker images; smaller and safer.
 
 ### A.4 Local tools (hooks, editor, scripts)
 
-How the push scan works: setup.sh → `lefthook install` writes .git/hooks/pre-push → `git push` runs it → lefthook reads lefthook.yml → pre-push-scan.sh → scan.sh passes or blocks.
+How the push scan works: setup.sh → `lefthook install` writes .git/hooks/pre-push → `git push` runs it → lefthook reads lefthook.yml → pre-push-scan.sh passes or blocks.
 
 1. **scripts/setup.sh**: run by hand once per clone: installs the tools, the hooks, then `uv sync`.
 2. **lefthook.yml**: says which script runs on which git event; here, a scan before every push.
 3. **.git/hooks/pre-push**: hidden; the only place git looks; per clone, written by `lefthook install`.
-4. **.lefthook/pre-push-scan.sh**: collects the pushed commits' files and diffs, then calls scan.sh.
-5. **scripts/scan.sh**: gitleaks (secrets) + Trivy (packages, IaC); a finding blocks the push.
-6. **.vscode/extensions.json**: suggests the scanner, Ruff, Python and Terraform extensions.
-7. **.editorconfig**: editor defaults for people and agents: LF, UTF-8, indent size, final newline.
-8. **.claude/**: Claude Code's folder; local settings and worktrees git-ignored; rules live in AGENTS.md.
+4. **.lefthook/pre-push-scan.sh**: collects the pushed commits' files and diffs, then scans them with gitleaks (secrets) + Trivy (packages, IaC); a finding blocks the push.
+5. **.vscode/extensions.json**: suggests the scanner, Ruff, Python and Terraform extensions.
+6. **.editorconfig**: editor defaults for people and agents: LF, UTF-8, indent size, final newline.
+7. **.claude/**: Claude Code's folder; local settings and worktrees git-ignored; rules live in AGENTS.md.
 
 Other scripts, run by hand or by CI:
 
-9. **scripts/protect-main.sh**: by hand once, rerun after changes: locks main, squash-only merges, security features.
-10. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open review threads and alerts; replies and resolves threads.
-11. **scripts/security-report.py**: CI: turns scanner results into PR annotations + one summary comment.
-12. **scripts/cost-report.py**: CI: turns Infracost results into PR annotations + one cost comment.
+8. **scripts/protect-main.sh**: by hand once, rerun after changes: locks main, squash-only merges, security features.
+9. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open review threads and alerts; replies and resolves threads.
+10. **scripts/security-report.py**: CI: turns scanner results into PR annotations + one summary comment.
+11. **scripts/cost-report.py**: CI: turns Infracost results into PR annotations + one cost comment.
 
 ### A.5 App code
 
@@ -174,7 +172,7 @@ One folder per app in apps/. Python: pyproject.toml (A.1) + `src/<name>/` + test
 
 1. **apps/api/src/api/handler.py**: the function AWS Lambda calls for each request.
 2. **apps/api/src/api/\_\_init\_\_.py**: empty; marks the folder as a Python package so it can be imported.
-3. **apps/api/src/api/py.typed**: empty; tells type checkers the package ships its type hints.
+3. **apps/api/src/api/py.typed**: empty; tells pyright the package has type hints, or strict mode fails every import of it.
 4. **apps/api/tests/test_handler.py**: two pytest tests: one that it works, one that it's safe.
 5. **.coverage**: git-ignored; pytest-cov's record of tested lines.
 6. **.pytest_cache/, .ruff_cache/, \_\_pycache\_\_/**: git-ignored tool caches for speed; safe to delete.
