@@ -1,16 +1,17 @@
 name: aws
 
 # One Terraform root per unit in infra/aws/<unit>/: plan with a read-only role, apply after approval.
-# dev: planned on every PR, applied on merge to main; prod: a manual run with target prod.
+# dev: a PR plans the units it changes, a merge to main plans every unit and applies the ones with
+# changes; prod: a manual run with target prod.
 # Repo variables: PROJECT_NAME, optional AWS_REGION (default ap-southeast-2).
 # Per environment, from the bootstrap stack: AWS_PLAN_ROLE_ARN, AWS_DEPLOY_ROLE_ARN, TF_STATE_BUCKET.
 # Cost comment: secret INFRACOST_API_KEY; optional variables MONTHLY_COST_LIMIT (warns above it) and COST_CURRENCY (default USD).
 on:
   pull_request:
-    paths: [infra/aws/**, '!infra/aws/bootstrap/**', apps/**, .github/workflows/aws.yml]
+    paths: [infra/aws/**, '!infra/aws/bootstrap/**', apps/**, pyproject.toml, uv.lock, .github/workflows/aws.yml]
   push:
     branches: [main]
-    paths: [infra/aws/**, '!infra/aws/bootstrap/**', apps/**, .github/workflows/aws.yml]
+    paths: [infra/aws/**, '!infra/aws/bootstrap/**', apps/**, pyproject.toml, uv.lock, .github/workflows/aws.yml]
   workflow_dispatch:
     inputs:
       target:
@@ -35,6 +36,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  # The same version as the Terraform image in security.yml's terraform job.
   TF_VERSION: 1.17.1
   AWS_REGION: ${{ vars.AWS_REGION || 'ap-southeast-2' }}
   TARGET: ${{ inputs.target || 'dev' }}
@@ -55,21 +57,27 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      # Manual run: the chosen unit, or all. Workflow change: every unit. Otherwise: units whose infra/aws/ or apps/ folder changed.
+      # Manual run: the chosen unit, or all. Merge to main: every unit, so one an earlier run failed, or left
+      # unapproved, is planned again; a unit with no changes uploads no plan and its apply skips.
+      # PR: every unit when the workflow or the shared Python packages changed, otherwise the units whose
+      # infra/aws/ or apps/ folder changed.
       - id: units
         env:
           EVENT: ${{ github.event_name }}
           INPUT_UNIT: ${{ inputs.unit }}
-          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          BASE: ${{ github.event.pull_request.base.sha }}
         run: |
           all=$(find infra/aws -mindepth 1 -maxdepth 1 -type d ! -name bootstrap ! -name '_*' -printf '%f\n')
           if [ "$EVENT" = workflow_dispatch ] && [ "$INPUT_UNIT" = all ]; then
             units="$all"
           elif [ "$EVENT" = workflow_dispatch ]; then
             units=$(echo "$INPUT_UNIT" | grep -Fx "$all" || { echo "No unit infra/aws/$INPUT_UNIT"; exit 1; })
+          elif [ "$EVENT" = push ]; then
+            units="$all"
           else
-            changed=$(git diff --name-only "$BASE" "$GITHUB_SHA" 2>/dev/null || true)
-            if [ -z "${BASE//0/}" ] || echo "$changed" | grep -qx .github/workflows/aws.yml; then
+            # A diff that can't be read plans every unit.
+            changed=$(git diff --name-only "$BASE" "$GITHUB_SHA" 2>/dev/null) || changed=.github/workflows/aws.yml
+            if echo "$changed" | grep -qxE '\.github/workflows/aws\.yml|pyproject\.toml|uv\.lock'; then
               units="$all"
             else
               units=$(echo "$changed" | sed -n -E 's#^(infra/aws|apps)/([^/]+)/.*#\2#p' | sort -u | grep -Fx "$all" || true)
@@ -127,7 +135,8 @@ jobs:
           terraform plan -input=false $DESTROY -out=tfplan -detailed-exitcode || ec=$?
           [ "$ec" -eq 1 ] && exit 1
           terraform show -json tfplan > plan.json
-          [ "$ec" -eq 2 ] || rm tfplan
+          # No changes: no plan and no zip are kept, so nothing is uploaded and no approval is asked for.
+          [ "$ec" -eq 2 ] || rm -f tfplan ./*.zip
           {
             echo "## Terraform plan: $UNIT in $TARGET ${DESTROY}"
             if [ -f tfplan ]; then
@@ -162,7 +171,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 1
 
-      # Only units with changes upload a plan; apply skips the rest. Zips built at plan time go with it.
+      # Only units with changes upload a plan; apply runs for those alone. Zips built at plan time go with it.
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: tfplan-${{ matrix.unit }}
@@ -208,11 +217,31 @@ jobs:
             gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@comment.md > /dev/null
           fi
 
+  # The units whose plan has changes, read from this run's uploaded plans; no AWS role.
+  # Runs even when some plans failed, so the units that are ready still apply. A rerun also lists the
+  # earlier attempt's plans; one that no longer matches the state fails at apply.
+  ready:
+    needs: plan
+    if: always() && !cancelled() && needs.plan.result != 'skipped' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read
+    outputs:
+      units: ${{ steps.units.outputs.units }}
+    steps:
+      - id: units
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          names=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" --paginate --jq '.artifacts[].name | select(startswith("tfplan-")) | sub("^tfplan-"; "")')
+          echo "units=$(echo "$names" | sort -u | jq -R . | jq -sc 'map(select(length > 0))')" >> "$GITHUB_OUTPUT"
+
   apply:
-    needs: [detect, plan]
+    needs: ready
     # Release: only main is applied, so a manual run can't deploy an unreviewed branch.
-    # Runs even when some plans failed: a unit without a saved plan skips, so ready units still apply.
-    if: always() && !cancelled() && needs.detect.result == 'success' && needs.detect.outputs.units != '[]' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.PROJECT_NAME != ''
+    # Approval is asked only when a unit has changes to apply.
+    if: always() && !cancelled() && needs.ready.result == 'success' && needs.ready.outputs.units != '[]' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: aws-${{ inputs.target || 'dev' }}-apply
@@ -222,7 +251,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        unit: ${{ fromJson(needs.detect.outputs.units) }}
+        unit: ${{ fromJson(needs.ready.outputs.units) }}
     defaults:
       run:
         working-directory: infra/aws/${{ matrix.unit }}
