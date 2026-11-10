@@ -20,8 +20,8 @@ The end-to-end flow, through the stages in section 3, for both a new project and
 |:-:|-------|-----|------|
 | 1 | Plan | Developer, agent | **Create the repo:** `gh repo create travel-claims --template euginevd/sdlc-template --private --clone` |
 | 2 | Plan | Developer, agent | **Update the spec:** *"Update spec"*. ↺ Correct it until it says what you want |
-| 3 | Plan | Agent | **Plan:** *"Plan <the work>"*. The agent writes the plan and threat model; no code |
-| 4 | Plan | Developer | **Review the plan:** ↺ ask for changes to the plan and threat model, then approve |
+| 3 | Plan | Agent | **Plan:** *"Plan <the work>"*. The agent writes the plan, threat model and any UI mockups; no code |
+| 4 | Plan | Developer | **Review the plan:** ↺ ask for changes to the plan, threat model and mockups, then approve |
 | 5 | Code | Developer | **Implement:** *"Implement the plan"*. The agent works through the phases |
 | 6 | Code | Agent | **Build each phase:** code, checks, subagent review, docs, then a local commit |
 | 7 | Code | Agent | **Push:** the pre-push scan runs. ↺ The agent fixes findings, then opens a PR |
@@ -88,7 +88,7 @@ travel-claims/
    3. **code-standards.md**: numbered coding rules the pipeline can't check; changes rarely.
    4. **status.md**: what's built, how to run it, known gaps, what's next; every change.
    5. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
-   6. **plan-\<name\>.md**: the plan being built: design, risks, phases, PR groups; deleted when done.
+   6. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built (design, risks, phases, PR groups) and its screens; deleted when done.
    7. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
 5. **guides/**: how-to guides for people (01–03); assets/ holds their diagrams.
 6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
