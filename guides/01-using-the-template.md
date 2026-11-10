@@ -56,7 +56,7 @@ One prompt takes a piece of work from idea to `dev`. You watch and steer; nothin
 |---------|-----------|-----|
 | *"Build `<the work>`"* | Adds the work to the spec if it's new, writes a short plan and starts building without waiting | Interrupt if the direction is wrong |
 | | Builds each phase: code, tests for the main path and anything touching auth, money or personal data, the checks, `status.md`, a local commit | |
-| | Has a fresh subagent review the whole branch, fixes what it blocks, updates `decisions.md`, deletes the plan and pushes; the pre-push scan runs | |
+| | Has a fresh subagent review the whole branch, fixes what it blocks, updates `decisions.md`, deletes the plan, and `mvp.html` once all its screens are built, and pushes; the pre-push scan runs | |
 | | Opens a PR, fixes the findings from the checks and the security summary ([AGENTS.md](../AGENTS.md) rule 13), and squash-merges once they pass | |
 | | The pipeline deploys to `dev` and checks `/health`; the agent reports what was built, what passed and what was skipped | Try it in `dev`; say what to change next |
 
@@ -70,7 +70,7 @@ The same loop, with you at each gate and every finding fed back to the agent (�
 |:-:|-------|---------|-----------|-----|
 | 1 | Plan | *"Update spec: `<what's changing>`"* | Edits `spec.md` and shows the change | ↺ Correct it, then approve |
 | 2 | Plan | *"Plan `<the work>`"* | Writes the plan, updates the threat model and mocks up any screens; no code, then stops | ↺ Ask for changes, then approve |
-| 3 | Code | *"Implement the plan"* | Builds each phase: code, tests with abuse cases, the checks, a fresh subagent review, `status.md`, a local commit. After the last one, reviews the whole branch, updates `decisions.md` and deletes the plan and mockups | |
+| 3 | Code | *"Implement the plan"* | Builds each phase: code, tests with abuse cases, the checks, a fresh subagent review, `status.md`, a local commit. After the last one, reviews the whole branch, updates `decisions.md` and deletes the plan and its mockups, and `mvp.html` once all its screens are built | |
 | 4 | Code | | Pushes; the pre-push scan runs. ↺ Fixes findings, then opens a PR with its Security line | |
 | 5 | Build and test | | ↺ Fixes what the PR checks find: the security summary, code scanning, the Terraform plan and the cost comment; asks for review once they pass | |
 | 6 | Release | *"Merge it"* | Updates the branch if `main` moved, squash-merges and deletes the branch | Review the diff and the security summary first |
@@ -135,7 +135,7 @@ travel-claims/
    3. **code-standards.md**: numbered coding rules the pipeline can't check; changes rarely.
    4. **status.md**: what's built, how to run it, known gaps, what's next; every change.
    5. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
-   6. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built (design, risks, phases, PR groups) and its screens; deleted when done. **skeleton-plan.md**: the outline each plan is copied from.
+   6. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built (design, risks, phases, PR groups) and its screens; deleted when done. **mockups/mvp.html**: the MVP's screens, agreed at kickoff; deleted once they're all built. **skeleton-plan.md**: the outline each plan is copied from.
    7. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
 5. **guides/**: for people: 01 this template, 02 the risks it accepts; assets/ holds the README's hero image and `social.png`, the repo's social preview.
 6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
