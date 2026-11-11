@@ -26,7 +26,7 @@ Template defaults: GitHub Actions, Terraform on AWS, the pre-push scan and the P
 ## Rules
 
 9. `/health` is public and returns nothing from the request.
-10. *(to fill in)* the limits that hold whatever else changes: data, money, the security baseline and monthly spend.
+10. *(to fill in)* the limits that hold whatever else changes: data, money, monthly spend and the security baseline, as an OWASP ASVS level (1 for a prototype, 2 for production).
 
 ## Not for now
 

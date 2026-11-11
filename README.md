@@ -49,7 +49,7 @@ A prototype's agent stops and asks before the project takes real users, customer
 | | |
 |---|---|
 | [AGENTS.md](AGENTS.md) | The rules the agent follows, numbered so reviews can cite them: what to read, how to plan, build, open a PR and merge, what to ask first and what never to do. Read by Claude Code, Codex, Cursor, Copilot and most coding agents |
-| [docs/](docs/) | What the agent reads and keeps current: business context, spec, status, decisions, threat model, costs and a design system. Each starts as a true description of the starter, with a line to fill in for everything your project decides |
+| [docs/](docs/) | What the agent reads and keeps current: business context, spec, status, features, decisions, threat model, costs, a design system and the go-live checklist. Each starts as a true description of the starter, with a line to fill in for everything your project decides |
 | [apps/api/](apps/api/), [infra/aws/api/](infra/aws/api/) | The starter: a Lambda with a `/health` route and the Terraform that deploys it. The smallest thing that proves the pipeline end to end; keep it, build on it or replace it |
 | [.github/workflows/](.github/workflows/) | `ci` for the apps a PR changes, `security` and `codeql` for the scans, `aws` for the Terraform plan, the cost comment and the apply |
 | [infra/aws/bootstrap/](infra/aws/bootstrap/) | One stack per AWS account, deployed by you: the GitHub sign-in, a read-only plan role, a bounded deploy role, the state bucket and a budget alert |
@@ -72,5 +72,6 @@ What it doesn't cover is written down too: [guides/03-security-trade-offs.md](gu
 1. [Using the template](guides/01-using-the-template.md): what you say and what the agent does, from an empty repo to a deployed app.
 2. [The files](guides/02-the-files.md): what every file is and why it's there.
 3. [Security trade-offs](guides/03-security-trade-offs.md): the risks the template accepts, and the fix for each.
+4. [The guardrails](guides/04-the-guardrails.md): how each control in the checklist works, stage by stage.
 
 To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md); report vulnerabilities through [SECURITY.md](SECURITY.md). [MIT licence](LICENSE).
