@@ -32,12 +32,11 @@ my-project/
    1. **business-context.md**: the business, regulators, data rules, risk appetite, systems; changes rarely.
    2. **spec.md**: problem, users, stack, what done means, rules; the agent drafts, you approve; often.
    3. **code-standards.md**: numbered coding rules the pipeline can't check; changes rarely.
-   4. **status.md**: what's built, how to run it, known gaps, what's next; every change.
-   5. **features.md**: the agreed features, one section per app and audience, each feature with its status and the PR that built it; every feature change.
-   6. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
-   7. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
-   8. **checklist.md**: the guardrails by DevSecOps stage and profile, to clear before go-live.
-   9. **skeleton-plan.md**: the outline each plan is copied from.
+   4. **features.md**: the agreed features, one section per app and audience, each feature with its status and the PR that built it; what's next and known gaps go in `TODO.md`, history in PRs; every feature change.
+   5. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
+   6. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
+   7. **checklist.md**: the guardrails by DevSecOps stage and profile, to clear before go-live.
+   8. **skeleton-plan.md**: the outline each plan is copied from.
    10. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built and its screens; deleted when done.
    11. **mockups/mvp.html**: the MVP's screens, agreed at kickoff; deleted once they're all built.
 5. **guides/**: for people: 01 how to use the template, 02 this tour, 03 the risks it accepts, 04 how each guardrail works, 05 removing a project from AWS; assets/ holds the README's overview image, light and dark, and `social.png`, the repo's social preview.
