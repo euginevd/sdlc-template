@@ -10,11 +10,12 @@ case "${1:-}" in
   *) echo "Usage: bash scripts/setup.sh [--check]"; exit 1 ;;
 esac
 
-cd "$(git rev-parse --show-toplevel)" || exit 1
+root=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "Run this inside the repo, with git installed."; exit 1; }
+cd "$root" || exit 1
 
 # winget adds tools to the Windows user PATH, which an open shell doesn't see until it's reloaded.
 reload_path() {
-  command -v powershell.exe >/dev/null || return 0
+  command -v powershell.exe >/dev/null && command -v cygpath >/dev/null || return 0
   export PATH="$PATH:$(cygpath -p "$(powershell.exe -NoProfile -Command "[Environment]::GetEnvironmentVariable('Path','User')" | tr -d '\r')")"
 }
 reload_path
@@ -37,7 +38,7 @@ install() {
 
 # A tool's installed version as major.minor.
 installed() {
-  { "$1" --version 2>/dev/null || "$1" version 2>/dev/null; } | grep -o '[0-9]\+\.[0-9]\+' | head -1
+  { "$1" --version 2>/dev/null || "$1" version 2>/dev/null; } | grep -Eo '[0-9]+\.[0-9]+' | head -1
 }
 
 # The major.minor the pipeline pins for a tool, read from the workflows; nothing for a tool it doesn't pin.
@@ -62,17 +63,20 @@ report() {
     fi
     have=$(installed "$tool")
     want=$(pinned "$tool")
-    if [ -n "$want" ] && [ "$have" != "$want" ]; then
-      line "$tool" "$have, the pipeline uses $want: upgrade it with winget or brew"
+    if [ -z "$have" ]; then
+      line "$tool" "MISSING: found, but it doesn't run"
+      missing=$((missing + 1))
+    elif [ -n "$want" ] && [ "$have" != "$want" ]; then
+      line "$tool" "$have, the pipeline uses $want: install $want with winget or brew"
     else
-      line "$tool" "${have:-ok}"
+      line "$tool" "$have"
     fi
   done
   if command -v gh >/dev/null; then
-    if gh auth status >/dev/null 2>&1; then
+    if gh auth status --hostname github.com >/dev/null 2>&1; then
       line "gh sign-in" "ok"
     else
-      line "gh sign-in" "MISSING: run gh auth login"
+      line "gh sign-in" "MISSING: not confirmed; run gh auth login, or check the network"
       missing=$((missing + 1))
     fi
   fi
@@ -92,7 +96,7 @@ report() {
 if [ "${1:-}" = --check ]; then
   echo "This machine:"
   report && { echo "Ready."; exit 0; }
-  echo "Not ready: run bash scripts/setup.sh"
+  echo "Not ready: see MISSING above; bash scripts/setup.sh installs the tools, the hook and the Python environment."
   exit 1
 fi
 
