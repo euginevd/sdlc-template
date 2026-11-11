@@ -9,7 +9,7 @@ exclude-newer-span = "P7D"
 [manifest]
 members = [
     "api",
-    "travel-claims",
+    "starter",
 ]
 
 [[package]]
@@ -189,7 +189,7 @@ wheels = [
 ]
 
 [[package]]
-name = "travel-claims"
+name = "starter"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

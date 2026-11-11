@@ -1,6 +1,6 @@
 # Design system
 
-The template's house style: premium, minimal and quiet, with motion and imagery used on purpose. A project keeps it, swaps the tokens for its brand, or replaces it; "This project" is the `travel-claims` worked example. Optional: delete it if the project has no UI. The UI rules every project follows are in `code-standards.md` (25–29).
+The template's house style: premium, minimal and quiet, with motion and imagery used on purpose. A project keeps it, swaps the tokens for its brand, or replaces it, and fills in "This project" at kickoff. Optional: delete it if the project has no UI. The UI rules every project follows are in `code-standards.md` (25–29).
 
 ## Principles
 
@@ -59,16 +59,12 @@ Colours in OKLCH, light and dark, following the system setting with a toggle.
 
 ## Words
 
-24. Plain and specific, in sentence case. Buttons say what happens ("Approve claim"); errors say what to do next.
+24. Plain and specific, in sentence case. Buttons say what happens ("Send invoice"); errors say what to do next.
 
 ## This project
 
-25. Locale: Australian English, AUD, dates as `8 Nov 2026`. Numbers rounded to at most 2 decimal places (`4.25 hours`, `92.5%`); money always shows 2 (`$1,234.50`).
-26. Shell: a quiet left sidebar on `bg` with the logo and four links; page titles in Instrument Serif.
-27. Sign-in and claimant landing: a full-bleed travel photograph on one side, the form on the other.
-28. Queue: four large figures (waiting, decided today, median time to decision, paid this week) with a 7-day sparkline each, then the claims table in compact rows. A row opens its claim through a view transition.
-29. Claim page: on the left, the claimant's story, receipt thumbnails that open full size, and a timeline (submitted, screened, decided, paid). On the right, a sticky decision card with the outcome, the payout, the agent's reasons and the policy clauses it quotes.
-30. Payout bar: one bar from claimed to paid. The deductible and anything over the limit are in `sunken`, the paid amount in `accent`, and every segment is labelled.
-31. Charts: a line for trends, a bar for comparisons, `ink-3` axes, `accent` for the series in focus, and a table view of the same numbers.
-32. Claim form: one column that works at 360px wide, numbered steps, and a receipt drop zone with previews.
-33. Status: Approved (`positive`), Declined (`critical`), Referred (`caution`), Paid (`ink`); each a word and an icon.
+25. Locale: *(to fill in)* language, currency and date format. Numbers are rounded to at most 2 decimal places; money always shows 2.
+26. Shell: *(to fill in)* the navigation and page layout.
+27. Screens: *(to fill in)* one line for each key screen: what's on it and what stands out.
+28. Charts: a line for trends, a bar for comparisons, `ink-3` axes, `accent` for the series in focus, and a table view of the same numbers.
+29. Status: *(to fill in)* each status with its word, icon and colour token.
