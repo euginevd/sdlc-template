@@ -40,7 +40,7 @@ my-project/
    9. **skeleton-plan.md**: the outline each plan is copied from.
    10. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built and its screens; deleted when done.
    11. **mockups/mvp.html**: the MVP's screens, agreed at kickoff; deleted once they're all built.
-5. **guides/**: for people: 01 how to use the template, 02 this tour, 03 the risks it accepts, 04 how each guardrail works; assets/ holds the README's overview image, light and dark, and `social.png`, the repo's social preview.
+5. **guides/**: for people: 01 how to use the template, 02 this tour, 03 the risks it accepts, 04 how each guardrail works, 05 removing a project from AWS; assets/ holds the README's overview image, light and dark, and `social.png`, the repo's social preview.
 6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
 7. **LICENSE**: MIT; anyone may use, copy or change the code, keeping the notice; replace it per project.
 8. **TODO.md**: your list of ideas and tasks; the agent suggests from it, confirms before starting an item and removes it once done.
@@ -94,6 +94,7 @@ How a change ships: open a PR → ci, security and codeql run → aws plans → 
 5. **workflows/security.yml**: the pre-push scan again (hooks can be skipped) + Checkov, Semgrep, terraform validate; weekly.
 6. **workflows/codeql.yml**: GitHub's code scanning for bugs and vulnerabilities; PRs, main, weekly.
 7. **workflows/aws.yml**: Terraform plan + cost on PRs; on merge, plans every unit and deploys the changed ones to dev after approval; prod by hand.
+8. **workflows/images.yml**: for each app with a Dockerfile: builds and scans its image on PRs; on merge, scans it again, keeps its SBOM and pushes it to ECR. Idle until an app has one.
 
 ## 7. Cloud (infra/aws/)
 

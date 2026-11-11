@@ -60,3 +60,4 @@ When you or the user find a mistake an agent made, add a one-line fix here in th
 25. Shell scripts must keep LF line endings or bash fails on Windows; don't override `.gitattributes`.
 26. A `CLAUDE.md` in the repo makes Claude Code skip this file. Don't add one.
 27. An internal service on a public URL still needs auth: a context server's function URL was left open. Make service-to-service URLs IAM-only.
+28. AWS can't use a new IAM role for a few seconds after it's made, so a first apply can fail on it. Expect it, rerun the apply, and don't change a trust policy that's right.

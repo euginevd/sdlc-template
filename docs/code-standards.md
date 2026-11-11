@@ -46,7 +46,7 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 
 ## Containers
 
-22. Images are multi-stage, pinned by digest, run as a non-root user and have a `HEALTHCHECK`; local ports bind to `127.0.0.1`; a missing setting fails at start (`${VAR:?}`), and `.env.example` lists each one. A `.dockerignore` keeps `.env*` and `.git` out of every image.
+22. Images are multi-stage, pinned by digest, run as a non-root user and have a `HEALTHCHECK`; local ports bind to `127.0.0.1`; a missing setting fails at start (`${VAR:?}`), and `.env.example` lists each one. A `.dockerignore` keeps `.env*` and `.git` out of every image. An app's `Dockerfile` in `apps/<app>/`, built from the repo root, is picked up by the `images` workflow, which scans it before pushing it to the app's ECR repository, `<project>/<app>`.
 
 ## Docs
 
