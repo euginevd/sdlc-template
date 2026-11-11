@@ -1,6 +1,19 @@
 # Spec
 
-A starter: it describes the sample the template ships, a health-check API, and each *(to fill in)* line says what to write. Kickoff fills it in from your notes. The user approves every change (a prototype: [AGENTS.md](../AGENTS.md) rule 24).
+A starter: it describes the sample the template ships, a health-check API, and each *(to fill in)* line says what to write. Kickoff fills it in from your notes. The user approves every change (a prototype: [AGENTS.md](../AGENTS.md) rule 24). New requirements start in [TODO.md](../TODO.md); once one is approved, the agent adds it to [features.md](features.md) and any rule, limit or done-when it needs here. What each feature does is its row in `features.md`, not a line here.
+
+## Business
+
+Who the business is, unnumbered so the spec's numbers stay put. The same for every project for this business: change it only when the business changes, and copy it into the next project's spec.
+
+- Business: *(to fill in)* its name, what it does and where.
+- Size: *(to fill in)* staff, the team this is for, and the volume it handles.
+- Regulators and laws: *(to fill in)* the ones that apply to its data and decisions, or none.
+- Data: *(to fill in)* where customer data must stay.
+- Risk appetite: *(to fill in)* what it won't risk, and how changes reach `prod`.
+- Systems: *(to fill in)* the systems of record, sign-in and payments this must fit with.
+- People: *(to fill in)* who owns the rules the software applies, and who approves new data flows.
+- Tone: *(to fill in)* how it speaks to its customers.
 
 ## Project
 
@@ -21,7 +34,7 @@ Template defaults: GitHub Actions, Terraform on AWS, the pre-push scan and the P
 ## Done when
 
 7. `GET /health` returns `{"status": "ok"}`.
-8. *(to fill in)* one line for each result a user can see.
+8. *(to fill in)* what done means for the MVP as a whole; each feature's own result is its row in `features.md`.
 
 ## Rules
 

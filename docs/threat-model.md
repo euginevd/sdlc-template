@@ -48,4 +48,4 @@ STRIDE: Spoofing, Tampering, Repudiation, Information disclosure, Denial of serv
 
 ## Compliance
 
-- *(to fill in)* one line for each law in `business-context.md`: what it requires here and by when, or none.
+- *(to fill in)* one line for each law in `spec.md`'s Business section: what it requires here and by when, or none.
