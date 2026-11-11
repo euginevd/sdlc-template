@@ -27,7 +27,7 @@
 ```bash
 gh repo create my-project --template euginevd/sdlc-template --private --clone
 cd my-project
-bash scripts/setup.sh        # tools and the pre-push scan
+bash scripts/setup.sh        # tools and the pre-push scan (--check only reports)
 bash scripts/protect-main.sh # GitHub security features and the main ruleset
 ```
 
