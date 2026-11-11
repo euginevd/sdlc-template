@@ -35,14 +35,14 @@ Once per project. The repo arrives as a starter: `docs/` describes the health-ch
 
 | You say | The agent | You |
 |---------|-----------|-----|
-| *"Kick off `<name>`: `<your notes on the business, the problem, the users and the stack>`"* | Checks the machine, asks for the profile, then drafts `business-context.md` and `spec.md` from your notes | Answer, then correct each draft until it says what you want |
+| *"Kick off `<name>`: `<your notes on the business, the problem, the users and the stack>`"* | Checks the machine, asks for the profile, then drafts `spec.md`, its Business section included, from your notes | Answer, then correct each draft until it says what you want |
 | | If there's UI: drafts `design-system.md`, keeping the house style, swapping its tokens for your brand or replacing it, then mocks up the MVP's main screens from it in `docs/mockups/mvp.html` | Open the mockup in a browser; ask for changes until both are what you want, then approve |
 | | Extends `threat-model.md` and `costs.md` from the starter's to the project's, or deletes one that doesn't apply; a prototype keeps the starter's as they are unless you ask | `production`: approve each |
 | | Starts `decisions.md` with the profile, the trade-offs you accept and who owns the code, then the big architecture choices | Say which trade-offs you accept; a prototype accepts them all |
 | *"Rename the project"* | Renames the README, `Name` in `spec.md` and the root `pyproject.toml` (then `uv lock`); for a prototype sets `fail_under = 50` | Replace `LICENSE` to match the owner, or delete it; replace the images in `guides/assets/`. In a private project, delete `CONTRIBUTING.md` and `social.png`, which serve a public repo |
 | | Opens one PR with all of it | Approve it, and the agent merges |
 
-`business-context.md` and `design-system.md` describe the business, so its next project reuses them. Check they hold no coding standards that override `code-standards.md`.
+The spec's Business section and `design-system.md` describe the business, so its next project reuses them. Check they hold no coding standards that override `code-standards.md`.
 
 ## 4. Build a prototype
 

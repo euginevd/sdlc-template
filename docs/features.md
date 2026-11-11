@@ -1,6 +1,6 @@
 # Features
 
-The agreed features, by app and audience; the agent adds a row when you approve one and updates its status with the work. Ideas go in [TODO.md](../TODO.md). What each does is in [spec.md](spec.md); how to run it, in the README; what's missing, in [TODO.md](../TODO.md). Numbered across the file so reviews can cite them (features 2). One row per feature, and one PR per row: the one that first built it.
+The agreed features, by app and audience; the agent adds a row when you approve one and updates its status with the work. New requirements start in [TODO.md](../TODO.md), and so do known gaps. Each row here is what the feature does; the rules every feature keeps are in [spec.md](spec.md). How to run it: the README. Numbered across the file so reviews can cite them (features 2). One row per feature, and one PR per row: the one that first built it.
 
 | App | For | Link |
 |---|---|---|
