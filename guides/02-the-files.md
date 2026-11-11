@@ -94,6 +94,7 @@ How a change ships: open a PR → ci, security and codeql run → aws plans → 
 5. **workflows/security.yml**: the pre-push scan again (hooks can be skipped) + Checkov, Semgrep, terraform validate; weekly.
 6. **workflows/codeql.yml**: GitHub's code scanning for bugs and vulnerabilities; PRs, main, weekly.
 7. **workflows/aws.yml**: Terraform plan + cost on PRs; on merge, plans every unit and deploys the changed ones to dev after approval; prod by hand.
+8. **workflows/images.yml**: for each app with a Dockerfile: builds and scans its image on PRs; on merge, scans it again, keeps its SBOM and pushes it to ECR. Idle until an app has one.
 
 ## 7. Cloud (infra/aws/)
 
