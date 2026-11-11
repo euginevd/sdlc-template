@@ -1,6 +1,6 @@
 # Using the template
 
-How to take a project from an empty repo to a deployed app with your coding agent: what you say, what the agent does, and what you decide, for a fast `prototype` or a gated `production` project. For developers; the agent works from [AGENTS.md](../AGENTS.md), not from this guide, so the prompts in italics are suggestions and your own words do the same job. The risks the template accepts are in [02-security-trade-offs.md](02-security-trade-offs.md), and a tour of every file is in [03-the-files.md](03-the-files.md).
+How to take a project from an empty repo to a deployed app with your coding agent: what you say, what the agent does, and what you decide, for a fast `prototype` or a gated `production` project. For developers; the agent works from [AGENTS.md](../AGENTS.md), not from this guide, so the prompts in italics are suggestions and your own words do the same job. A tour of every file is in [02-the-files.md](02-the-files.md), and the risks the template accepts are in [03-security-trade-offs.md](03-security-trade-offs.md).
 
 ## 1. Pick a profile
 
@@ -12,7 +12,7 @@ The agent asks for this first ([AGENTS.md](../AGENTS.md) rules 15 and 24). Secti
 | Approvals | Kickoff only; after that the agent plans, builds, merges and deploys to `dev` on its own | You approve the plan; a second reviewer approves each PR and each deploy, and GitHub enforces it |
 | Tests | Main paths and anything sensitive, 50% coverage | Every change, abuse cases included, 80% coverage |
 | When unsure | The agent takes the simpler option, says so in its report and keeps going | The agent asks you |
-| Trade-offs | All accepted, 14 and 15 included | Each fixed, or accepted by a named person |
+| Trade-offs | All accepted | Each fixed, or accepted by a named person |
 
 Both keep the pre-push scan, the PR security checks, no pushes to `main`, no reading of secrets, and deploys only through the pipeline. In both, the agent asks before a new AWS service, anything that adds cost or a change to its rules, and before a prototype takes real users, customer data, payments or a `prod` deploy (section 7).
 
@@ -20,7 +20,7 @@ Both keep the pre-push scan, the PR security checks, no pushes to `main`, no rea
 
 Once per project, by you. Steps 1 and 2 need the GitHub CLI, signed in with `gh auth login`.
 
-1. **Create it:** `gh repo create <name> --template euginevd/sdlc-template --private --clone`. Keep a repo that deploys to AWS private: on a public repo, anyone signed in to GitHub can download its Terraform plans (trade-offs 9).
+1. **Create it:** `gh repo create <name> --template euginevd/sdlc-template --private --clone`. Keep a repo that deploys to AWS private: on a public repo, anyone signed in to GitHub can download its Terraform plans (trade-offs 5).
 2. **Tools and hooks:** `bash scripts/setup.sh`, on every fresh clone: it installs the scanners, uv and Terraform if they're missing, then the push hook, and lists what the machine has. Until it has run, pushes from that clone aren't scanned. `bash scripts/setup.sh --check` lists the same and changes nothing.
 3. **Protect `main`:** `bash scripts/protect-main.sh` sets the Actions limits, squash-only merges, GitHub's security features and the `main` ruleset; rerun it after changing it. A private repo needs a paid GitHub plan for the ruleset and the approval environments. On a public repo, also turn on everything under Settings → Advanced Security except **Agentic autofix**, which uses AI credits; the script can't set Automatic dependency submission, Malware alerts, the AI scans or Copilot Autofix, as they have no API.
 4. **AWS, when the project first needs it:** the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml), once per account: `dev` now, and `prod` (`Target=prod`) before the first `prod` deploy. Until then the `aws` workflow skips itself, so a project can start without an account. Two extras, each off until you set it: `BudgetEmail` emails you as the account's spend nears its monthly budget, and an Infracost API key in the `INFRACOST_API_KEY` secret puts a cost comment on each PR.

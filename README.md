@@ -31,7 +31,7 @@ bash scripts/setup.sh        # tools and the pre-push scan (--check only reports
 bash scripts/protect-main.sh # GitHub security features and the main ruleset
 ```
 
-Then kick off: your agent asks whether this is a `prototype` or `production`, then drafts the business context and spec from your notes, with a design system and a mockup of the MVP if there's UI, and for production the threat model and costs that apply. You approve each, and record which [trade-offs](guides/02-security-trade-offs.md) you accept in `docs/decisions.md`, before the first piece of work. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md), sections 1 to 3.
+Then kick off: your agent asks whether this is a `prototype` or `production`, then drafts the business context and spec from your notes, with a design system and a mockup of the MVP if there's UI, and for production the threat model and costs that apply. You approve each, and record which [trade-offs](guides/03-security-trade-offs.md) you accept in `docs/decisions.md`, before the first piece of work. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md), sections 1 to 3.
 
 ## What you get
 
@@ -60,7 +60,7 @@ Then kick off: your agent asks whether this is a `prototype` or `production`, th
 ## Guides
 
 1. [Using the template](guides/01-using-the-template.md): what you say and what the agent does, end to end, for a prototype or a production project.
-2. [Security trade-offs](guides/02-security-trade-offs.md): the risks the template accepts, and the fix for production.
-3. [The files](guides/03-the-files.md): what every file is and why it's there.
+2. [The files](guides/02-the-files.md): what every file is and why it's there.
+3. [Security trade-offs](guides/03-security-trade-offs.md): the risks the template accepts, and the fix for production.
 
 To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md); report vulnerabilities through [SECURITY.md](SECURITY.md). MIT licence.

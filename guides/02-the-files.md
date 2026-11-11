@@ -37,7 +37,7 @@ my-project/
    5. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
    6. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built (design, risks, phases, PR groups) and its screens; deleted when done. **mockups/mvp.html**: the MVP's screens, agreed at kickoff; deleted once they're all built. **skeleton-plan.md**: the outline each plan is copied from.
    7. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
-5. **guides/**: for people: 01 how to use the template, 02 the risks it accepts, 03 this tour; assets/ holds the README's hero image and `social.png`, the repo's social preview.
+5. **guides/**: for people: 01 how to use the template, 02 this tour, 03 the risks it accepts; assets/ holds the README's hero image and `social.png`, the repo's social preview.
 6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
 7. **LICENSE**: MIT; anyone may use, copy or change the code, keeping the notice; replace it per project.
 
