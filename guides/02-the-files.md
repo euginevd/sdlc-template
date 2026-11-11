@@ -38,7 +38,7 @@ my-project/
    7. **skeleton-plan.md**: the outline each plan is copied from.
    8. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built and its screens; deleted when done.
    9. **mockups/mvp.html**: the MVP's screens, agreed at kickoff; deleted once they're all built.
-5. **guides/**: for people: 01 how to use the template, 02 this tour, 03 the risks it accepts; assets/ holds the README's hero image and `social.png`, the repo's social preview.
+5. **guides/**: for people: 01 how to use the template, 02 this tour, 03 the risks it accepts; assets/ holds the README's overview image, light and dark, and `social.png`, the repo's social preview.
 6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
 7. **LICENSE**: MIT; anyone may use, copy or change the code, keeping the notice; replace it per project.
 
