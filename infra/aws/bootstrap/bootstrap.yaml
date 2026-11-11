@@ -4,6 +4,7 @@
 #    from: gh api repos/<owner>/<repo> --jq '.owner.id, .id'
 #    Set BudgetEmail to be emailed when the account's monthly spend passes 80% and 100% of MonthlyBudgetUsd.
 # 2. GitHub environments: aws-<Target>-plan, and aws-<Target>-apply with a required reviewer, main only.
+#    A production project's reviewer is a second person, with Prevent self-review on, so whoever merged can't approve.
 #    A prototype (AGENTS.md rule 24) leaves the reviewer off aws-dev-apply, so a merge deploys to dev unattended.
 # 3. GitHub variables: PROJECT_NAME on the repo; this stack's outputs on the environments (see Outputs).
 # Deploy: a merge to main applies to dev after approval; prod is a manual run of the aws workflow.

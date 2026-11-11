@@ -37,7 +37,7 @@ Then kick off: your agent asks whether this is a `prototype` or `production`, th
 
 | | |
 |---|---|
-| **Two profiles** | `prototype`: speed first, with full autonomy for the agent to plan, build, merge and deploy to `dev`. `production`: approval first, with you signing off the plan, each PR and each deploy |
+| **Two profiles** | `prototype`: speed first, with full autonomy for the agent to plan, build, merge and deploy to `dev`. `production`: approval first, with you signing off the plan and a second reviewer, enforced by GitHub, approving each PR and each deploy |
 | **Agent rules** | [AGENTS.md](AGENTS.md), read by Claude Code, Codex, Cursor, Copilot and most coding agents: plan before code, build in reviewed phases, one PR per plan, never push to `main` |
 | **Spec-driven docs** | [docs/](docs/): business context, spec, plan, threat model, decisions, design system and costs, which the agent reads and keeps current |
 | **Security checks** | A scan on every push, and on every PR: SAST, secrets, dependencies, IaC and a security summary comment the agent fixes from |
