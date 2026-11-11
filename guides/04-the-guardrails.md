@@ -58,7 +58,7 @@ The same tools run at more than one stage on purpose. The pre-push scan on your 
 - **What it does:** the pre-push scans again, plus Checkov, which checks Terraform and CloudFormation against a wider rule set than Trivy, and `terraform fmt` and `validate`.
 - **When:** on every PR (Gitleaks over the PR's commits), on every push to `main` and weekly (Gitleaks over the full history), so a vulnerability published after a merge still fails a run.
 - **On a finding:** a required check fails, so the PR can't merge. Each finding is marked on the PR's changed lines, and one summary comment lists them all; the agent fixes from `bash scripts/pr-findings.sh <pr>`.
-- **Limits:** it scans the repo's files, not a built image; once the app ships an image, scan the image too (`trivy image`).
+- **Limits:** it scans the repo's files, not a built image. For an app with a Dockerfile, the `images` workflow scans the built image too, OS packages and secrets included, on every PR and before every push to ECR; a fixable high or critical finding blocks it.
 
 ## 7. Build: SAST
 
@@ -85,7 +85,7 @@ The same tools run at more than one stage on purpose. The pre-push scan on your 
 - **When:** the pins and the wait apply on every install; the SBOM is built on every push to `main`.
 - **On a finding:** nothing fails; these prevent rather than detect. The SBOM is saved on the run: Actions → the run on `main` → Artifacts → `sbom`.
 - **What the SBOM is for:** answering "were we running package X, version Y, on date Z?" when a vulnerability is announced, handing an auditor or customer a standard list, and checking licences.
-- **Limits:** the SBOM lists the repo's packages, not a built image; it isn't signed, and GitHub deletes it after 90 days. For production, attach it to a release or copy it to S3, and build it from what's deployed. Not in the template yet: signing and build provenance (SLSA), so the artifact in production is provably the one checked, and a licence policy that fails on a licence you can't use.
+- **Limits:** the SBOM lists the repo's packages; for an app with a Dockerfile, the `images` workflow also keeps an SBOM of each image it pushes, which is what actually runs. Neither is signed, and GitHub deletes it after 90 days. For production, attach them to a release or copy them to S3. Not in the template yet: signing and build provenance (SLSA), so the artifact in production is provably the one checked, and a licence policy that fails on a licence you can't use.
 
 ## 9. Test: unit and abuse-case tests, coverage
 

@@ -72,6 +72,18 @@ report() {
       line "$tool" "$have"
     fi
   done
+  # Node and Docker only when an app needs them, and installed by hand: setup doesn't install them.
+  local extra=()
+  ls apps/*/package.json >/dev/null 2>&1 && extra+=(node npm)
+  { ls apps/*/Dockerfile || ls docker-compose.yml; } >/dev/null 2>&1 && extra+=(docker)
+  for tool in "${extra[@]}"; do
+    if command -v "$tool" >/dev/null && [ -n "$(installed "$tool")" ]; then
+      line "$tool" "$(installed "$tool")"
+    else
+      line "$tool" "MISSING: an app needs it; install it by hand"
+      missing=$((missing + 1))
+    fi
+  done
   if command -v gh >/dev/null; then
     if gh auth status --hostname github.com >/dev/null 2>&1; then
       line "gh sign-in" "ok"
