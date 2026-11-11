@@ -33,7 +33,7 @@ my-project/
    2. **spec.md**: problem, users, stack, what done means, rules; the agent drafts, you approve; often.
    3. **code-standards.md**: numbered coding rules the pipeline can't check; changes rarely.
    4. **status.md**: what's built, how to run it, known gaps, what's next; every change.
-   5. **features.md**: the agreed features in priority order, each with its status and plan or PR; every feature change.
+   5. **features.md**: the agreed features, one section per app and audience, each feature with its status and the PR that built it; every feature change.
    6. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
    7. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
    8. **checklist.md**: the guardrails by DevSecOps stage and profile, to clear before go-live.
