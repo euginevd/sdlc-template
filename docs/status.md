@@ -1,10 +1,10 @@
 # Status
 
-What's built, how to run it, what's missing and what's next. The agent keeps it current in the same commit as each change.
+What's built, how to run it, what's missing and what's next. The agent keeps it current in the same commit as each change; each feature's status is in [features.md](features.md).
 
 ## Built
 
-1. `api`: `GET /health` returns `{"status": "ok"}` (spec 7) and nothing from the request (spec 9), from a Lambda behind a throttled HTTP API with access logs.
+1. `api`: a Lambda behind a throttled HTTP API with access logs; its features are in `features.md`.
 2. Pipeline: app checks, security scans, and a Terraform plan and apply through the `aws` workflow.
 
 ## Running it

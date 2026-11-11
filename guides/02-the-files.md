@@ -33,14 +33,17 @@ my-project/
    2. **spec.md**: problem, users, stack, what done means, rules; the agent drafts, you approve; often.
    3. **code-standards.md**: numbered coding rules the pipeline can't check; changes rarely.
    4. **status.md**: what's built, how to run it, known gaps, what's next; every change.
-   5. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
-   6. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
-   7. **skeleton-plan.md**: the outline each plan is copied from.
-   8. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built and its screens; deleted when done.
-   9. **mockups/mvp.html**: the MVP's screens, agreed at kickoff; deleted once they're all built.
-5. **guides/**: for people: 01 how to use the template, 02 this tour, 03 the risks it accepts; assets/ holds the README's overview image, light and dark, and `social.png`, the repo's social preview.
+   5. **features.md**: the agreed features in priority order, each with its status and plan or PR; every feature change.
+   6. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
+   7. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
+   8. **checklist.md**: the guardrails by DevSecOps stage and profile, to clear before go-live.
+   9. **skeleton-plan.md**: the outline each plan is copied from.
+   10. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built and its screens; deleted when done.
+   11. **mockups/mvp.html**: the MVP's screens, agreed at kickoff; deleted once they're all built.
+5. **guides/**: for people: 01 how to use the template, 02 this tour, 03 the risks it accepts, 04 how each guardrail works; assets/ holds the README's overview image, light and dark, and `social.png`, the repo's social preview.
 6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
 7. **LICENSE**: MIT; anyone may use, copy or change the code, keeping the notice; replace it per project.
+8. **TODO.md**: your list of ideas and tasks; the agent suggests from it, confirms before starting an item and removes it once done.
 
 ## 3. Git and ignore files
 
