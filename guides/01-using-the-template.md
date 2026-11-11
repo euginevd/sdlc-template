@@ -26,7 +26,7 @@ Both keep the pre-push scan, the PR security checks, the required checks, no pus
 Once per project, by you.
 
 1. **Create it:** `gh repo create <name> --template euginevd/sdlc-template --private --clone`. Keep a repo that deploys to AWS private: on a public repo, anyone signed in to GitHub can download its Terraform plans (trade-offs 9).
-2. **Tools and hooks:** `bash scripts/setup.sh`.
+2. **Tools and hooks:** `bash scripts/setup.sh`, on every machine and every fresh clone: it installs the GitHub CLI, the scanners, uv and Terraform if they're missing, then the push hook, and lists what the machine has. Until it has run, pushes from that clone aren't scanned. `bash scripts/setup.sh --check` lists the same without changing anything; the agent runs it at kickoff and tells you what's missing or older than the pipeline's.
 3. **Protect `main`:** `bash scripts/protect-main.sh` sets the Actions limits, squash-only merges, GitHub's security features and the `main` ruleset; rerun it after changing it. For `production`, run `bash scripts/protect-main.sh production`: a PR then needs an approval from someone other than its author, after the last push, so give a second reviewer write access first. A prototype needs no reviewer. A private repo needs a paid GitHub plan for the ruleset and the approval environments; a public repo gets them free. On a public repo, also turn on everything under Settings → Advanced Security except **Agentic autofix**, which uses AI credits; the script can't set Automatic dependency submission, Malware alerts, the AI scans or Copilot Autofix, as they have no API.
 4. **AWS, when the project first needs it:** the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml), once per account: `dev` now, and `prod` (`Target=prod`) before the first `prod` deploy. Set `BudgetEmail` to be emailed as the account's spend nears its monthly budget. Until then the `aws` workflow skips itself, so a prototype can start without an account.
    - `prototype`: leave the required reviewer off the `aws-dev-apply` environment, so a merge deploys to `dev` unattended.
@@ -151,7 +151,7 @@ travel-claims/
 
 How the push scan works: setup.sh → `lefthook install` writes .git/hooks/pre-push → `git push` runs it → lefthook reads lefthook.yml → pre-push-scan.sh passes or blocks.
 
-1. **scripts/setup.sh**: run by hand once per clone: installs the tools, the hooks, then `uv sync`.
+1. **scripts/setup.sh**: run by hand once per clone: installs the tools, the hooks, then `uv sync`; `--check` only reports what the machine has.
 2. **lefthook.yml**: says which script runs on which git event; here, a scan before every push.
 3. **.git/hooks/pre-push**: hidden; the only place git looks; per clone, written by `lefthook install`.
 4. **.lefthook/pre-push-scan.sh**: collects the pushed commits' files and diffs, then scans them with gitleaks (secrets) + Trivy (packages, IaC); a finding blocks the push.
