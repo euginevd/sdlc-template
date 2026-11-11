@@ -237,6 +237,16 @@ Resources:
                   - logs:PutResourcePolicy
                   - logs:UpdateLogDelivery
                 Resource: '*'
+              # Container images (.github/workflows/images.yml): the project's repositories, named ${ProjectName}/<app>,
+              # created by Terraform and pushed to by the images workflow; signing in to ECR is account-wide.
+              - Sid: EcrProjectRepositories
+                Effect: Allow
+                Action: ecr:*
+                Resource: !Sub 'arn:${AWS::Partition}:ecr:${AWS::Region}:${AWS::AccountId}:repository/${ProjectName}/*'
+              - Sid: EcrSignIn
+                Effect: Allow
+                Action: ecr:GetAuthorizationToken
+                Resource: '*'
               # The pipeline roles are named ${ProjectName}-github-*, so they're out of reach.
               - Sid: DenyPipelineRoles
                 Effect: Deny
@@ -319,6 +329,14 @@ Resources:
                   - logs:ListTagsForResource
                   - logs:ListTagsLogGroup
                 Resource: '*'
+              - Effect: Allow
+                Action:
+                  - ecr:DescribeRepositories
+                  - ecr:DescribeImages
+                  - ecr:GetLifecyclePolicy
+                  - ecr:GetRepositoryPolicy
+                  - ecr:ListTagsForResource
+                Resource: !Sub 'arn:${AWS::Partition}:ecr:${AWS::Region}:${AWS::AccountId}:repository/${ProjectName}/*'
               - Effect: Deny
                 Action: sts:AssumeRole
                 Resource: '*'
