@@ -31,18 +31,18 @@ bash scripts/setup.sh        # tools and the pre-push scan (--check only reports
 bash scripts/protect-main.sh # GitHub security features and the main ruleset
 ```
 
-Then kick off: your agent asks whether this is a `prototype` or `production`, then drafts the business context and spec from your notes, with a design system and a mockup of the MVP if there's UI, and for production the threat model and costs that apply. You approve each, and record which [trade-offs](guides/02-security-trade-offs.md) you accept in `docs/decisions.md`, before the first piece of work. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md), sections 1 to 3.
+Then tell your agent *"Kick off my-project: `<your notes>`"*. It asks whether this is a `prototype` or `production`, drafts the docs from your notes and waits for your approval before any work starts. Full steps: [guides/01-using-the-template.md](guides/01-using-the-template.md).
 
 ## What you get
 
 | | |
 |---|---|
-| **Two profiles** | `prototype`: speed first, with full autonomy for the agent to plan, build, merge and deploy to `dev`. `production`: approval first, with you signing off the plan and a second reviewer, enforced by GitHub, approving each PR and each deploy |
+| **Two profiles** | `prototype`: speed first, with the agent free to plan, build, merge and deploy to `dev`. `production`: approval first, with you signing off the plan and a second reviewer, enforced by GitHub, approving each PR and each deploy |
 | **Agent rules** | [AGENTS.md](AGENTS.md), read by Claude Code, Codex, Cursor, Copilot and most coding agents: plan before code, build in reviewed phases, one PR per plan, never push to `main` |
 | **Spec-driven docs** | [docs/](docs/): business context, spec, plan, threat model, decisions, design system and costs, which the agent reads and keeps current |
 | **Security checks** | A scan on every push, and on every PR: SAST, secrets, dependencies, IaC and a security summary comment the agent fixes from |
-| **Infrastructure** | Terraform on AWS through GitHub OIDC: plan with a read-only role, apply with approval, `dev` on merge (unattended for a prototype) and `prod` by hand |
-| **A starter** | [apps/api/](apps/api/), a Lambda with a `/health` route, and [infra/aws/api/](infra/aws/api/), which deploys it, to keep, build on or replace; [docs/](docs/) describes it, with a line to fill in for each thing your project decides |
+| **Infrastructure** | Terraform on AWS through GitHub OIDC: plan with a read-only role, apply with approval (a prototype's `dev` applies unattended), `dev` on merge and `prod` by hand |
+| **A starter** | [apps/api/](apps/api/), a Lambda with a `/health` route, and [infra/aws/api/](infra/aws/api/), which deploys it; [docs/](docs/) describes it, with a line to fill in for each thing your project decides |
 
 ## Built with
 
@@ -59,7 +59,8 @@ Then kick off: your agent asks whether this is a `prototype` or `production`, th
 
 ## Guides
 
-1. [Using the template](guides/01-using-the-template.md): what you say and what the agent does, end to end, for a prototype or a production project, with a tour of every file.
-2. [Security trade-offs](guides/02-security-trade-offs.md): the risks the template accepts, and the fix for production.
+1. [Using the template](guides/01-using-the-template.md): what you say and what the agent does, end to end, for a prototype or a production project.
+2. [The files](guides/02-the-files.md): what every file is and why it's there.
+3. [Security trade-offs](guides/03-security-trade-offs.md): the risks the template accepts, and the fix for production.
 
 To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md); report vulnerabilities through [SECURITY.md](SECURITY.md). MIT licence.
