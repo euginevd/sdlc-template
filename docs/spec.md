@@ -1,46 +1,33 @@
 # Spec
 
-A worked example: `travel-claims`, in production. For a new project, replace it by hand or ask the agent to draft one from your notes. The user approves every change (a prototype: [AGENTS.md](../AGENTS.md) rule 24).
+A starter: it describes the sample the template ships, a health-check API, and each *(to fill in)* line says what to write. Kickoff fills it in from your notes. The user approves every change (a prototype: [AGENTS.md](../AGENTS.md) rule 24).
 
 ## Project
 
-Profile: `production` (or `prototype`).
+Profile: *(to fill in)* `prototype` or `production`.
 
-1. Name: `travel-claims`
-2. Problem: claims handlers work through a queue of travel insurance claims by hand, so simple claims wait days to be paid.
-3. Goal: an AI agent decides routine claims in minutes, and handlers spend their time only on claims that need judgement.
-4. Users: claimants submit and track claims; handlers review and sign off; admins manage users and limits.
-5. AWS: accounts `travel-claims-dev` and `travel-claims-prod`, region `ap-southeast-2`, environments `dev` and `prod`.
+1. Name: `starter`
+2. Problem: *(to fill in)* what's slow, costly or missing today, and for whom.
+3. Goal: *(to fill in)* what's true once this works.
+4. Users: *(to fill in)* who uses it, and what each of them does.
+5. AWS: *(to fill in)* the accounts, region and environments. The pipeline deploys `dev` on merge and `prod` by hand.
 
 ## Stack
 
 Template defaults: GitHub Actions, Terraform on AWS, the pre-push scan and the PR security checks.
 
-6. `web`: React, Vite and TypeScript, hosted on S3 and CloudFront.
-7. `api`: Python and FastAPI on Lambda behind an HTTP API.
-8. `agent`: Python and LangGraph on Lambda, calling Claude on Amazon Bedrock.
+6. `api`: Python on Lambda behind an HTTP API, the template's sample. Keep it, build on it or replace it.
 
 ## Done when
 
-9. A claimant can submit a claim with receipts and see its status.
-10. The agent decides each claim and gives reasons that quote the policy wording.
-11. Claims the agent approves under $1,000 are paid automatically; the rest wait for a handler.
-12. A handler can approve, decline or send back a claim from the dashboard.
-13. No payment exceeds the policy limit, whatever the agent decides.
+7. `GET /health` returns `{"status": "ok"}`.
+8. *(to fill in)* one line for each result a user can see.
 
 ## Rules
 
-14. Claims hold passport, bank and medical details, so the laws in `business-context.md` apply.
-15. The agent decides; deterministic code pays and enforces every limit.
-16. Bedrock calls use the Australian cross-region inference profile, so claim data stays in Australia.
-17. Receipts are untrusted input: text hidden in them must not change a decision.
-18. Every decision is logged with its reasons, with personal data redacted.
-19. AWS spend stays under $200 a month in `dev`.
-20. Security requirements baseline: OWASP ASVS 5.0 Level 2.
+9. `/health` is public and returns nothing from the request.
+10. *(to fill in)* the limits that hold whatever else changes: data, money, the security baseline and monthly spend.
 
 ## Not for now
 
-21. Quotes and policy sales: claims only.
-22. A mobile app.
-23. Claims in currencies other than AUD.
-24. Fraud detection beyond the payment checks.
+11. *(to fill in)* what's deliberately left out.

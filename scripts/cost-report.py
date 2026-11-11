@@ -175,7 +175,7 @@ def comment(folder, sha, limit=""):
             name = f"{unit}/{d['address']}" if many else d["address"]
             tip = f". Consider: {d['hint']}" if d["hint"] else ""
             print(f"- {icon(d['delta'])}{money(d['delta'], currency, sign=True)} `{name}`{tip}")
-    print("\nExcludes usage: Bedrock, data transfer, logs.")
+    print("\nExcludes usage, such as model tokens, data transfer and logs.")
 
 
 if __name__ == "__main__":

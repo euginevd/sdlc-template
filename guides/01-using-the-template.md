@@ -28,22 +28,22 @@ Once per project, by you.
 1. **Create it:** `gh repo create <name> --template euginevd/sdlc-template --private --clone`. Keep a repo that deploys to AWS private: on a public repo, anyone signed in to GitHub can download its Terraform plans (trade-offs 9).
 2. **Tools and hooks:** `bash scripts/setup.sh`, on every machine and every fresh clone: it installs the GitHub CLI, the scanners, uv and Terraform if they're missing, then the push hook, and lists what the machine has. Until it has run, pushes from that clone aren't scanned. `bash scripts/setup.sh --check` lists the same without changing anything; the agent runs it at kickoff and tells you what's missing or differs from the pipeline's. Creating the repo in step 1 already needs the GitHub CLI, signed in with `gh auth login`.
 3. **Protect `main`:** `bash scripts/protect-main.sh` sets the Actions limits, squash-only merges, GitHub's security features and the `main` ruleset; rerun it after changing it. For `production`, run `bash scripts/protect-main.sh production`: a PR then needs an approval from someone other than its author, after the last push, so give a second reviewer write access first. A prototype needs no reviewer. A private repo needs a paid GitHub plan for the ruleset and the approval environments; a public repo gets them free. On a public repo, also turn on everything under Settings → Advanced Security except **Agentic autofix**, which uses AI credits; the script can't set Automatic dependency submission, Malware alerts, the AI scans or Copilot Autofix, as they have no API.
-4. **AWS, when the project first needs it:** the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml), once per account: `dev` now, and `prod` (`Target=prod`) before the first `prod` deploy. Set `BudgetEmail` to be emailed as the account's spend nears its monthly budget. Until then the `aws` workflow skips itself, so a prototype can start without an account.
+4. **AWS, when the project first needs it:** the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml), once per account: `dev` now, and `prod` (`Target=prod`) before the first `prod` deploy. Set `BudgetEmail` to be emailed as the account's spend nears its monthly budget, and add an Infracost API key as the `INFRACOST_API_KEY` secret to get a cost comment on each PR; without them, neither happens. Until then the `aws` workflow skips itself, so a prototype can start without an account.
    - `prototype`: leave the required reviewer off the `aws-dev-apply` environment, so a merge deploys to `dev` unattended.
    - `production`: every apply environment has the second reviewer as its required reviewer, with *Prevent self-review* on.
 5. Keep `AGENTS.md`, `code-standards.md`, the workflows and the scripts as they are.
 
 ## 3. Kick off
 
-Once per project. The repo arrives holding the `travel-claims` worked example; kickoff replaces it with your project, keeping each doc's structure. Nothing is planned until you've approved the kickoff docs, and for a project with UI that includes how the MVP will look.
+Once per project. The repo arrives as a starter: `docs/` describes the health-check API it ships, with a line marked *(to fill in)* for everything that's yours to decide. Kickoff fills those in, keeping each doc's structure. Nothing is planned until you've approved the kickoff docs, and for a project with UI that includes how the MVP will look.
 
 | You say | The agent | You |
 |---------|-----------|-----|
 | *"Kick off `<name>`: `<your notes on the business, the problem, the users and the stack>`"* | Asks whether it's a `prototype` or `production`, then drafts `business-context.md` and `spec.md` from your notes, with `Profile` in the spec | Answer, then correct each draft until it says what you want |
 | | If there's UI: drafts `design-system.md`, keeping the house style, swapping its tokens for your brand or replacing it, then mocks up the MVP's main screens from it in `docs/mockups/mvp.html` | Open the mockup in a browser; ask for changes until both are what you want, then approve |
-| | `production` only: drafts `threat-model.md` and `costs.md` if they apply | Approve each |
+| | Extends `threat-model.md` and `costs.md` from the starter's to the project's, or deletes one that doesn't apply; a prototype keeps the starter's as they are unless you ask | `production`: approve each |
 | | Starts `decisions.md` with the profile, the trade-offs you accept and who owns the code, then the big architecture choices | Say which trade-offs you accept; a prototype accepts them all |
-| *"Rename the project"* | Renames the README, `status.md` and the root `pyproject.toml` (then `uv lock`); for a prototype sets `fail_under = 50` | Replace `LICENSE` to match the owner, or delete it; replace the images in `guides/assets/`. In a private project, delete `CONTRIBUTING.md` and `social.png`, which serve a public repo |
+| *"Rename the project"* | Renames the README, `Name` in `spec.md` and the root `pyproject.toml` (then `uv lock`); for a prototype sets `fail_under = 50` | Replace `LICENSE` to match the owner, or delete it; replace the images in `guides/assets/`. In a private project, delete `CONTRIBUTING.md` and `social.png`, which serve a public repo |
 | | Opens one PR with all of it | Approve it and the agent merges; a prototype's merges once checks pass |
 
 `business-context.md` and `design-system.md` describe the business, so its next project reuses them. Check they hold no coding standards that override `code-standards.md`.
@@ -104,7 +104,7 @@ The agent stops and asks before a prototype takes real users, customer data, pay
 For learning your way around a project made from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template): the layout, then one line per file on what it is and why it's there, foundations first.
 
 ```
-travel-claims/
+my-project/
 ├── pyproject.toml   uv.lock   .python-version     A.1 Python packages
 ├── README.md   AGENTS.md   CONTRIBUTING.md  …      A.2 docs for people and agents
 ├── docs/   guides/

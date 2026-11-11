@@ -1,12 +1,12 @@
 # Business context
 
-Who the business is. The same for every project for this business: change it only when the business changes. A worked example; replace it for a new business.
+Who the business is. The same for every project for this business: change it only when the business changes. A starter: each line says what to write, and kickoff fills it in.
 
-1. Business: Wattle Travel Insurance (fictional), an Australian travel insurer.
-2. Size: about 200 staff, a claims team of 20 handlers, about 40,000 claims a year.
-3. Regulators and laws: APRA (CPS 234 information security, CPS 230 operational risk), ASIC, the Privacy Act (including its automated decision-making rules from 10 December 2026) and the Notifiable Data Breaches scheme.
-4. Data: customer data stays in Australia.
-5. Risk appetite: low for customer data and payments. Changes ship to `dev` first, and to `prod` after sign-off.
-6. Systems: the policy admin system is the source of truth for policies; payments go through the bank's API; claimants and staff sign in with Amazon Cognito.
-7. People: the claims operations lead owns the claims rules; the security team approves new data flows.
-8. Tone: plain, friendly Australian English for customers; no insurance jargon.
+1. Business: *(to fill in)* its name, what it does and where.
+2. Size: *(to fill in)* staff, the team this is for, and the volume it handles.
+3. Regulators and laws: *(to fill in)* the ones that apply to its data and decisions, or none.
+4. Data: *(to fill in)* where customer data must stay.
+5. Risk appetite: *(to fill in)* what it won't risk, and how changes reach `prod`.
+6. Systems: *(to fill in)* the systems of record, sign-in and payments this must fit with.
+7. People: *(to fill in)* who owns the rules the software applies, and who approves new data flows.
+8. Tone: *(to fill in)* how it speaks to its customers.
