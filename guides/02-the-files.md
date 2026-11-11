@@ -2,7 +2,6 @@
 
 For learning your way around a project made from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template): the layout, then one line per file on what it is and why it's there, foundations first. For people; how to run a project is in [01-using-the-template.md](01-using-the-template.md).
 
-
 ```
 my-project/
 ├── pyproject.toml   uv.lock   .python-version     1. Python packages
@@ -35,8 +34,10 @@ my-project/
    3. **code-standards.md**: numbered coding rules the pipeline can't check; changes rarely.
    4. **status.md**: what's built, how to run it, known gaps, what's next; every change.
    5. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
-   6. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built (design, risks, phases, PR groups) and its screens; deleted when done. **mockups/mvp.html**: the MVP's screens, agreed at kickoff; deleted once they're all built. **skeleton-plan.md**: the outline each plan is copied from.
-   7. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
+   6. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
+   7. **skeleton-plan.md**: the outline each plan is copied from.
+   8. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built and its screens; deleted when done.
+   9. **mockups/mvp.html**: the MVP's screens, agreed at kickoff; deleted once they're all built.
 5. **guides/**: for people: 01 how to use the template, 02 this tour, 03 the risks it accepts; assets/ holds the README's hero image and `social.png`, the repo's social preview.
 6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
 7. **LICENSE**: MIT; anyone may use, copy or change the code, keeping the notice; replace it per project.
@@ -77,7 +78,7 @@ One folder per app in apps/. Python: pyproject.toml (section 1) + `src/<name>/` 
 5. **.coverage**: git-ignored; pytest-cov's record of tested lines.
 6. **.pytest_cache/, .ruff_cache/, \_\_pycache\_\_/**: git-ignored tool caches for speed; safe to delete.
 
-How tests run: `uv run pytest`, or CI on every PR → runs the tests in apps/ → writes .coverage → fails on any failed test or coverage under 80%.
+How tests run: `uv run pytest`, or CI on every PR → runs the tests in apps/ → writes .coverage → fails on any failed test, or coverage under `fail_under` in `pyproject.toml` (80%, or 50% for a prototype).
 
 ## 6. CI/CD (.github/)
 
