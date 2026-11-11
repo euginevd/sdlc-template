@@ -23,5 +23,5 @@ A worked example: `travel-claims`, in production. For a new project, replace it.
 
 ## Next
 
-11. Turn on automatic payment in `prod` once the bank signs off: `docs/plan-prod-payments.md`.
+11. Turn on automatic payment in `prod` once the bank signs off *(planned, no plan written yet)*.
 12. Add `tflint` to the pipeline.

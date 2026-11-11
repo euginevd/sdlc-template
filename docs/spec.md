@@ -1,8 +1,10 @@
 # Spec
 
-A worked example: `travel-claims`, in production. For a new project, replace it by hand or ask the agent to draft one from your notes. The user approves every change.
+A worked example: `travel-claims`, in production. For a new project, replace it by hand or ask the agent to draft one from your notes. The user approves every change (a prototype: [AGENTS.md](../AGENTS.md) rule 24).
 
 ## Project
+
+Profile: `production` (or `prototype`).
 
 1. Name: `travel-claims`
 2. Problem: claims handlers work through a queue of travel insurance claims by hand, so simple claims wait days to be paid.
