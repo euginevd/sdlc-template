@@ -59,7 +59,8 @@ Then kick off: your agent asks whether this is a `prototype` or `production`, th
 
 ## Guides
 
-1. [Using the template](guides/01-using-the-template.md): what you say and what the agent does, end to end, for a prototype or a production project, with a tour of every file.
+1. [Using the template](guides/01-using-the-template.md): what you say and what the agent does, end to end, for a prototype or a production project.
 2. [Security trade-offs](guides/02-security-trade-offs.md): the risks the template accepts, and the fix for production.
+3. [The files](guides/03-the-files.md): what every file is and why it's there.
 
 To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md); report vulnerabilities through [SECURITY.md](SECURITY.md). MIT licence.
