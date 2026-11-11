@@ -2,7 +2,7 @@
 
 # Contributing
 
-**Every change, by a person or a coding agent, goes through the same checks; the project's profile sets how much planning and approval it needs.**
+**Every change, by a person or a coding agent, goes through the same checks. The project's profile sets how much planning and approval it needs.**
 
 [Setup](#setup) · [Making a change](#making-a-change) · [Pull requests](#pull-requests)
 
@@ -16,7 +16,7 @@
 ## Making a change
 
 1. Start from the spec: a change it doesn't cover starts with an update to [docs/spec.md](docs/spec.md).
-2. Plan before code, then build in phases with tests: [guides/01-using-the-template.md](guides/01-using-the-template.md), section 5, or section 4 for a `prototype`.
+2. Follow the project's profile: [guides/01-using-the-template.md](guides/01-using-the-template.md), section 4 for a `prototype`, section 5 for `production`.
 3. Never push to `main` or skip the pre-push scan.
 
 ## Pull requests
@@ -25,4 +25,4 @@
 2. Every check passes and the security summary is clean; fix findings at their cause.
 3. Update the branch if `main` has moved, then squash-merge: once approved in a `production` project, once checks pass in a `prototype`.
 
-Security issues go through [SECURITY.md](SECURITY.md), never a public issue or PR.
+Security issues go through [SECURITY.md](SECURITY.md), never a public issue or PR. [MIT licence](LICENSE).
