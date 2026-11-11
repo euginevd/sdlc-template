@@ -51,7 +51,7 @@ One prompt takes a piece of work from idea to `dev`, with nothing waiting for yo
 | You say | The agent | You |
 |---------|-----------|-----|
 | *"Build `<the work>`"* | Adds the work to the spec if it's new, writes a short plan and starts building | Interrupt if the direction is wrong |
-| | Builds each phase: code, tests, the checks, `status.md`, a local commit | |
+| | Builds each phase: code, tests, the checks, `features.md` and `TODO.md`, a local commit | |
 | | Has a fresh subagent review the whole branch, fixes what it blocks, updates `decisions.md`, deletes the plan, and `mvp.html` once all its screens are built, and pushes; the pre-push scan runs | |
 | | Opens a PR, fixes the findings from the checks and the security summary, and squash-merges once they pass | |
 | | The pipeline deploys to `dev` and checks `/health`; the agent reports what was built, what passed and what was skipped | Try it in `dev`; say what to change next |
@@ -66,7 +66,7 @@ The same loop with a person at each gate, and every finding fed back to the agen
 |:-:|-------|---------|-----------|-----|
 | 1 | Plan | *"Update spec: `<what's changing>`"* | Edits `spec.md` and shows the change | ↺ Correct it, then approve |
 | 2 | Plan | *"Plan `<the work>`"* | Writes the plan, updates the threat model and mocks up any screens; no code, then stops | ↺ Ask for changes, then approve |
-| 3 | Code | *"Implement the plan"* | Builds each phase: code, tests, the checks, a fresh subagent review, `status.md`, a local commit. After the last one, reviews the whole branch, updates `decisions.md` and deletes the plan and its mockups, and `mvp.html` once all its screens are built | |
+| 3 | Code | *"Implement the plan"* | Builds each phase: code, tests, the checks, a fresh subagent review, `features.md` and `TODO.md`, a local commit. After the last one, reviews the whole branch, updates `decisions.md` and deletes the plan and its mockups, and `mvp.html` once all its screens are built | |
 | 4 | Code | | Pushes; the pre-push scan runs. ↺ Fixes findings, then opens a PR with its Security line | |
 | 5 | Build and test | | ↺ Fixes what the PR checks find: the security summary, code scanning, the Terraform plan and the cost comment; asks for review once they pass | |
 | 6 | Release | *"Merge it"*, once it's approved | Updates the branch if `main` moved, squash-merges and deletes the branch | The second reviewer reads the diff and the security summary, then approves the PR |
