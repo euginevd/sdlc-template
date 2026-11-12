@@ -1,6 +1,6 @@
 # Spec
 
-A starter: it describes the sample the template ships, a health-check API, and each *(to fill in)* line says what to write. Kickoff fills it in from your notes. The user approves every change (a prototype: [AGENTS.md](../AGENTS.md) rule 24). New requirements start in [TODO.md](../TODO.md); once one is approved, the agent adds it to [features.md](features.md) and any rule, limit or done-when it needs here. What each feature does is its row in `features.md`, not a line here.
+A starter: it describes the sample the template ships, a health-check API, and each *(to fill in)* line says what to write. Kickoff fills it in from your notes. The user approves every change (a prototype: [AGENTS.md](../AGENTS.md) rules 12 and 23). New requirements start in [TODO.md](../TODO.md); once one is approved, the agent adds it to [features.md](features.md) and any rule, limit or done-when it needs here. What each feature does is its row in `features.md`, not a line here.
 
 ## Business
 
