@@ -27,7 +27,7 @@ You'll need: a GitHub account with the `gh` CLI, Git Bash or similar, and an AWS
 ## Quick start
 
 ```bash
-gh repo create my-project --template euginevd/sdlc-template --private --clone
+gh repo create my-project --template euginevd/sdlc-template --public --clone  # --private for a work project
 cd my-project
 bash scripts/setup.sh         # tools and the pre-push scan
 bash scripts/protect-main.sh  # security features, the main ruleset, main-only deploys
