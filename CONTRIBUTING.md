@@ -21,7 +21,7 @@
 
 ## Pull requests
 
-1. One PR per plan, filled in from the template, including its **Security** line.
+1. One PR per branch, holding a work session's changes, filled in from the template, including its **Security** line.
 2. Every check passes and the security summary is clean; fix findings at their cause.
 3. Update the branch if `main` has moved, then squash-merge: once approved in a `production` project, once checks pass in a `prototype`, where the agent merges without asking.
 

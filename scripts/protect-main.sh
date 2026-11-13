@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Hardens the repo: Actions settings, squash-only merges, GitHub's free security features, and a main ruleset.
-# Safe to rerun: each run applies this file's settings again. The ruleset needs a public repo or a paid plan.
+# Hardens the repo: Actions settings, squash-only merges, GitHub's free security features, a main ruleset, and
+# the apply environments, which deploy from main only.
+# Safe to rerun: each run applies this file's settings again. The ruleset and the environments need a public
+# repo or a paid plan.
 # Usage: bash scripts/protect-main.sh [production]
 # production: a PR needs a second reviewer, so GitHub, not a rule, stops the agent merging alone: one approval
 # that isn't the author's, given after the last push, with every review thread resolved. Without it, the
@@ -8,8 +10,8 @@
 set -uo pipefail
 
 case "${1:-prototype}" in
-  production) reviews=1; reviewed=true ;;
-  prototype) reviews=0; reviewed=false ;;
+  production) reviews=1; reviewed=true; targets=(dev prod) ;;
+  prototype) reviews=0; reviewed=false; targets=(dev) ;;
   *) echo "Usage: bash scripts/protect-main.sh [production]"; exit 1 ;;
 esac
 
@@ -88,8 +90,28 @@ gh api "${target[@]}" --input - >/dev/null <<JSON || { echo "Could not set the r
 }
 JSON
 
+# The deploy role trusts whatever runs in an apply environment, so each one takes main only: without that, a
+# PR that edits a workflow could deploy. A new environment is made that way; one that exists is checked and
+# left alone, so its reviewers and variables stay as you set them.
+for target in "${targets[@]}"; do
+  env="aws-$target-apply"
+  if gh api "repos/$repo/environments/$env" >/dev/null 2>&1; then
+    custom=$(gh api "repos/$repo/environments/$env" --jq '.deployment_branch_policy.custom_branch_policies // false')
+    branches=$(gh api "repos/$repo/environments/$env/deployment-branch-policies" --jq '[.branch_policies[].name] | join(",")' 2>/dev/null)
+    if [ "$custom" != true ] || [ "$branches" != main ]; then
+      echo "$env deploys from more than main: in Settings > Environments > $env, set Deployment branches to main only."
+      failed=$((failed + 1))
+    fi
+  else
+    gh api -X PUT "repos/$repo/environments/$env" --input - >/dev/null <<'JSON' || { echo "Could not create $env; a private repo needs a paid GitHub plan."; failed=$((failed + 1)); continue; }
+{"deployment_branch_policy": {"protected_branches": false, "custom_branch_policies": true}}
+JSON
+    api -X POST "repos/$repo/environments/$env/deployment-branch-policies" -f name=main -f type=branch
+  fi
+done
+
 if [ "$failed" -gt 0 ]; then
   echo "$failed settings failed on $repo; see the errors above."
   exit 1
 fi
-echo "Settings and ruleset 'main' applied to $repo: $reviews approval(s) needed to merge."
+echo "Settings and ruleset 'main' applied to $repo: $reviews approval(s) needed to merge; ${targets[*]/#/aws-} apply from main only."
