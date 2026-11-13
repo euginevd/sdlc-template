@@ -1,3 +1,5 @@
+# pyright: standard
+# Standard, not strict: these read scanners' untyped JSON, where strict flags every lookup.
 """Turns Infracost output into PR annotations and one cost comment. Standard library only.
 
 parse <unit> <infracost.json> <plan.json> <out.json>: annotate drivers, write a summary.
@@ -8,6 +10,10 @@ import json
 import pathlib
 import re
 import sys
+from collections.abc import Callable
+from typing import Any
+
+Attrs = dict[str, Any]
 
 MARKER = "<!-- cost-report -->"
 CENT = 0.01
@@ -15,24 +21,24 @@ SMALL = 10
 ADDRESS = re.compile(r"(aws_[a-z0-9_]+)\.([A-Za-z0-9_-]+)(?:\[[^\]]*\])?$")
 
 
-def num(value):
+def num(value: object) -> float:
     try:
-        return float(value or 0)
+        return float(value or 0)  # type: ignore[arg-type]
     except (TypeError, ValueError):
         return 0.0
 
 
-def nested(a, block, key):
+def nested(a: Attrs, block: str, key: str) -> float:
     """A number inside a Terraform nested block, such as scaling_config.min_size."""
     return num(((a.get(block) or [{}])[0] or {}).get(key))
 
 
-def always(a):
+def always(a: Attrs) -> bool:
     return True
 
 
 # One saving per resource type, shown only when the planned config doesn't already use it.
-HINTS = {
+HINTS: dict[str, list[tuple[Callable[[Attrs], bool], str]]] = {
     "aws_eks_node_group": [
         (lambda a: a.get("capacity_type") != "SPOT", "Spot capacity for dev"),
         (lambda a: nested(a, "scaling_config", "min_size") > 1, "minimum 1 node in dev"),
@@ -61,31 +67,31 @@ HINTS = {
 }
 
 
-def hint(rtype, after):
+def hint(rtype: str, after: Attrs | None) -> str:
     return next((text for ok, text in HINTS.get(rtype, []) if ok(after or {})), "")
 
 
-def esc(text):
+def esc(text: object) -> str:
     return str(text).replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
 
 
-def esc_prop(text):
+def esc_prop(text: object) -> str:
     # A ',' or ':' would end an annotation's file= or title= value early.
     return esc(text).replace(":", "%3A").replace(",", "%2C")
 
 
-def money(value, currency, sign=False):
+def money(value: float, currency: str, sign: bool = False) -> str:
     symbol = {"USD": "$", "AUD": "A$"}.get(currency)
     text = f"{abs(value):,.2f}" if abs(value) < SMALL else f"{abs(value):,.0f}"
     text = f"{symbol}{text}" if symbol else f"{text} {currency}"
     return ("+" if value > 0 else "-" if value < 0 else "") + text if sign else text
 
 
-def costs(breakdown):
+def costs(breakdown: Attrs | None) -> dict[str, float]:
     return {r["name"]: num(r.get("monthlyCost")) for r in (breakdown or {}).get("resources") or []}
 
 
-def where(unit, unit_dir, address):
+def where(unit: str, unit_dir: pathlib.Path, address: str) -> tuple[str | None, int | None]:
     """The repo path and line declaring a root-module resource, for the annotation."""
     m = ADDRESS.search(address)
     if not m or address.startswith("module."):
@@ -98,11 +104,11 @@ def where(unit, unit_dir, address):
     return None, None
 
 
-def load(path):
+def load(path: str | pathlib.Path) -> Any:
     return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
 
 
-def parse(unit, report, plan, out):
+def parse(unit: str, report: str, plan: str, out: str) -> None:
     try:
         data, changes = load(report), load(plan).get("resource_changes") or []
     except (OSError, json.JSONDecodeError):
@@ -110,7 +116,7 @@ def parse(unit, report, plan, out):
         return
     after = {c["address"]: (c.get("change") or {}).get("after") for c in changes}
     currency = data.get("currency") or "USD"
-    drivers = []
+    drivers: list[Attrs] = []
     for p in data.get("projects") or []:
         past, now = costs(p.get("pastBreakdown")), costs(p.get("breakdown"))
         for name in past.keys() | now.keys():
@@ -137,8 +143,8 @@ def parse(unit, report, plan, out):
     pathlib.Path(out).write_text(json.dumps(summary), encoding="utf-8")
 
 
-def comment(folder, sha, limit=""):
-    summaries = [load(p) for p in sorted(pathlib.Path(folder).glob("cost-*.json"))]
+def comment(folder: str, sha: str, limit: str = "") -> None:
+    summaries: list[Attrs] = [load(p) for p in sorted(pathlib.Path(folder).glob("cost-*.json"))]
     if not summaries:
         return
     head = f"{MARKER}\n### Cost estimate:"
@@ -158,7 +164,7 @@ def comment(folder, sha, limit=""):
     else:
         status = f"✅ {money(after, currency)}/month"
 
-    def icon(delta):
+    def icon(delta: float) -> str:
         return "🔴 " if delta > 0 and over else "🟡 " if delta > 0 else "🔵 " if delta < 0 else ""
 
     print(f"{head} {status} ({sha[:7]})\n")
