@@ -9,7 +9,7 @@
 #    A production project's reviewer is a second person, with Prevent self-review on, so whoever merged can't approve.
 #    A prototype (AGENTS.md rule 12) leaves the reviewer off aws-dev-apply, so a merge deploys to dev unattended.
 # 3. GitHub variables: PROJECT_NAME on the repo; this stack's outputs on the environments (see Outputs).
-# Deploy: a merge to main applies to dev after approval; prod is a manual run of the aws workflow.
+# Deploy: a merge to main applies to dev (production: once its reviewer approves); prod is a manual run of the aws workflow.
 # Cleanup: run the aws workflow with destroy for each target, empty the state bucket, delete the CLI user's
 # access keys, then this stack and the environments (guides/05-aws-cleanup.md).
 AWSTemplateFormatVersion: '2010-09-09'
@@ -52,7 +52,7 @@ Parameters:
     Type: String
     Default: ''
     AllowedPattern: '^$|^[^@\s]+@[^@\s]+$'
-    Description: Address emailed at 80% and 100% of the monthly budget; empty for no budget
+    Description: Address emailed at 80% spent, 100% forecast and 100% spent of the monthly budget; empty for no budget
   MonthlyBudgetUsd:
     Type: Number
     Default: 50
@@ -63,6 +63,7 @@ Conditions:
   CreateOidc: !Equals [!Ref CreateOidcProvider, 'true']
   CreateBudget: !Not [!Equals [!Ref BudgetEmail, '']]
   ImmutableSubject: !Not [!Equals [!Ref GitHubRepoId, '']]
+  NotDev: !Not [!Equals [!Ref Target, dev]]
 
 Resources:
 
@@ -352,8 +353,9 @@ Resources:
         - { Key: ManagedBy, Value: CloudFormation }
 
   # Read-only, for an agent to troubleshoot from logs and settings (AGENTS.md rules 17 and 28): AWS's
-  # ReadOnlyAccess, so it can read values too, but it can't change anything. Anyone in this account
-  # allowed sts:AssumeRole on it can use it.
+  # ReadOnlyAccess, so it can't change anything. In dev it reads values too, as every value there is made
+  # up; in any other target it reads logs and settings but not the data itself (AGENTS.md rule 26).
+  # Anyone in this account allowed sts:AssumeRole on it can use it.
   TroubleshootRole:
     Type: AWS::IAM::Role
     Properties:
@@ -369,12 +371,41 @@ Resources:
             Action: sts:AssumeRole
       ManagedPolicyArns:
         - !Sub 'arn:${AWS::Partition}:iam::aws:policy/ReadOnlyAccess'
+      Policies:
+        - !If
+          - NotDev
+          - PolicyName: no-data-reads
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                # Stored data, secrets, queues, query results and function code. Add a line for each data
+                # store the project adds. Logs stay readable: code-standards 8 keeps personal data out of them.
+                - Effect: Deny
+                  Action:
+                    - athena:GetQueryResults
+                    - dsql:DbConnect*
+                    - dynamodb:BatchGetItem
+                    - dynamodb:GetItem
+                    - dynamodb:GetRecords
+                    - dynamodb:PartiQLSelect
+                    - dynamodb:Query
+                    - dynamodb:Scan
+                    - kms:Decrypt
+                    - lambda:GetFunction
+                    - rds-data:*
+                    - s3:GetObject*
+                    - secretsmanager:GetSecretValue
+                    - sqs:ReceiveMessage
+                    - ssm:GetParameter*
+                  Resource: '*'
+          - !Ref AWS::NoValue
       Tags:
         - { Key: Project, Value: !Ref ProjectName }
         - { Key: ManagedBy, Value: CloudFormation }
 
   # The developer's machine signs in as this user to assume the troubleshoot role, and can do nothing else.
   # Its access key is made in the console (one made here would sit in the stack), so a leaked key only reads.
+  # It is the one long-lived key the template keeps (trade-offs 14): rotate it, and delete it when idle.
   TroubleshootUser:
     Type: AWS::IAM::User
     Metadata:

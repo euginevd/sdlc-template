@@ -47,7 +47,7 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 - **Does:** `AGENTS.md` holds the rules every agent reads (rules 25 and 26: never touch secrets, cloud resources or hooks). `.claude/settings.json` enforces what Claude Code can: it denies force-pushes, `--no-verify`, `terraform apply` and `destroy`, and `.env` reads (a prototype drops the last at kickoff), and turns off AI attribution on commits and PRs (rule 29).
 - **When:** in every session.
 - **On a finding:** hooks and required checks catch a broken rule; add a known mistake to `AGENTS.md`.
-- **Limits:** deny rules match how a command starts, so a reworded command can slip past; other agents need their own settings (trade-offs 2). Keep no long-lived AWS keys on the agent's machine; while it works as you on GitHub, its actions look like yours (trade-offs 1).
+- **Limits:** deny rules match how a command starts, so a reworded command can slip past; other agents need their own settings (trade-offs 2). The only AWS key on the agent's machine is the read-only troubleshoot user's (trade-offs 14); while it works as you on GitHub, its actions look like yours (trade-offs 1).
 
 ## 6. Build: secrets, SCA and IaC scanning
 
@@ -189,7 +189,7 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 **Tool:** the AWS budget in `bootstrap.yaml`. **Profile:** both.
 
-- **Does:** emails at 80% and 100% of `MonthlyBudgetUsd` in actual spend.
+- **Does:** emails at 80% and 100% of `MonthlyBudgetUsd` in actual spend, and when the forecast passes 100%.
 - **When:** as spend accrues.
 - **On a finding:** an email; find the cause in Cost Explorer.
 - **Limits:** exists only if `BudgetEmail` is set; alerts but doesn't stop spending (trade-offs 10).
