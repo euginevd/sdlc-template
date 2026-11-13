@@ -7,7 +7,7 @@ dependencies = ["api"]
 
 [tool.uv]
 package = false
-# Packages must be a week old before uv picks them (AGENTS.md rule 18).
+# Packages must be a week old before uv picks them (AGENTS.md rule 24).
 exclude-newer = "7 days"
 
 [tool.uv.workspace]
@@ -31,6 +31,7 @@ max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
 "apps/*/tests/*" = ["S101", "PLR2004"]
+"scripts/tests/*" = ["S101", "PLR2004"]
 
 [tool.pyright]
 include = ["apps"]
@@ -41,7 +42,7 @@ venvPath = "."
 venv = ".venv"
 
 [tool.pytest.ini_options]
-testpaths = ["apps"]
+testpaths = ["apps", "scripts/tests"]
 addopts = "--import-mode=importlib --cov --cov-report=term-missing"
 
 [tool.coverage.run]
