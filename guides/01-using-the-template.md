@@ -9,7 +9,7 @@ The agent asks for this first ([AGENTS.md](../AGENTS.md) rules 11 to 13). Where 
 | | `prototype`: a working MVP, fast | `production`: gated |
 |---|---|---|
 | For | No real users, customer data or payments | Anything that has them |
-| You approve | Nothing: review whenever you like | Kickoff and every plan; a second reviewer approves each PR and `prod` release |
+| You approve | Nothing: review whenever you like | Kickoff and every plan; a second reviewer approves each PR and each apply, `dev` and `prod` |
 | Environments | `dev` only | `dev`, then `prod`, each in its own account |
 | Tests | Main paths and anything sensitive, 50% coverage | Abuse cases too, 80% coverage |
 | When unsure | The agent takes the simpler option and says so | The agent asks |
@@ -21,10 +21,10 @@ In both, one branch holds a session's work. A prototype's agent commits, pushes,
 
 Once per project, by you. Steps 1 to 3 need the GitHub CLI, signed in with `gh auth login`.
 
-1. **Create it:** `gh repo create <name> --template euginevd/sdlc-template --private --clone`. Keep a repo that deploys to AWS private: on a public one, anyone signed in can download its Terraform plans (trade-offs 5).
-2. **Tools and hooks:** `bash scripts/setup.sh` on every fresh clone installs the scanners, uv, Terraform and the push hook. Until it runs, pushes aren't scanned; `bash scripts/setup.sh --check` only reports.
-3. **Protect `main`:** `bash scripts/protect-main.sh` sets the Actions limits, squash-only merges, security features and the `main` ruleset. A private repo needs a paid plan for the ruleset; a public one also needs everything under Settings → Advanced Security turned on by hand ([guide 04](04-the-guardrails.md), sections 4 and 7).
-4. **AWS, when the project first needs it:** follow the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml), once per account: `dev`, and for production `prod` (`Target=prod`) before its first release. Set `BudgetEmail` for spend alerts and `INFRACOST_API_KEY` for a cost comment on each PR; then set Deployment branches to `main` only on each `aws-<env>-apply` environment ([guide 04](04-the-guardrails.md), section 16).
+1. **Create it:** `gh repo create <name> --template euginevd/sdlc-template --private --clone`. Keep a repo that deploys to AWS private: on a public one, anyone signed in can download `main`'s Terraform plans for a day (trade-offs 5). A private repo needs a paid GitHub plan (Pro or Team) for step 3.
+2. **Tools and hooks:** `bash scripts/setup.sh` on every fresh clone installs the scanners, uv, Terraform and the push hook: with winget on Windows, Homebrew on macOS, and checked downloads on Linux, where an agent in a cloud container runs it itself. Until it runs, pushes aren't scanned; `bash scripts/setup.sh --check` only reports.
+3. **Protect `main`:** `bash scripts/protect-main.sh` sets the Actions limits, squash-only merges, security features, the `main` ruleset and the `aws-dev-apply` environment, which deploys from `main` only. On a free plan a private repo gets neither the ruleset nor the environment, so nothing is enforced and the script says so; a public one also needs everything under Settings → Advanced Security turned on by hand ([guide 04](04-the-guardrails.md), sections 4 and 7).
+4. **AWS, when the project first needs it:** follow the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml), once per account: `dev`, and for production `prod` (`Target=prod`) before its first release. Set `BudgetEmail` for spend alerts and `INFRACOST_API_KEY` for a cost comment on each PR; `protect-main.sh` has already limited each `aws-<env>-apply` environment to `main`; run it again to check ([guide 04](04-the-guardrails.md), section 16).
 5. **Reviewers**, the one step that differs by profile:
    - `prototype`: none. Leave the reviewer off `aws-dev-apply`, so a merge deploys to `dev` unattended.
    - `production`: give a second reviewer write access, run `bash scripts/protect-main.sh production`, and make them the required reviewer on each apply environment, with *Prevent self-review* on.
@@ -61,14 +61,14 @@ It still stops before spending past the monthly limit in spec 10, before weakeni
 
 ## 5. Build for production
 
-The same loop, stopping at gates G1, G2 and G4 ([AGENTS.md](../AGENTS.md) rule 12). The ↺ marks a step the agent repeats until it's clean.
+The same loop, stopping at gates G1 to G4 ([AGENTS.md](../AGENTS.md) rule 12). The ↺ marks a step the agent repeats until it's clean.
 
 | # | Gate | You say | The agent | You |
 |:-:|------|---------|-----------|-----|
 | 1 | G1 Plan | *"Plan `<the work>`"* | Updates the spec, writes the plan, the threat model and any mockups; no code, then stops | ↺ Ask for changes, then approve |
 | 2 | Build | *"Implement the plan"* | Builds each phase on one branch: abuse-case tests, local checks, a fresh review per phase | |
 | 3 | G2 PR | *"Commit and push"* | Pushes, opens a PR with its Security line, ↺ fixes what the checks find, then asks for review | The second reviewer approves |
-| 4 | G3 `dev` | *"Merge it"* | Squash-merges; the pipeline plans and applies to `dev`, and the agent smoke-tests and reports | |
+| 4 | G3 `dev` | *"Merge it"* | Squash-merges; the pipeline plans `dev` and waits; once applied, the agent smoke-tests and reports | The second reviewer approves the apply |
 | 5 | G4 Release | | Confirms the checklist's production rows are done | Run `gh workflow run aws.yml -f target=prod`; the second reviewer approves it |
 | 6 | G5 After | | The next day, checks actual cost and the alarms | Anything raised starts at step 1 |
 
@@ -80,7 +80,7 @@ The same loop, stopping at gates G1, G2 and G4 ([AGENTS.md](../AGENTS.md) rule 1
 | Dependabot's weekly PRs | *"Check the Dependabot PRs"* | The agent fixes what the checks find |
 | A scan on `main` or the weekly scan fails | *"Fix the failed scan on main"* | The agent fixes each finding at its cause |
 | A new AWS service | Production: answer when the agent asks. A prototype's agent decides | It adds the permissions to `bootstrap.yaml`; you redeploy the stack before the merge |
-| The agent got something wrong | Tell it | It adds a line, or better a check, to Known mistakes in `AGENTS.md` |
+| The agent got something wrong | Tell it | It adds a line, or better a check, to `docs/known-mistakes.md` |
 
 ## 7. From prototype to production
 

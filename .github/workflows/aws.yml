@@ -173,7 +173,9 @@ jobs:
           retention-days: 1
 
       # Only units with changes upload a plan; apply runs for those alone. Zips built at plan time go with it.
+      # Never on a PR: nothing applies a PR's plan, and the file holds state in plain text.
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: github.event_name != 'pull_request'
         with:
           name: tfplan-${{ matrix.unit }}
           path: |
