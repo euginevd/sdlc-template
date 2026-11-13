@@ -2,7 +2,8 @@
 
 # sdlc-template
 
-**One template, two speeds: a prototype your coding agent builds on its own, or a production system with a person at every gate.**
+**Start every project with a coding agent and a pipeline that's already safe.**<br>
+Pick a prototype the agent builds on its own, or a production system with a person at every gate.
 
 [Quick start](#quick-start) · [Two profiles](#two-profiles) · [What's inside](#whats-inside) · [What always runs](#what-always-runs) · [Guides](#guides)
 
@@ -10,10 +11,18 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="guides/assets/overview-dark.png">
-  <img src="guides/assets/overview.png" width="880" alt="The two profiles side by side across five stages. Kick off: in both, you approve the spec and the MVP mockup; production adds the threat model and costs. Plan: a prototype's agent writes a short plan and keeps going; in production you approve the plan. Build: a prototype tests the main paths with one review at 50% coverage; production has tests and a review in every phase at 80%. Merge: a prototype's agent merges once the checks pass; in production a second reviewer approves the PR. Deploy: a prototype's dev deploys unattended; in production a second reviewer approves every apply. Always on in both: the pre-push scan, secrets, dependencies, SAST and IaC checks, a protected main, OIDC with no keys, and pipeline-only deploys.">
+  <img src="guides/assets/overview.png" width="900" alt="Six stages, kick off to release, on two tracks. Prototype: you approve the spec and mockup at kickoff, then the agent plans, builds with main-path tests at 50% coverage, merges on green checks and the pipeline applies to dev on merge; there is no prod. Production: you approve the spec, threat model and costs, then the plan; the agent builds with abuse-case tests at 80% coverage and a review per phase; a second reviewer approves the PR, the dev apply and the prod release. Always on in both: Gitleaks and Trivy before every push, Semgrep, Checkov, CodeQL and app tests on every PR, a full rescan and SBOM on main and weekly, pipeline-only deploys over OIDC with no stored keys, and actual cost checked the day after a deploy.">
 </picture>
 
 </div>
+
+## Why
+
+Coding agents write code fast. What they don't bring is the rest: a spec to build against, a place to stop and ask, security scans, a safe way into AWS, and a record of what was decided. This template is that rest. Every agent reads the same numbered rules in [AGENTS.md](AGENTS.md), keeps the docs current as it works, and leaves AWS to a pipeline that scans, plans and applies for it.
+
+It's written for one developer, or a small team, on Windows with VS Code, deploying to AWS with Terraform. It works with any agent that reads `AGENTS.md`.
+
+You'll need: a GitHub account with the `gh` CLI, Git Bash or similar, and an AWS account once you're ready to deploy. `setup.sh` installs the rest (Gitleaks, Trivy, lefthook, uv and Terraform).
 
 ## Quick start
 
