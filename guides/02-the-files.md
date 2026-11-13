@@ -53,7 +53,7 @@ my-project/
 
 The push scan: `setup.sh` runs `lefthook install`, which writes `.git/hooks/pre-push`; each `git push` then runs `pre-push-scan.sh`, which passes or blocks.
 
-1. **scripts/setup.sh**: once per clone: installs the tools and hooks, then `uv sync`; `--check` only reports.
+1. **scripts/setup.sh**: once per clone, on Windows, macOS or Linux: installs the tools and hooks, then `uv sync`; `--check` only reports.
 2. **lefthook.yml**: which script runs on which git event: a scan before every push.
 3. **.git/hooks/pre-push**: hidden and per clone, written by `lefthook install`.
 4. **.lefthook/pre-push-scan.sh**: scans the pushed commits with gitleaks (secrets) and Trivy (packages, IaC); a finding blocks the push.

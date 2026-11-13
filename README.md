@@ -64,7 +64,7 @@ A prototype still stops before spending past the monthly limit in the spec, befo
 | [apps/api/](apps/api/), [infra/aws/api/](infra/aws/api/) | The starter: a Lambda with a `/health` route and its Terraform, proving the pipeline end to end. Keep it, build on it or replace it |
 | [.github/workflows/](.github/workflows/) | `ci` for the apps a PR changes, `security` and `codeql` for the scans, `aws` for the Terraform plan, the cost comment and the apply |
 | [infra/aws/bootstrap/](infra/aws/bootstrap/) | One stack per AWS account, deployed by you: the GitHub sign-in, a read-only plan role, a bounded deploy role, a read-only troubleshoot role, the state bucket and a budget alert |
-| [scripts/](scripts/) | `setup.sh` installs and checks a machine, `protect-main.sh` locks down the repo, `pr-findings.sh` lists what a PR still has to fix |
+| [scripts/](scripts/) | `setup.sh` installs and checks a machine (Windows, macOS, or an agent's Linux container), `protect-main.sh` locks down the repo, `pr-findings.sh` lists what a PR still has to fix |
 
 ## What always runs
 

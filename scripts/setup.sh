@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # One-time setup: installs the GitHub CLI, gitleaks, Trivy, lefthook, uv and Terraform if missing, then the
-# Git hooks and the Python environment, and reports what the machine has.
+# Git hooks and the Python environment, and reports what the machine has. Windows (winget), macOS (Homebrew)
+# and Linux (Homebrew, or checked downloads into ~/.local/bin, as in an agent's cloud container).
 # Usage: bash scripts/setup.sh           install what's missing, then report
 #        bash scripts/setup.sh --check   report only, changing nothing; exits 1 if something is missing
 set -uo pipefail
@@ -22,7 +23,64 @@ reload_path() {
 }
 reload_path
 
-# Installs a tool with winget on Windows or Homebrew on macOS and Linux.
+# The exact version the pipeline pins for a tool, read from the workflows.
+exact() {
+  case "$1" in
+    gitleaks) grep -ho 'gitleaks/gitleaks:v[0-9.]*' .github/workflows/security.yml ;;
+    trivy) grep -ho 'aquasec/trivy:[0-9.]*' .github/workflows/security.yml ;;
+    uv) grep -ho 'astral-sh/uv:[0-9.]*' .github/workflows/ci.yml ;;
+    terraform) grep -ho 'TF_VERSION: [0-9.]*' .github/workflows/aws.yml ;;
+  esac 2>/dev/null | head -1 | grep -o '[0-9][0-9.]*$'
+}
+
+# Linux with no Homebrew, such as an agent's cloud container: the pipeline's own version of each tool, from
+# its release page into ~/.local/bin, kept only if it matches the release's SHA-256.
+fetch() {
+  local cmd=$1 v arch base file sums want tmp bin="$HOME/.local/bin"
+  mkdir -p "$bin" && export PATH="$bin:$PATH"
+  case "$cmd" in
+    gh) echo "Install gh by hand (https://cli.github.com); the rest carries on without it."; return 0 ;;
+    # From PyPI, at least a week old (AGENTS.md rule 24).
+    lefthook) uv tool install --quiet --exclude-newer "7 days" lefthook; return ;;
+  esac
+  v=$(exact "$cmd") || return 1
+  arch=$(uname -m)
+  case "$cmd-$arch" in
+    gitleaks-x86_64) file="gitleaks_${v}_linux_x64.tar.gz" ;;
+    gitleaks-aarch64) file="gitleaks_${v}_linux_arm64.tar.gz" ;;
+    trivy-x86_64) file="trivy_${v}_Linux-64bit.tar.gz" ;;
+    trivy-aarch64) file="trivy_${v}_Linux-ARM64.tar.gz" ;;
+    terraform-x86_64) file="terraform_${v}_linux_amd64.zip" ;;
+    terraform-aarch64) file="terraform_${v}_linux_arm64.zip" ;;
+    uv-x86_64 | uv-aarch64) file="uv-$arch-unknown-linux-gnu.tar.gz" ;;
+    *) echo "No download of $cmd for $arch: install it by hand."; return 1 ;;
+  esac
+  case "$cmd" in
+    gitleaks) base="https://github.com/gitleaks/gitleaks/releases/download/v$v"; sums="gitleaks_${v}_checksums.txt" ;;
+    trivy) base="https://github.com/aquasecurity/trivy/releases/download/v$v"; sums="trivy_${v}_checksums.txt" ;;
+    terraform) base="https://releases.hashicorp.com/terraform/$v"; sums="terraform_${v}_SHA256SUMS" ;;
+    uv) base="https://github.com/astral-sh/uv/releases/download/$v"; sums="$file.sha256" ;;
+  esac
+  tmp=$(mktemp -d) || return 1
+  if ! curl -fsSL -o "$tmp/$file" "$base/$file" || ! curl -fsSL -o "$tmp/sums" "$base/$sums"; then
+    echo "Could not download $cmd $v from $base."
+    rm -rf "$tmp"; return 1
+  fi
+  want=$(grep -E "[ *]$file\$" "$tmp/sums" | awk '{print $1}')
+  if [ -z "$want" ] || [ "$want" != "$(sha256sum "$tmp/$file" | awk '{print $1}')" ]; then
+    echo "$cmd $v doesn't match its published checksum: not installed."
+    rm -rf "$tmp"; return 1
+  fi
+  mkdir "$tmp/out"
+  case "$file" in
+    *.zip) python3 -m zipfile -e "$tmp/$file" "$tmp/out" ;;
+    *) tar -xzf "$tmp/$file" -C "$tmp/out" ;;
+  esac
+  command install -m 755 "$(find "$tmp/out" -type f -name "$cmd" | head -1)" "$bin/$cmd"
+  rm -rf "$tmp"
+}
+
+# Installs a tool with winget on Windows, Homebrew on macOS and Linux, or a checked download on Linux.
 install() {
   local cmd=$1 winget_id=$2 brew_name=$3
   command -v "$cmd" >/dev/null && return 0
@@ -31,6 +89,9 @@ install() {
     reload_path
   elif command -v brew >/dev/null; then
     brew install "$brew_name" || return 1
+  elif [ "$(uname -s)" = Linux ]; then
+    fetch "$cmd" || return 1
+    [ "$cmd" = gh ] && return 0
   else
     echo "Install $cmd by hand from its website, then run this again."
     return 1
@@ -117,8 +178,8 @@ fi
 install gh GitHub.cli gh || exit 1
 install gitleaks Gitleaks.Gitleaks gitleaks || exit 1
 install trivy AquaSecurity.Trivy trivy || exit 1
-install lefthook evilmartians.lefthook lefthook || exit 1
 install uv astral-sh.uv uv || exit 1
+install lefthook evilmartians.lefthook lefthook || exit 1
 install terraform Hashicorp.Terraform hashicorp/tap/terraform || exit 1
 lefthook install || exit 1
 [ -f pyproject.toml ] && { uv sync || exit 1; }
