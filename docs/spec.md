@@ -19,6 +19,8 @@ Who the business is, unnumbered so the spec's numbers stay put. The same for eve
 
 Profile: *(to fill in)* `prototype` or `production`.
 
+Repo: *(to fill in)* `personal` (public) or `work` (private).
+
 1. Name: `starter`
 2. Problem: *(to fill in)* what's slow, costly or missing today, and for whom.
 3. Goal: *(to fill in)* what's true once this works.
