@@ -44,10 +44,10 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 **Tool:** `AGENTS.md`, the agent tool's permission settings, and for production the agent's own GitHub account. **Profile:** both.
 
-- **Does:** `AGENTS.md` holds the rules every agent reads (rules 25 and 26: never touch secrets, cloud resources or hooks). The harness enforces what it can, such as denying `.env*` reads.
+- **Does:** `AGENTS.md` holds the rules every agent reads (rules 25 and 26: never touch secrets, cloud resources or hooks). `.claude/settings.json` enforces what Claude Code can: it denies force-pushes, `--no-verify`, `terraform apply` and `destroy`, and `.env` reads (a prototype drops the last at kickoff), and turns off AI attribution on commits and PRs (rule 29).
 - **When:** in every session.
 - **On a finding:** hooks and required checks catch a broken rule; add a known mistake to `AGENTS.md`.
-- **Limits:** rules are asked, not enforced, and harness settings aren't in the template yet (trade-offs 2). Keep no long-lived AWS keys on the agent's machine; while it works as you on GitHub, its actions look like yours (trade-offs 1).
+- **Limits:** deny rules match how a command starts, so a reworded command can slip past; other agents need their own settings (trade-offs 2). Keep no long-lived AWS keys on the agent's machine; while it works as you on GitHub, its actions look like yours (trade-offs 1).
 
 ## 6. Build: secrets, SCA and IaC scanning
 
@@ -108,7 +108,7 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 **Tool:** the `main` ruleset, set by `bash scripts/protect-main.sh`. **Profile:** both.
 
-- **Does:** every change goes through a PR with required checks on an up-to-date branch, squash-only; `main` can't be force-pushed or deleted, even by an admin.
+- **Does:** every change goes through a PR with required checks on an up-to-date branch, squash-only; `main` can't be force-pushed or deleted, even by an admin. The required checks include `plan-result`, so a failed Terraform plan blocks the merge; `kickoff`, so an unfinished kickoff does; and `workflows`, which lints workflows and scripts with actionlint, zizmor and shellcheck.
 - **When:** on every push to `main` and every merge.
 - **On a finding:** a direct push is rejected; merge stays disabled until checks pass.
 - **Limits:** rulesets need a public repo or a paid plan.

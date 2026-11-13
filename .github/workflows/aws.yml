@@ -6,9 +6,10 @@ name: aws
 # Repo variables: PROJECT_NAME, optional AWS_REGION (default ap-southeast-2).
 # Per environment, from the bootstrap stack: AWS_PLAN_ROLE_ARN, AWS_DEPLOY_ROLE_ARN, TF_STATE_BUCKET.
 # Cost comment: secret INFRACOST_API_KEY; optional variables MONTHLY_COST_LIMIT (warns above it) and COST_CURRENCY (default USD).
+# Every PR runs it, so plan-result always reports and can be a required check; a PR that changes no
+# unit plans nothing.
 on:
   pull_request:
-    paths: [infra/aws/**, '!infra/aws/bootstrap/**', apps/**, pyproject.toml, uv.lock, .github/workflows/aws.yml]
   push:
     branches: [main]
     paths: [infra/aws/**, '!infra/aws/bootstrap/**', apps/**, pyproject.toml, uv.lock, .github/workflows/aws.yml]
@@ -132,7 +133,7 @@ jobs:
           DESTROY: ${{ inputs.action == 'destroy' && '-destroy' || '' }}
         run: |
           ec=0
-          terraform plan -input=false $DESTROY -out=tfplan -detailed-exitcode || ec=$?
+          terraform plan -input=false ${DESTROY:+"$DESTROY"} -out=tfplan -detailed-exitcode || ec=$?
           [ "$ec" -eq 1 ] && exit 1
           terraform show -json tfplan > plan.json
           # No changes: no plan and no zip are kept, so nothing is uploaded and no approval is asked for.
@@ -180,6 +181,27 @@ jobs:
             infra/aws/${{ matrix.unit }}/*.zip
           if-no-files-found: ignore
           retention-days: 1
+
+  # One check that always reports, so the ruleset can require it: fails when working out the units or
+  # any unit's plan failed. A plan skipped (no unit changed, or PROJECT_NAME not set yet) passes. A fork's
+  # PR gets no AWS sign-in, so its plan can't run; the merge to main plans it again.
+  plan-result:
+    needs: [detect, plan]
+    if: always() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - env:
+          DETECT: ${{ needs.detect.result }}
+          PLAN: ${{ needs.plan.result }}
+          FORK: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+        run: |
+          [ "$DETECT" = success ] || { echo "::error::Couldn't work out which units to plan."; exit 1; }
+          case "$PLAN" in
+            success | skipped) echo "Terraform plans: $PLAN" ;;
+            *) [ "$FORK" = true ] && { echo "A fork's PR can't sign in to AWS; main plans it after the merge."; exit 0; }
+               echo "::error::A Terraform plan failed ($PLAN): see the plan job."; exit 1 ;;
+          esac
 
   # One cost comment per PR, updated on each push; no AWS role.
   cost-report:

@@ -19,6 +19,7 @@ jobs:
     outputs:
       python: ${{ steps.diff.outputs.python }}
       web: ${{ steps.diff.outputs.web }}
+      workflows: ${{ steps.diff.outputs.workflows }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -28,21 +29,60 @@ jobs:
         name: Apps changed by this PR
         run: |
           # HEAD is the PR merged into main; its first parent is main.
-          files=$(git diff --name-only HEAD^1 HEAD) || { echo "python=true" >> "$GITHUB_OUTPUT"; echo "web=true" >> "$GITHUB_OUTPUT"; exit 0; }
-          python=false; web=false
+          files=$(git diff --name-only HEAD^1 HEAD) || { printf 'python=true\nweb=true\nworkflows=true\n' >> "$GITHUB_OUTPUT"; exit 0; }
+          python=false; web=false; workflows=false
           while IFS= read -r f; do
             case "$f" in
               "") ;;
               apps/web/*) web=true ;;
               apps/* | *.py | pyproject.toml | uv.lock | .python-version) python=true ;;
               *.md | docs/* | guides/* | LICENSE | infra/* | .vscode/*) ;;
+              .github/workflows/* | *.sh) workflows=true; python=true; web=true ;;
               *) python=true; web=true ;;
             esac
           done <<< "$files"
           echo "$files"
-          echo "python=$python web=$web"
-          echo "python=$python" >> "$GITHUB_OUTPUT"
-          echo "web=$web" >> "$GITHUB_OUTPUT"
+          echo "python=$python web=$web workflows=$workflows"
+          printf 'python=%s\nweb=%s\nworkflows=%s\n' "$python" "$web" "$workflows" >> "$GITHUB_OUTPUT"
+
+  # Kickoff is finished once spec.md names a profile: from then on a leftover *(to fill in)* in docs/
+  # is a decision nobody made, so the PR fails until it's written or the line deleted.
+  kickoff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: No to-fill-in lines once a profile is set
+        run: |
+          grep -qE '^Profile: .(prototype|production).' docs/spec.md || { echo "No profile yet: kickoff isn't finished, nothing to check."; exit 0; }
+          if grep -rnF --include='*.md' '*(to fill in)*' docs/; then
+            echo "::error::Kickoff left the lines above unfilled (AGENTS.md rule 13): write each one, or delete it."
+            exit 1
+          fi
+          echo "Every to-fill-in line in docs/ is written."
+
+  # Agents edit the workflows and scripts (AGENTS.md rule 10), so each change is linted: actionlint for
+  # syntax, expressions and the shell in run steps, zizmor for injection, credentials and permissions,
+  # shellcheck for the repo's scripts at warning level. All from pinned images, offline.
+  workflows:
+    needs: changes
+    if: ${{ !cancelled() && needs.changes.outputs.workflows != 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: actionlint, zizmor and shellcheck
+        run: |
+          code=0
+          mapfile -t scripts < <(git ls-files '*.sh')
+          docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.12@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 -color || code=1
+          docker run --rm -v "$PWD:/repo" -w /repo ghcr.io/zizmorcore/zizmor:1.32.0@sha256:3014cc8f68f663935f69b3c3e0e41f5ce102b268d97db13db0f62208747f860d --offline .github/workflows || code=1
+          docker run --rm -v "$PWD:/repo" -w /repo koalaman/shellcheck:v0.11.0@sha256:61862eba1fcf09a484ebcc6feea46f1782532571a34ed51fedf90dd25f925a8d -S warning "${scripts[@]}" || code=1
+          exit $code
 
   python:
     needs: changes

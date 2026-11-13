@@ -9,13 +9,13 @@ The agent asks for this first ([AGENTS.md](../AGENTS.md) rules 11 to 13). Where 
 | | `prototype`: a working MVP, fast | `production`: gated |
 |---|---|---|
 | For | No real users, customer data or payments | Anything that has them |
-| You approve | Kickoff only | Kickoff and every plan; a second reviewer approves each PR and `prod` release |
+| You approve | Nothing: review whenever you like | Kickoff and every plan; a second reviewer approves each PR and `prod` release |
 | Environments | `dev` only | `dev`, then `prod`, each in its own account |
 | Tests | Main paths and anything sensitive, 50% coverage | Abuse cases too, 80% coverage |
 | When unsure | The agent takes the simpler option and says so | The agent asks |
 | Trade-offs | All accepted | Each fixed, or accepted by a named person |
 
-In both, one branch holds a session's work, and the agent commits, pushes or opens a PR only when you ask. It runs local commands itself and gives you cloud commands as bash for AWS CloudShell; what it asks first and never does is in [AGENTS.md](../AGENTS.md) rules 22 to 28.
+In both, one branch holds a session's work. A prototype's agent commits, pushes, opens the PR and merges on its own; in production it does each only when you ask. It runs local commands itself and gives you cloud commands as bash for AWS CloudShell; what it asks first and never does is in [AGENTS.md](../AGENTS.md) rules 22 to 28.
 
 ## 2. Set up the repo
 
@@ -32,7 +32,7 @@ Once per project, by you. Steps 1 to 3 need the GitHub CLI, signed in with `gh a
 
 ## 3. Kick off
 
-Gate G0, once per project. `docs/` starts by describing the health-check API the template ships, with a *(to fill in)* line for each thing you decide.
+Gate G0, once per project. `docs/` starts by describing the health-check API the template ships, with a *(to fill in)* line for each thing you decide. A prototype's agent fills them all in and keeps going; the *You* column is production's, and optional for a prototype. Once a profile is set, CI's `kickoff` check fails while any *(to fill in)* line is left.
 
 | You say | The agent | You |
 |---------|-----------|-----|
@@ -42,22 +42,22 @@ Gate G0, once per project. `docs/` starts by describing the health-check API the
 | | Extends `threat-model.md` and `costs.md`; a prototype keeps the starter's | `production`: approve each |
 | | Records the profile, accepted trade-offs and code owner in `decisions.md` | Say which trade-offs you accept |
 | *"Rename the project"* | Renames the README, `spec.md` and `pyproject.toml` (then `uv lock`); a prototype sets `fail_under = 50` | Replace `LICENSE` and `guides/assets/`; a private project deletes `CONTRIBUTING.md` and `social.png` |
-| *"Commit and push"* | Opens one PR with all of it | Approve it, and the agent merges |
+| *"Commit and push"*, production only | Opens one PR with all of it | Approve it, and the agent merges. A prototype's agent does this unasked |
 
 ## 4. Build a prototype
 
-One prompt builds; a second ships. Nothing waits for you in between.
+One prompt builds and ships. Nothing waits for you: the agent decides what production would ask about, records it in `decisions.md`, and tells you in its report.
 
 | You say | The agent | You |
 |---------|-----------|-----|
 | *"Build `<the work>`"* | Adds it to the spec, writes a short plan and builds on the session's one branch: code, main-path tests, local checks, `features.md` and `TODO.md` | Interrupt if the direction is wrong |
 | | New cloud service: deploys a walking skeleton to `dev` first, one service at a time ([AGENTS.md](../AGENTS.md) rule 17) | |
 | | A fresh subagent reviews the whole branch; it fixes what it blocks and reports | Try it; ask for more |
-| *"Commit and push"* | Commits a few times, pushes (the pre-push scan runs), opens one PR, fixes the findings and squash-merges once checks pass | |
+| | Once the work is done and the local checks pass: commits, pushes (the pre-push scan runs), opens one PR, fixes the findings and squash-merges once checks pass | |
 | | The pipeline deploys to `dev`; first-deploy fixes stay on one branch until green, then it smoke-tests | Try it in `dev` |
 | | The day after a deploy, compares actual cost with `costs.md` | Read the report |
 
-Ask for more whenever you want it: *"review the plan with me first"*, *"add a threat model"*, *"wait for me before merging"*.
+It still stops before spending past the monthly limit in spec 10, before weakening its own floor (never touching AWS directly, secrets, hooks or attribution), and before real users, customer data or payments. A check that fails three times goes into `TODO.md` as blocked while it moves on. Ask for more whenever you want it: *"review the plan with me first"*, *"add a threat model"*, *"wait for me before merging"*.
 
 ## 5. Build for production
 
@@ -79,7 +79,7 @@ The same loop, stopping at gates G1, G2 and G4 ([AGENTS.md](../AGENTS.md) rule 1
 | A small fix touching no users, data, auth, endpoints, infrastructure or screens | *"Fix `<the problem>`"* | No plan, the same checks |
 | Dependabot's weekly PRs | *"Check the Dependabot PRs"* | The agent fixes what the checks find |
 | A scan on `main` or the weekly scan fails | *"Fix the failed scan on main"* | The agent fixes each finding at its cause |
-| A new AWS service | Answer when the agent asks | It adds the permissions to `bootstrap.yaml`; you redeploy the stack before the merge |
+| A new AWS service | Production: answer when the agent asks. A prototype's agent decides | It adds the permissions to `bootstrap.yaml`; you redeploy the stack before the merge |
 | The agent got something wrong | Tell it | It adds a line, or better a check, to Known mistakes in `AGENTS.md` |
 
 ## 7. From prototype to production

@@ -29,7 +29,7 @@ my-project/
 2. **CONTRIBUTING.md**: how a person or agent sets up and makes a change.
 3. **AGENTS.md**: the rules every coding agent follows, with the gates for each profile; changes rarely.
 4. **docs/**: the project context agents read and keep current:
-   1. **spec.md**: the business, then problem, users, stack, done-when and rules; the agent drafts, you approve.
+   1. **spec.md**: the business, then problem, users, stack, done-when and rules; the agent drafts, you approve (production).
    2. **code-standards.md**: numbered coding rules the pipeline can't check, including the length of docs.
    3. **features.md**: each feature by app, with its status and PR.
    4. **decisions.md**: the decisions in force, why, and what they replaced.
@@ -38,10 +38,10 @@ my-project/
    7. **skeleton-plan.md**: the outline each plan is copied from.
    8. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built and its screens; deleted when done.
    9. **mockups/mvp.html**: the MVP's screens from kickoff; deleted once all are built.
-5. **guides/**: for people: 01 using the template, 02 this tour, 03 accepted risks, 04 each guardrail, 05 removing a project from AWS. `assets/` holds the README's images and `social.png`.
+5. **guides/**: for people: 01 using the template, 02 this tour, 03 accepted risks, 04 each guardrail, 05 removing a project from AWS. `assets/` holds the README's images, `overview.html` that renders them, and `social.png`.
 6. **SECURITY.md**: how to report a vulnerability privately.
 7. **LICENSE**: MIT; replace it per project.
-8. **TODO.md**: your inbox of ideas and tasks; the agent confirms before starting one.
+8. **TODO.md**: your inbox of ideas and tasks; in production the agent confirms before starting one, a prototype's just starts.
 
 ## 3. Git and ignore files
 
@@ -59,11 +59,12 @@ The push scan: `setup.sh` runs `lefthook install`, which writes `.git/hooks/pre-
 4. **.lefthook/pre-push-scan.sh**: scans the pushed commits with gitleaks (secrets) and Trivy (packages, IaC); a finding blocks the push.
 5. **.vscode/extensions.json**: suggests the scanner, Ruff, Python and Terraform extensions.
 6. **.editorconfig**: LF, UTF-8, indent size and a final newline.
-7. **.claude/**: Claude Code's folder; local settings and worktrees are git-ignored.
+7. **.claude/settings.json**: Claude Code's shared settings: no AI attribution on commits or PRs, and deny rules for force-pushes, skipped hooks, Terraform applies and `.env` reads. Local settings and worktrees are git-ignored.
 8. **scripts/protect-main.sh**: once, by hand: locks `main`, squash-only merges, security features; `production` adds a second reviewer.
 9. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open threads and alerts; replies and resolves threads.
 10. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
 11. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment.
+12. **scripts/tests/**: tests for the two report scripts; they run with the apps' tests.
 
 ## 5. App code
 
@@ -84,10 +85,10 @@ A change ships like this: PR → `ci`, `security` and `codeql` run → `aws` pla
 1. **pull_request_template.md**: pre-fills each PR: what changed, security, checks.
 2. **CODEOWNERS** *(not included)*: requests reviewers per path; add it once a team shares the repo.
 3. **dependabot.yml**: weekly update PRs for actions, Python and Terraform, each release 7 days old.
-4. **workflows/ci.yml**: lint, types and tests for only the apps a PR changes.
+4. **workflows/ci.yml**: lint, types and tests for only the apps a PR changes; actionlint, zizmor and shellcheck when workflows or scripts change; and the `kickoff` check for leftover *(to fill in)* lines.
 5. **workflows/security.yml**: the push scan again, plus Checkov, Semgrep and `terraform validate`; weekly too.
 6. **workflows/codeql.yml**: GitHub's code scanning on PRs, `main` and weekly.
-7. **workflows/aws.yml**: Terraform plan and cost on PRs; on merge, applies the changed units to `dev`, and `prod` by hand.
+7. **workflows/aws.yml**: Terraform plan and cost on PRs, with one `plan-result` check the ruleset requires; on merge, applies the changed units to `dev`, and `prod` by hand.
 8. **workflows/images.yml**: builds, scans and pushes each app's image to ECR, with its SBOM; idle until an app has a Dockerfile.
 
 ## 7. Cloud (infra/aws/)

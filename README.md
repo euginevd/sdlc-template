@@ -3,7 +3,7 @@
 # sdlc-template
 
 **Start every project with a coding agent and a pipeline that's already safe.**<br>
-Pick a prototype the agent builds on its own, or a production system with a person at every gate.
+Pick a prototype the agent builds and ships on its own, or a production system with a person at every gate.
 
 [Quick start](#quick-start) · [Two profiles](#two-profiles) · [What's inside](#whats-inside) · [What always runs](#what-always-runs) · [Guides](#guides)
 
@@ -11,7 +11,7 @@ Pick a prototype the agent builds on its own, or a production system with a pers
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="guides/assets/overview-dark.png">
-  <img src="guides/assets/overview.png" width="900" alt="Six stages, kick off to release, on two tracks. Prototype: you approve the spec and mockup at kickoff, then the agent plans, builds with main-path tests at 50% coverage, merges on green checks and the pipeline applies to dev on merge; there is no prod. Production: you approve the spec, threat model and costs, then the plan; the agent builds with abuse-case tests at 80% coverage and a review per phase; a second reviewer approves the PR, the dev apply and the prod release. Always on in both: Gitleaks and Trivy before every push, Semgrep, Checkov, CodeQL and app tests on every PR, a full rescan and SBOM on main and weekly, pipeline-only deploys over OIDC with no stored keys, and actual cost checked the day after a deploy.">
+  <img src="guides/assets/overview.png" width="900" alt="Six stages, kick off to release, on two tracks. Prototype: no stops; the agent drafts the docs at kickoff, plans, builds with main-path tests at 50% coverage, merges on green checks and the pipeline applies to dev on merge; there is no prod. Production: you approve the spec, threat model and costs, then the plan; the agent builds with abuse-case tests at 80% coverage and a review per phase; a second reviewer approves the PR, the dev apply and the prod release. Always on in both: Gitleaks and Trivy before every push, Semgrep, Checkov, CodeQL and app tests on every PR, a full rescan and SBOM on main and weekly, pipeline-only deploys over OIDC with no stored keys, and actual cost checked the day after a deploy.">
 </picture>
 
 </div>
@@ -37,7 +37,7 @@ Then tell your coding agent:
 
 > Kick off my-project: *your notes on the business, the problem, the users and the stack*
 
-It checks your machine, asks whether this is a prototype or production, drafts the docs from your notes and waits for your approval. Then *"Build the sign-up page"* builds it on one branch, and *"Commit and push"* ships it to `dev`. Every step: [guides/01-using-the-template.md](guides/01-using-the-template.md).
+It checks your machine and asks whether this is a prototype or production. A prototype's agent then drafts the docs from your notes and keeps going: *"Build the sign-up page"* builds it, opens the PR, merges and ships it to `dev` without another word from you. In production it waits for your approval at each gate, and *"Commit and push"* starts the PR. Every step: [guides/01-using-the-template.md](guides/01-using-the-template.md).
 
 ## Two profiles
 
@@ -46,13 +46,14 @@ You pick one at kickoff. The agent works on its own between gates and stops at t
 | | Prototype: speed first | Production: gates at key stages |
 |---|---|---|
 | For | No real users, customer data or payments | Anything that has them |
-| You approve | Kickoff: the spec, and the MVP mockup if there's UI | Kickoff, and every plan |
+| You approve | Nothing: review whenever you like | Kickoff, and every plan |
 | A second reviewer approves | Nothing | Every PR and every `prod` release, enforced by GitHub |
 | Environments | `dev` only | `dev`, then `prod` |
 | Tests | Main paths and anything sensitive, 50% coverage | Abuse cases too, 80% coverage |
-| When unsure | The agent takes the simpler option and says so | The agent asks |
+| When unsure | The agent decides, records it and says so | The agent asks |
+| Commits, PRs, merges | The agent, unasked | Only when you ask |
 
-In both, one branch holds a session's work, and the agent commits, pushes or opens a PR only when you ask. New cloud services start as a small deploy to `dev`, one at a time, and actual cost is checked the day after. Moving a prototype up is one prompt and `bash scripts/protect-main.sh production`.
+A prototype still stops before spending past the monthly limit in the spec, before weakening its own floor (no direct AWS changes, no secrets in output, no skipped hooks, no AI attribution), and before real users, customer data or payments. In both, one branch holds a session's work. New cloud services start as a small deploy to `dev`, one at a time, and actual cost is checked the day after. Moving a prototype up is one prompt and `bash scripts/protect-main.sh production`.
 
 ## What's inside
 
@@ -70,7 +71,7 @@ In both, one branch holds a session's work, and the agent commits, pushes or ope
 The same in both profiles:
 
 1. **Before every push:** Gitleaks and Trivy scan the pushed commits, so a secret added and then removed is still caught.
-2. **On every PR:** secrets (Gitleaks), vulnerable packages and misconfiguration (Trivy, Checkov), static analysis (Semgrep, and CodeQL on public repos), `terraform validate`, and lint, types and tests for the apps it changes. One summary comment lists the findings, and the agent fixes from it.
+2. **On every PR:** secrets (Gitleaks), vulnerable packages and misconfiguration (Trivy, Checkov), static analysis (Semgrep, and CodeQL on public repos), `terraform validate` and a required Terraform plan, lint for workflows and scripts (actionlint, zizmor, shellcheck), a check that kickoff left nothing unfilled, and lint, types and tests for the apps it changes. One summary comment lists the findings, and the agent fixes from it.
 3. **On `main` and weekly:** the full scans again, so a vulnerability published after a merge still fails a run, plus a list of every package in the code (SBOM).
 4. **Deploys:** only the pipeline touches AWS, signing in through GitHub OIDC with no stored keys. It plans with a read-only role and applies a saved plan, `dev` on merge and `prod` by hand.
 5. **Supply chain:** actions pinned by commit, scanner images by digest, and packages at least a week old before they're installed.
