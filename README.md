@@ -46,7 +46,7 @@ You pick one at kickoff. The agent works on its own between gates and stops at t
 | | Prototype: speed first | Production: gates at key stages |
 |---|---|---|
 | For | No real users, customer data or payments | Anything that has them |
-| You approve | Nothing: review whenever you like | Kickoff, and every plan |
+| You approve | Each TODO item's spec and mockup, before code | Kickoff, and every plan |
 | A second reviewer approves | Nothing | Every PR and every apply, `dev` and `prod`, enforced by GitHub |
 | Environments | `dev` only | `dev`, then `prod` |
 | Tests | Main paths and anything sensitive, 50% coverage | Abuse cases too, 80% coverage |
