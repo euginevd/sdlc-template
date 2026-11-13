@@ -40,9 +40,12 @@ The OIDC provider is one per account. If this lists roles from other projects, k
 aws iam list-roles --query "Roles[?contains(to_string(AssumeRolePolicyDocument), 'token.actions.githubusercontent.com')].RoleName" --output text
 ```
 
-Empty the versioned state bucket, then delete the stack:
+Empty the versioned state bucket, delete the CLI user's access keys (CloudFormation can't delete a user that has one), then delete the stack:
 
 ```bash
+for k in $(aws iam list-access-keys --user-name $P-cli --query 'AccessKeyMetadata[].AccessKeyId' --output text); do
+  aws iam delete-access-key --user-name $P-cli --access-key-id "$k"
+done
 B=$P-tfstate-$(aws sts get-caller-identity --query Account --output text)
 for kind in Versions DeleteMarkers; do
   aws s3api list-object-versions --bucket "$B" --query "{Objects: $kind[].{Key: Key, VersionId: VersionId}, Quiet: \`true\`}" --output json > /tmp/del.json

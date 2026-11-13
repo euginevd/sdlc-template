@@ -95,7 +95,7 @@ A change ships like this: PR → `ci`, `security` and `codeql` run → `aws` pla
 
 Bootstrap once by hand; then `aws.yml` plans the changed units on PRs and applies them after merge.
 
-1. **bootstrap/bootstrap.yaml**: CloudFormation, by hand once per account: GitHub sign-in, roles, state bucket and the budget alert.
+1. **bootstrap/bootstrap.yaml**: CloudFormation, by hand once per account: GitHub sign-in, roles (a read-only troubleshoot one and its CLI user among them), state bucket and the budget alert.
 2. **`<unit>/`**: one Terraform folder per deployable unit (such as `api/`), each with its own state:
    1. **versions.tf**: pins Terraform and the providers.
    2. **variables.tf**: inputs (project, environment, region), set by the pipeline.

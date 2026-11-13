@@ -25,6 +25,9 @@ coverage/
 .claude/settings.local.json
 .claude/worktrees/
 .DS_Store
+# Browser test output
+test-results/
+playwright-report/
 
 # Local notes and drafts, never committed (the SDLC explainer and its diagram renderer)
 .local/
