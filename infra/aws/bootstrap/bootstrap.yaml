@@ -5,7 +5,8 @@
 #    Set BudgetEmail to be emailed at 80% spent, 100% forecast and 100% spent of MonthlyBudgetUsd.
 #    For the agent's read-only access: make an access key for the <ProjectName>-cli user in the console,
 #    then aws configure --profile <ProjectName>-cli, and a profile that assumes TroubleshootRoleArn with it.
-# 2. GitHub environments: aws-<Target>-plan, and aws-<Target>-apply with a required reviewer, main only.
+# 2. GitHub environments: aws-<Target>-plan, and aws-<Target>-apply with a required reviewer, main only
+#    (scripts/protect-main.sh creates the apply environment that way, and checks it on a rerun).
 #    A production project's reviewer is a second person, with Prevent self-review on, so whoever merged can't approve.
 #    A prototype (AGENTS.md rule 12) leaves the reviewer off aws-dev-apply, so a merge deploys to dev unattended.
 # 3. GitHub variables: PROJECT_NAME on the repo; this stack's outputs on the environments (see Outputs).

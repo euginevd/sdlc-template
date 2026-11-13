@@ -22,7 +22,7 @@ Coding agents write code fast. What they don't bring is the rest: a spec to buil
 
 It's written for one developer, or a small team, on Windows with VS Code, deploying to AWS with Terraform. It works with any agent that reads `AGENTS.md`.
 
-You'll need: a GitHub account with the `gh` CLI, Git Bash or similar, and an AWS account once you're ready to deploy. `setup.sh` installs the rest (Gitleaks, Trivy, lefthook, uv and Terraform).
+You'll need: a GitHub account with the `gh` CLI, Git Bash or similar, and an AWS account once you're ready to deploy. A private repo needs a paid GitHub plan (Pro or Team): on a free one GitHub enforces neither the `main` ruleset nor the deploy environments. `setup.sh` installs the rest (Gitleaks, Trivy, lefthook, uv and Terraform).
 
 ## Quick start
 
@@ -30,7 +30,7 @@ You'll need: a GitHub account with the `gh` CLI, Git Bash or similar, and an AWS
 gh repo create my-project --template euginevd/sdlc-template --private --clone
 cd my-project
 bash scripts/setup.sh         # tools and the pre-push scan
-bash scripts/protect-main.sh  # GitHub security features and the main ruleset
+bash scripts/protect-main.sh  # security features, the main ruleset, main-only deploys
 ```
 
 Then tell your coding agent:

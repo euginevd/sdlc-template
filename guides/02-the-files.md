@@ -60,7 +60,7 @@ The push scan: `setup.sh` runs `lefthook install`, which writes `.git/hooks/pre-
 5. **.vscode/extensions.json**: suggests the scanner, Ruff, Python and Terraform extensions.
 6. **.editorconfig**: LF, UTF-8, indent size and a final newline.
 7. **.claude/settings.json**: Claude Code's shared settings: no AI attribution on commits or PRs, and deny rules for force-pushes, skipped hooks, Terraform applies and `.env` reads. Local settings and worktrees are git-ignored.
-8. **scripts/protect-main.sh**: once, by hand: locks `main`, squash-only merges, security features; `production` adds a second reviewer.
+8. **scripts/protect-main.sh**: once, by hand: locks `main`, squash-only merges, security features, apply environments that take `main` only; `production` adds a second reviewer.
 9. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open threads and alerts; replies and resolves threads.
 10. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
 11. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment.

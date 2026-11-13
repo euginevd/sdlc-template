@@ -147,7 +147,7 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 - **Does:** only the pipeline touches AWS, through OIDC, with no stored keys. A read-only role plans; a deploy role held to a boundary applies. Each trusts only this repo and one environment; the state bucket is encrypted and private.
 - **When:** on every `aws` workflow run.
 - **On a finding:** a plan outside the roles fails in the pipeline.
-- **Limits:** set Deployment branches to `main` only on each `aws-<env>-apply` environment ([guide 01](01-using-the-template.md), step 4), or a PR editing `aws.yml` could deploy. The boundary caps grants, not every mistake.
+- **Limits:** the deploy role trusts its `aws-<env>-apply` environment, so `protect-main.sh` creates each one taking `main` only, and fails on a rerun if one takes more; without that a PR editing `aws.yml` could deploy. The boundary caps grants, not every mistake.
 
 ## 17. Deploy: deploy approval
 
