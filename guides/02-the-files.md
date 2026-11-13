@@ -38,7 +38,7 @@ my-project/
    7. **skeleton-plan.md**: the outline each plan is copied from.
    8. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built and its screens; deleted when done.
    9. **mockups/mvp.html**: the MVP's screens from kickoff; deleted once all are built.
-5. **guides/**: for people: 01 using the template, 02 this tour, 03 accepted risks, 04 each guardrail, 05 removing a project from AWS. `assets/` holds the README's images, `overview.html` that renders them, and `social.png`.
+5. **guides/**: for people: 01 using the template, 02 this tour, 03 accepted risks, 04 each guardrail, 05 removing a project from AWS. `assets/` holds the README's images, `flow.html` that renders them, and `social.png`.
 6. **SECURITY.md**: how to report a vulnerability privately.
 7. **LICENSE**: MIT; replace it per project.
 8. **TODO.md**: your inbox of ideas and tasks; in production the agent confirms before starting one, a prototype's just starts.

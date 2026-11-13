@@ -10,8 +10,8 @@ Pick a prototype the agent builds and ships on its own, or a production system w
 <br>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="guides/assets/overview-dark.png">
-  <img src="guides/assets/overview.png" width="900" alt="Six stages, kick off to release, on two tracks. Prototype: no stops; the agent drafts the docs at kickoff, plans, builds with main-path tests at 50% coverage, merges on green checks and the pipeline applies to dev on merge; there is no prod. Production: you approve the spec, threat model and costs, then the plan; the agent builds with abuse-case tests at 80% coverage and a review per phase; a second reviewer approves the PR, the dev apply and the prod release. Always on in both: Gitleaks and Trivy before every push, Semgrep, Checkov, CodeQL and app tests on every PR, a full rescan and SBOM on main and weekly, pipeline-only deploys over OIDC with no stored keys, and actual cost checked the day after a deploy.">
+  <source media="(prefers-color-scheme: dark)" srcset="guides/assets/flow-dark.png">
+  <img src="guides/assets/flow.png" width="900" alt="Six stages, kick off to release, on two tracks. Prototype: no stops; the agent drafts the docs at kickoff, plans, builds with main-path tests at 50% coverage, merges on green checks and the pipeline applies to dev on merge; there is no prod. Production: you approve the spec, threat model and costs, then the plan; the agent builds with abuse-case tests at 80% coverage and a review per phase; a second reviewer approves the PR, the dev apply and the prod release. Always on in both: Gitleaks and Trivy before every push, Semgrep, Checkov, CodeQL and app tests on every PR, a full rescan and SBOM on main and weekly, pipeline-only deploys over OIDC with no stored keys, and actual cost checked the day after a deploy.">
 </picture>
 
 </div>
