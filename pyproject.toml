@@ -34,7 +34,7 @@ max-complexity = 10
 "scripts/tests/*" = ["S101", "PLR2004"]
 
 [tool.pyright]
-include = ["apps"]
+include = ["apps", "scripts"]
 exclude = ["**/node_modules", "**/.venv"]
 typeCheckingMode = "strict"
 pythonVersion = "3.13"

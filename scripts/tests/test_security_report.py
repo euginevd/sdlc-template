@@ -1,3 +1,4 @@
+# pyright: standard
 import json
 import pathlib
 from types import ModuleType

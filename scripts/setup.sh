@@ -39,11 +39,13 @@ fetch() {
   local cmd=$1 v arch base file sums want tmp bin="$HOME/.local/bin"
   mkdir -p "$bin" && export PATH="$bin:$PATH"
   case "$cmd" in
-    gh) echo "Install gh by hand (https://cli.github.com); the rest carries on without it."; return 0 ;;
     # From PyPI, at least a week old (AGENTS.md rule 24).
     lefthook) uv tool install --quiet --exclude-newer "7 days" lefthook; return ;;
   esac
-  v=$(exact "$cmd") || return 1
+  # The pipeline pins no gh, so its version is pinned here: raise it by hand (trade-offs 3).
+  v=$(exact "$cmd")
+  [ "$cmd" = gh ] && v=2.89.0
+  [ -n "$v" ] || { echo "Could not find which version of $cmd to install."; return 1; }
   arch=$(uname -m)
   case "$cmd-$arch" in
     gitleaks-x86_64) file="gitleaks_${v}_linux_x64.tar.gz" ;;
@@ -52,6 +54,8 @@ fetch() {
     trivy-aarch64) file="trivy_${v}_Linux-ARM64.tar.gz" ;;
     terraform-x86_64) file="terraform_${v}_linux_amd64.zip" ;;
     terraform-aarch64) file="terraform_${v}_linux_arm64.zip" ;;
+    gh-x86_64) file="gh_${v}_linux_amd64.tar.gz" ;;
+    gh-aarch64) file="gh_${v}_linux_arm64.tar.gz" ;;
     uv-x86_64 | uv-aarch64) file="uv-$arch-unknown-linux-gnu.tar.gz" ;;
     *) echo "No download of $cmd for $arch: install it by hand."; return 1 ;;
   esac
@@ -59,6 +63,7 @@ fetch() {
     gitleaks) base="https://github.com/gitleaks/gitleaks/releases/download/v$v"; sums="gitleaks_${v}_checksums.txt" ;;
     trivy) base="https://github.com/aquasecurity/trivy/releases/download/v$v"; sums="trivy_${v}_checksums.txt" ;;
     terraform) base="https://releases.hashicorp.com/terraform/$v"; sums="terraform_${v}_SHA256SUMS" ;;
+    gh) base="https://github.com/cli/cli/releases/download/v$v"; sums="gh_${v}_checksums.txt" ;;
     uv) base="https://github.com/astral-sh/uv/releases/download/$v"; sums="$file.sha256" ;;
   esac
   tmp=$(mktemp -d) || return 1
@@ -91,7 +96,6 @@ install() {
     brew install "$brew_name" || return 1
   elif [ "$(uname -s)" = Linux ]; then
     fetch "$cmd" || return 1
-    [ "$cmd" = gh ] && return 0
   else
     echo "Install $cmd by hand from its website, then run this again."
     return 1

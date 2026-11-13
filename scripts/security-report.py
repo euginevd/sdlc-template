@@ -1,3 +1,5 @@
+# pyright: standard
+# Standard, not strict: these read scanners' untyped JSON, where strict flags every lookup.
 """Turns scanner output into PR annotations and one security summary. Standard library only.
 
 parse <tool> <report.json> <out.json>: print PR annotations, write a summary for the report job.
@@ -7,6 +9,11 @@ comment <dir> <sha>: build the PR comment from every summary in <dir>.
 import json
 import pathlib
 import sys
+from collections.abc import Callable, Iterator
+from typing import Any
+
+# (file, line, rule, message, severity, fix)
+Finding = tuple[str, int, str, str, str, str]
 
 CHECKS = {
     "gitleaks": "Secrets",
@@ -21,36 +28,36 @@ SEMGREP_SEVERITY = {"ERROR": "HIGH", "WARNING": "MEDIUM", "INFO": "LOW"}
 MARKER = "<!-- security-report -->"
 
 
-def rel(path):
+def rel(path: str) -> str:
     for prefix in ("/repo/", "/src/", "/"):
         if path.startswith(prefix):
             return path[len(prefix) :]
     return path
 
 
-def esc(text):
+def esc(text: object) -> str:
     return str(text).replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
 
 
-def esc_prop(text):
+def esc_prop(text: object) -> str:
     # A ',' or ':' would end an annotation's file= or title= value early.
     return esc(text).replace(":", "%3A").replace(",", "%2C")
 
 
-def rating(value):
-    value = str(value or "").upper()
-    return value if value in SEVERITY else "UNKNOWN"
+def rating(value: object) -> str:
+    text = str(value or "").upper()
+    return text if text in SEVERITY else "UNKNOWN"
 
 
 # Each scanner yields (file, line, rule, message, severity, fix); fixes show for critical and high.
-def gitleaks(data):
+def gitleaks(data: Any) -> Iterator[Finding]:
     for f in data or []:
         fix = "rotate the secret now, then remove it from git history"
         msg = "Secret found (redacted)"
         yield f["File"], f.get("StartLine", 1), f["RuleID"], msg, "CRITICAL", fix
 
 
-def trivy(data):
+def trivy(data: Any) -> Iterator[Finding]:
     for r in data.get("Results") or []:
         for v in r.get("Vulnerabilities") or []:
             fixed = v.get("FixedVersion")
@@ -64,7 +71,7 @@ def trivy(data):
             yield r["Target"], line, m["ID"], m["Title"], rating(m.get("Severity")), fix
 
 
-def checkov(data):
+def checkov(data: Any) -> Iterator[Finding]:
     for block in data if isinstance(data, list) else [data]:
         for c in (block.get("results") or {}).get("failed_checks") or []:
             line = (c.get("file_line_range") or [1])[0]
@@ -73,7 +80,7 @@ def checkov(data):
             yield path, line, c["check_id"], c["check_name"], rating(c.get("severity")), fix
 
 
-def semgrep(data):
+def semgrep(data: Any) -> Iterator[Finding]:
     for r in data.get("results") or []:
         rule = r["check_id"].split(".")[-1]
         sev = SEMGREP_SEVERITY.get(r["extra"].get("severity"), "UNKNOWN")
@@ -84,15 +91,21 @@ def semgrep(data):
         yield r["path"], r["start"]["line"], rule, r["extra"]["message"].split("\n")[0], sev, fix
 
 
-SCANNERS = {"gitleaks": gitleaks, "trivy": trivy, "checkov": checkov, "semgrep": semgrep}
+SCANNERS: dict[str, Callable[[Any], Iterator[Finding]]] = {
+    "gitleaks": gitleaks,
+    "trivy": trivy,
+    "checkov": checkov,
+    "semgrep": semgrep,
+}
 
 
-def parse(tool, report, out):
+def parse(tool: str, report: str, out: str) -> None:
     try:
         text = pathlib.Path(report).read_text(encoding="utf-8").strip()
         data = json.loads(text) if text else ([] if tool == "gitleaks" else {})
     except (OSError, json.JSONDecodeError):
         data = None
+    summary: dict[str, Any]
     if data is None:
         summary = {"tool": tool, "error": True, "count": 0, "severity": {}, "top": []}
     else:
@@ -120,19 +133,22 @@ def parse(tool, report, out):
     pathlib.Path(out).write_text(json.dumps(summary), encoding="utf-8")
 
 
-def cell(text):
+def cell(text: str) -> str:
     return text.replace("|", "\\|").replace("\n", " ")
 
 
-def badges(counts):
+def badges(counts: dict[str, int]) -> str:
     return " · ".join(f"{SEVERITY[s]} {counts[s]}" for s in SEVERITY if counts.get(s))
 
 
-def comment(folder, sha):
-    rows, top, failed, total = [], [], 0, {}
+def comment(folder: str, sha: str) -> None:
+    rows: list[str] = []
+    top: list[str] = []
+    total: dict[str, int] = {}
+    failed = 0
     for tool, check in CHECKS.items():
         path = pathlib.Path(folder) / f"{tool}.json"
-        s = (
+        s: dict[str, Any] = (
             json.loads(path.read_text(encoding="utf-8"))
             if path.exists()
             else {"error": True, "count": 0, "severity": {}, "top": []}

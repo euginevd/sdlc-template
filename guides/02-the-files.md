@@ -29,6 +29,7 @@ my-project/
 2. **CONTRIBUTING.md**: how a person or agent sets up and makes a change.
 3. **AGENTS.md**: the rules every coding agent follows, with the gates for each profile; changes rarely. Kept short, as every session reads it.
 4. **docs/**: the project context agents read and keep current:
+   1. **kickoff.md**: the steps of kickoff, which the agent follows once per project.
    1. **spec.md**: the business, then problem, users, stack, done-when and rules; the agent drafts, you approve (production).
    2. **code-standards.md**: numbered coding rules the pipeline can't check, including the length of docs.
    3. **features.md**: each feature by app, with its status and PR.

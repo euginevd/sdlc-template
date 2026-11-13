@@ -1,3 +1,4 @@
+# pyright: standard
 """Loads the report scripts, whose hyphenated names can't be imported the usual way."""
 
 import importlib.util
