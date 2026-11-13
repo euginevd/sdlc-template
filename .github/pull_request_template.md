@@ -8,4 +8,5 @@
 
 ## Checks
 
+- [ ] Every check passes and the security summary is clean
 - [ ] `docs/features.md` and `TODO.md` are up to date

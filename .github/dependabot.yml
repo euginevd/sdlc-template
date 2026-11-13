@@ -36,3 +36,11 @@ updates:
   #   ignore:
   #     - dependency-name: python
   #       update-types: ["version-update:semver-minor", "version-update:semver-major"]
+  # - package-ecosystem: docker-compose
+  #   directory: /
+  #   schedule: { interval: weekly }
+  #   cooldown: { default-days: 7 }
+  #   # A major PostgreSQL upgrade needs a dump and restore of the data volume; do it deliberately.
+  #   ignore:
+  #     - dependency-name: postgres
+  #       update-types: ["version-update:semver-major"]
