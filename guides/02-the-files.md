@@ -27,17 +27,18 @@ my-project/
 
 1. **README.md**: the GitHub front page.
 2. **CONTRIBUTING.md**: how a person or agent sets up and makes a change.
-3. **AGENTS.md**: the rules every coding agent follows, with the gates for each profile; changes rarely.
+3. **AGENTS.md**: the rules every coding agent follows, with the gates for each profile; changes rarely. Kept short, as every session reads it.
 4. **docs/**: the project context agents read and keep current:
    1. **spec.md**: the business, then problem, users, stack, done-when and rules; the agent drafts, you approve (production).
    2. **code-standards.md**: numbered coding rules the pipeline can't check, including the length of docs.
    3. **features.md**: each feature by app, with its status and PR.
    4. **decisions.md**: the decisions in force, why, and what they replaced.
-   5. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks and spend; optional.
-   6. **checklist.md**: the guardrails by DevSecOps stage and profile, to clear before go-live.
-   7. **skeleton-plan.md**: the outline each plan is copied from.
-   8. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built and its screens; deleted when done.
-   9. **mockups/mvp.html**: the MVP's screens from kickoff; deleted once all are built.
+   5. **known-mistakes.md**: mistakes an agent has made, each with its fix, by area; the agent reads an area's before working in it.
+   6. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks and spend; optional.
+   7. **checklist.md**: the guardrails by DevSecOps stage and profile, to clear before go-live.
+   8. **skeleton-plan.md**: the outline each plan is copied from.
+   9. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built and its screens; deleted when done.
+   10. **mockups/mvp.html**: the MVP's screens from kickoff; deleted once all are built.
 5. **guides/**: for people: 01 using the template, 02 this tour, 03 accepted risks, 04 each guardrail, 05 removing a project from AWS. `assets/` holds the README's images, `flow.html` that renders them, and `social.png`.
 6. **SECURITY.md**: how to report a vulnerability privately.
 7. **LICENSE**: MIT; replace it per project.
@@ -85,7 +86,7 @@ A change ships like this: PR → `ci`, `security` and `codeql` run → `aws` pla
 1. **pull_request_template.md**: pre-fills each PR: what changed, security, checks.
 2. **CODEOWNERS** *(not included)*: requests reviewers per path; add it once a team shares the repo.
 3. **dependabot.yml**: weekly update PRs for actions, Python and Terraform, each release 7 days old.
-4. **workflows/ci.yml**: lint, types and tests for only the apps a PR changes; actionlint, zizmor and shellcheck when workflows or scripts change; and the `kickoff` check for leftover *(to fill in)* lines.
+4. **workflows/ci.yml**: lint, types and tests for only the apps a PR changes; actionlint, zizmor and shellcheck when workflows or scripts change; and the `kickoff` check for leftover *(to fill in)* lines and docs over their length.
 5. **workflows/security.yml**: the push scan again, plus Checkov, Semgrep and `terraform validate`; weekly too.
 6. **workflows/codeql.yml**: GitHub's code scanning on PRs, `main` and weekly.
 7. **workflows/aws.yml**: Terraform plan and cost on PRs, with one `plan-result` check the ruleset requires; on merge, applies the changed units to `dev`, and `prod` by hand.

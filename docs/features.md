@@ -21,7 +21,7 @@ What no single app owns, such as an agent, a check every request goes through, o
 
 | # | Feature | Status | PR |
 |---|---|---|---|
-| 3 | Pipeline: app checks, security scans, and a Terraform plan and apply through the `aws` workflow: a merge to `main` applies to `dev` after approval, `prod` is a manual run | Done | Starter |
+| 3 | Pipeline: app checks, security scans, and a Terraform plan and apply through the `aws` workflow: a merge to `main` applies to `dev` (production: once a second reviewer approves), `prod` is a manual run | Done | Starter |
 | 4 | *(to fill in)* | Next | |
 
 Status: Next, Building, Done or Dropped (with the reason).

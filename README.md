@@ -47,7 +47,7 @@ You pick one at kickoff. The agent works on its own between gates and stops at t
 |---|---|---|
 | For | No real users, customer data or payments | Anything that has them |
 | You approve | Nothing: review whenever you like | Kickoff, and every plan |
-| A second reviewer approves | Nothing | Every PR and every `prod` release, enforced by GitHub |
+| A second reviewer approves | Nothing | Every PR and every apply, `dev` and `prod`, enforced by GitHub |
 | Environments | `dev` only | `dev`, then `prod` |
 | Tests | Main paths and anything sensitive, 50% coverage | Abuse cases too, 80% coverage |
 | When unsure | The agent decides, records it and says so | The agent asks |
@@ -59,8 +59,8 @@ A prototype still stops before spending past the monthly limit in the spec, befo
 
 | | |
 |---|---|
-| [AGENTS.md](AGENTS.md) | The numbered rules every coding agent reads: gates per profile, the workflow, what to ask first, what never to do, and known mistakes |
-| [docs/](docs/) | What the agent reads and keeps current: spec, features, decisions, threat model, costs, design system and go-live checklist. Each starts with a *(to fill in)* line for what your project decides |
+| [AGENTS.md](AGENTS.md) | The numbered rules every coding agent reads: gates per profile, the workflow, what to ask first and what never to do |
+| [docs/](docs/) | What the agent reads and keeps current: spec, features, decisions, known mistakes by area, threat model, costs, design system and go-live checklist. Each starts with a *(to fill in)* line for what your project decides |
 | [apps/api/](apps/api/), [infra/aws/api/](infra/aws/api/) | The starter: a Lambda with a `/health` route and its Terraform, proving the pipeline end to end. Keep it, build on it or replace it |
 | [.github/workflows/](.github/workflows/) | `ci` for the apps a PR changes, `security` and `codeql` for the scans, `aws` for the Terraform plan, the cost comment and the apply |
 | [infra/aws/bootstrap/](infra/aws/bootstrap/) | One stack per AWS account, deployed by you: the GitHub sign-in, a read-only plan role, a bounded deploy role, a read-only troubleshoot role, the state bucket and a budget alert |

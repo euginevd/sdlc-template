@@ -46,7 +46,7 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 - **Does:** `AGENTS.md` holds the rules every agent reads (rules 25 and 26: never touch secrets, cloud resources or hooks). `.claude/settings.json` enforces what Claude Code can: it denies force-pushes, `--no-verify`, `terraform apply` and `destroy`, and `.env` reads (a prototype drops the last at kickoff), and turns off AI attribution on commits and PRs (rule 29).
 - **When:** in every session.
-- **On a finding:** hooks and required checks catch a broken rule; add a known mistake to `AGENTS.md`.
+- **On a finding:** hooks and required checks catch a broken rule; add a known mistake to `docs/known-mistakes.md`.
 - **Limits:** deny rules match how a command starts, so a reworded command can slip past; other agents need their own settings (trade-offs 2). The only AWS key on the agent's machine is the read-only troubleshoot user's (trade-offs 14); while it works as you on GitHub, its actions look like yours (trade-offs 1).
 
 ## 6. Build: secrets, SCA and IaC scanning
@@ -153,7 +153,7 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 **Tool:** a required reviewer on each `aws-<env>-apply` environment. **Profile:** production.
 
-- **Does:** holds every apply until a second reviewer approves it, after the plan and cost comment.
+- **Does:** holds every apply until a second reviewer approves it, after the plan and cost comment (AGENTS.md rule 12, G3 and G4).
 - **When:** on every apply, `dev` and `prod`.
 - **On a finding:** the reviewer rejects the run and nothing applies.
 - **Limits:** a prototype leaves the reviewer off, so `dev` applies unattended; it has no `prod` (AGENTS.md rule 27).
@@ -171,7 +171,7 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 **Tool:** an API Gateway authoriser, AWS WAF, CORS and security headers, per project. **Profile:** production.
 
-- **Does:** non-public endpoints need a signed-in caller: a JWT authoriser for users, IAM for services (AGENTS.md known mistake 40). WAF blocks common attacks; CORS allows only your origins.
+- **Does:** non-public endpoints need a signed-in caller: a JWT authoriser for users, IAM for services (known-mistakes 9). WAF blocks common attacks; CORS allows only your origins.
 - **When:** on every request.
 - **On a finding:** `401` unauthenticated, `403` blocked; DAST (10, 11) checks they hold.
 - **Limits:** not in the template yet; `/health` is public by design. WAF costs monthly, so ask first (AGENTS.md rule 22).

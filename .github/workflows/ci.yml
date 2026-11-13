@@ -46,7 +46,8 @@ jobs:
           printf 'python=%s\nweb=%s\nworkflows=%s\n' "$python" "$web" "$workflows" >> "$GITHUB_OUTPUT"
 
   # Kickoff is finished once spec.md names a profile: from then on a leftover *(to fill in)* in docs/
-  # is a decision nobody made, so the PR fails until it's written or the line deleted.
+  # is a decision nobody made, so the PR fails until it's written or the line deleted. It also holds the
+  # docs to their length.
   kickoff:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -62,6 +63,19 @@ jobs:
             exit 1
           fi
           echo "Every to-fill-in line in docs/ is written."
+      # Every session reads AGENTS.md and docs/, so their length is checked, not left to a rule (code-standards 23).
+      - name: Docs within their length
+        run: |
+          code=0
+          check() {
+            words=$(wc -w < "$1")
+            [ "$words" -le "$2" ] || { echo "::error file=$1::$1 is $words words, over its $2 (code-standards 23): cut or link."; code=1; }
+          }
+          check AGENTS.md 2100
+          check README.md 1200
+          for f in docs/*.md; do check "$f" 1000; done
+          for f in guides/*.md; do check "$f" 2500; done
+          exit $code
 
   # Agents edit the workflows and scripts (AGENTS.md rule 10), so each change is linted: actionlint for
   # syntax, expressions and the shell in run steps, zizmor for injection, credentials and permissions,
