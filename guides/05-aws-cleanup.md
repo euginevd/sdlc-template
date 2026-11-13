@@ -1,6 +1,6 @@
 # Cleaning up AWS
 
-How to remove everything a project puts in AWS, so nothing is charged, then prove it. The code and the GitHub repo stay, so you can redeploy. Run it per account (`dev`, then `prod`), by hand: the agent never touches AWS ([AGENTS.md](../AGENTS.md) rule 20). Run the AWS commands in **AWS CloudShell**, in the project's region.
+How to remove everything a project puts in AWS, so nothing is charged, then prove it. The code and the GitHub repo stay, so you can redeploy. Run it per account (`dev`, then `prod`), by hand: the agent never touches AWS ([AGENTS.md](../AGENTS.md) rule 25). Delete the bootstrap last, once the account is shown empty (rule 27). Run the AWS commands in **AWS CloudShell**, in the project's region.
 
 Set these first, in CloudShell:
 
@@ -18,7 +18,21 @@ gh workflow run aws.yml -f target=dev -f unit=all -f action=destroy
 
 Approve the run once its plans pass. Every `apply (<unit>)` job must end green; rerun a failed one with `-f unit=<unit>`. Buckets, repositories and secrets delete at once only if their Terraform sets `force_destroy`, `force_delete` or no recovery window for `dev`.
 
-## 2. Delete the bootstrap stack
+## 2. Verify
+
+Each command should print nothing except the bootstrap's own stack, bucket and roles. Add a line for each service the project used, in the same form.
+
+```bash
+aws cloudformation list-stacks --region $R --stack-status-filter CREATE_COMPLETE UPDATE_COMPLETE DELETE_FAILED --query "StackSummaries[?contains(StackName,'$P')].StackName" --output text
+aws s3api list-buckets --query "Buckets[?contains(Name,'$P')].Name" --output text
+aws lambda list-functions --region $R --query "Functions[?contains(FunctionName,'$P')].FunctionName" --output text
+aws apigatewayv2 get-apis --region $R --query "Items[?contains(Name,'$P')].Name" --output text
+aws iam list-roles --query "Roles[?starts_with(RoleName,'$P')].RoleName" --output text
+aws iam list-policies --scope Local --query "Policies[?starts_with(PolicyName,'$P')].PolicyName" --output text
+aws logs describe-log-groups --region $R --query "logGroups[?contains(logGroupName,'$P')].logGroupName" --output text
+```
+
+## 3. Delete the bootstrap stack, last
 
 The OIDC provider is one per account. If this lists roles from other projects, keep it: deploy the bootstrap with `CreateOidcProvider=false` next time, or remove the provider from the stack before deleting it.
 
@@ -38,25 +52,11 @@ aws cloudformation delete-stack --region $R --stack-name $P-bootstrap
 aws cloudformation wait stack-delete-complete --region $R --stack-name $P-bootstrap && echo "bootstrap deleted"
 ```
 
-## 3. Tidy up GitHub
+## 4. Tidy up GitHub
 
 1. So the workflows skip their AWS jobs instead of failing: `gh variable delete PROJECT_NAME`.
 2. Delete the `aws-<env>-plan` and `aws-<env>-apply` environments in Settings → Environments, or keep them to redeploy.
 3. Revoke any API keys the app used, at their provider, if you won't redeploy soon.
-
-## 4. Verify
-
-Each command should print nothing. Add a line for each service the project used, in the same form.
-
-```bash
-aws cloudformation list-stacks --region $R --stack-status-filter CREATE_COMPLETE UPDATE_COMPLETE DELETE_FAILED --query "StackSummaries[?contains(StackName,'$P')].StackName" --output text
-aws s3api list-buckets --query "Buckets[?contains(Name,'$P')].Name" --output text
-aws lambda list-functions --region $R --query "Functions[?contains(FunctionName,'$P')].FunctionName" --output text
-aws apigatewayv2 get-apis --region $R --query "Items[?contains(Name,'$P')].Name" --output text
-aws iam list-roles --query "Roles[?starts_with(RoleName,'$P')].RoleName" --output text
-aws iam list-policies --scope Local --query "Policies[?starts_with(PolicyName,'$P')].PolicyName" --output text
-aws logs describe-log-groups --region $R --query "logGroups[?contains(logGroupName,'$P')].logGroupName" --output text
-```
 
 ## Notes
 

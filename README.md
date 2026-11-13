@@ -28,29 +28,30 @@ Then tell your coding agent:
 
 > Kick off my-project: *your notes on the business, the problem, the users and the stack*
 
-It checks your machine, asks whether this is a prototype or production, drafts the docs from your notes and waits for your approval. From there, *"Build the sign-up page"* is the whole loop for a prototype: plan, code, tests, PR, merge and a deploy to `dev`. Every step, for both profiles, is in [guides/01-using-the-template.md](guides/01-using-the-template.md).
+It checks your machine, asks whether this is a prototype or production, drafts the docs from your notes and waits for your approval. Then *"Build the sign-up page"* builds it on one branch, and *"Commit and push"* ships it to `dev`. Every step: [guides/01-using-the-template.md](guides/01-using-the-template.md).
 
 ## Two profiles
 
-You pick one at kickoff, and the agent works differently for each.
+You pick one at kickoff. The agent works on its own between gates and stops at the ones its profile has ([AGENTS.md](AGENTS.md) rule 12).
 
-| | Prototype: speed first | Production: approval first |
+| | Prototype: speed first | Production: gates at key stages |
 |---|---|---|
 | For | No real users, customer data or payments | Anything that has them |
 | You approve | Kickoff: the spec, and the MVP mockup if there's UI | Kickoff, and every plan |
-| A second reviewer approves | Nothing | Every PR and every deploy, enforced by GitHub |
-| Tests | Main paths and anything sensitive, 50% coverage | Every change, abuse cases included, 80% coverage |
+| A second reviewer approves | Nothing | Every PR and every `prod` release, enforced by GitHub |
+| Environments | `dev` only | `dev`, then `prod` |
+| Tests | Main paths and anything sensitive, 50% coverage | Abuse cases too, 80% coverage |
 | When unsure | The agent takes the simpler option and says so | The agent asks |
 
-A prototype's agent stops and asks before the project takes real users, customer data, payments or a `prod` deploy. Moving up is one prompt and one command, `bash scripts/protect-main.sh production`.
+In both, one branch holds a session's work, and the agent commits, pushes or opens a PR only when you ask. New cloud services start as a small deploy to `dev`, one at a time, and actual cost is checked the day after. Moving a prototype up is one prompt and `bash scripts/protect-main.sh production`.
 
 ## What's inside
 
 | | |
 |---|---|
-| [AGENTS.md](AGENTS.md) | The rules the agent follows, numbered so reviews can cite them: what to read, how to plan, build, open a PR and merge, what to ask first and what never to do. Read by Claude Code, Codex, Cursor, Copilot and most coding agents |
-| [docs/](docs/) | What the agent reads and keeps current: the spec (with the business), features, decisions, threat model, costs, a design system and the go-live checklist. Each starts as a true description of the starter, with a line to fill in for everything your project decides |
-| [apps/api/](apps/api/), [infra/aws/api/](infra/aws/api/) | The starter: a Lambda with a `/health` route and the Terraform that deploys it. The smallest thing that proves the pipeline end to end; keep it, build on it or replace it |
+| [AGENTS.md](AGENTS.md) | The numbered rules every coding agent reads: gates per profile, the workflow, what to ask first, what never to do, and known mistakes |
+| [docs/](docs/) | What the agent reads and keeps current: spec, features, decisions, threat model, costs, design system and go-live checklist. Each starts with a *(to fill in)* line for what your project decides |
+| [apps/api/](apps/api/), [infra/aws/api/](infra/aws/api/) | The starter: a Lambda with a `/health` route and its Terraform, proving the pipeline end to end. Keep it, build on it or replace it |
 | [.github/workflows/](.github/workflows/) | `ci` for the apps a PR changes, `security` and `codeql` for the scans, `aws` for the Terraform plan, the cost comment and the apply |
 | [infra/aws/bootstrap/](infra/aws/bootstrap/) | One stack per AWS account, deployed by you: the GitHub sign-in, a read-only plan role, a bounded deploy role, the state bucket and a budget alert |
 | [scripts/](scripts/) | `setup.sh` installs and checks a machine, `protect-main.sh` locks down the repo, `pr-findings.sh` lists what a PR still has to fix |

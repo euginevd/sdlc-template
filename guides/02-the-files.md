@@ -1,6 +1,6 @@
 # The files
 
-For learning your way around a project made from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template): the layout, then one line per file on what it is and why it's there, foundations first. For people; how to run a project is in [01-using-the-template.md](01-using-the-template.md).
+A tour of a project made from [euginevd/sdlc-template](https://github.com/euginevd/sdlc-template): the layout, then one line per file. For people; how to run a project is in [01-using-the-template.md](01-using-the-template.md).
 
 ```
 my-project/
@@ -17,91 +17,87 @@ my-project/
 
 ## 1. uv (Python packages)
 
-1. **pyproject.toml**: the file you edit for packages, Python version and tool settings (ruff, pyright, pytest).
-2. **apps/api/pyproject.toml**: the api app's own settings; shares the root lock and .venv.
+1. **pyproject.toml**: packages, Python version and tool settings (ruff, pyright, pytest).
+2. **apps/api/pyproject.toml**: the api's own settings; shares the root lock and `.venv`.
 3. **.python-version**: pins Python 3.13.
-4. **uv.lock**: generated exact versions + hashes, so every install is identical. Never edit.
-5. **.venv/**: the installed packages; git-ignored, rebuild with `uv sync`.
+4. **uv.lock**: exact versions and hashes, so every install is identical. Never edit.
+5. **.venv/**: installed packages; git-ignored, rebuilt with `uv sync`.
 
 ## 2. Docs (.md files)
 
-1. **README.md**: the GitHub front page: what the project is and what's in it.
-2. **CONTRIBUTING.md**: how anyone (person or agent) sets up and makes a change: plan, checks, PR.
-3. **AGENTS.md**: rules every coding agent follows; a standard name most AI tools read; changes rarely.
-4. **docs/**: project context agents read and keep current, as AGENTS.md lists:
-   1. **spec.md**: the business (regulators, data rules, risk appetite, systems), then problem, users, stack, what done means, rules; the agent drafts, you approve; often.
-   2. **code-standards.md**: numbered coding rules the pipeline can't check; changes rarely.
-   3. **features.md**: the agreed features, one section per app and audience, each feature with its status and the PR that built it; what's next and known gaps go in `TODO.md`, history in PRs; every feature change.
-   4. **decisions.md**: key decisions, why, and what they replaced; never deleted; sometimes.
-   5. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks, spend; optional; sometimes.
+1. **README.md**: the GitHub front page.
+2. **CONTRIBUTING.md**: how a person or agent sets up and makes a change.
+3. **AGENTS.md**: the rules every coding agent follows, with the gates for each profile; changes rarely.
+4. **docs/**: the project context agents read and keep current:
+   1. **spec.md**: the business, then problem, users, stack, done-when and rules; the agent drafts, you approve.
+   2. **code-standards.md**: numbered coding rules the pipeline can't check, including the length of docs.
+   3. **features.md**: each feature by app, with its status and PR.
+   4. **decisions.md**: the decisions in force, why, and what they replaced.
+   5. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks and spend; optional.
    6. **checklist.md**: the guardrails by DevSecOps stage and profile, to clear before go-live.
    7. **skeleton-plan.md**: the outline each plan is copied from.
    8. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built and its screens; deleted when done.
-   9. **mockups/mvp.html**: the MVP's screens, agreed at kickoff; deleted once they're all built.
-5. **guides/**: for people: 01 how to use the template, 02 this tour, 03 the risks it accepts, 04 how each guardrail works, 05 removing a project from AWS; assets/ holds the README's overview image, light and dark, and `social.png`, the repo's social preview.
-6. **SECURITY.md**: how to report a vulnerability privately; shown in GitHub's Security tab.
-7. **LICENSE**: MIT; anyone may use, copy or change the code, keeping the notice; replace it per project.
-8. **TODO.md**: your list of ideas and tasks; the agent suggests from it, confirms before starting an item and removes it once done.
+   9. **mockups/mvp.html**: the MVP's screens from kickoff; deleted once all are built.
+5. **guides/**: for people: 01 using the template, 02 this tour, 03 accepted risks, 04 each guardrail, 05 removing a project from AWS. `assets/` holds the README's images and `social.png`.
+6. **SECURITY.md**: how to report a vulnerability privately.
+7. **LICENSE**: MIT; replace it per project.
+8. **TODO.md**: your inbox of ideas and tasks; the agent confirms before starting one.
 
 ## 3. Git and ignore files
 
-1. **.git/**: git's own database (history, config, hooks); hidden in VS Code, never edit by hand.
-2. **.gitignore**: files git never tracks: secrets (.env*, *.tfvars), Terraform state, build output, caches.
-3. **.gitattributes**: forces LF on .sh so bash works on Windows; collapses lock files in PR diffs.
+1. **.git/**: git's own database; never edit by hand.
+2. **.gitignore**: what git never tracks: secrets (`.env*`, `*.tfvars`), Terraform state, build output, caches.
+3. **.gitattributes**: keeps LF on `.sh` so bash works on Windows; collapses lock files in PR diffs.
 
 ## 4. Local tools (hooks, editor, scripts)
 
-How the push scan works: setup.sh → `lefthook install` writes .git/hooks/pre-push → `git push` runs it → lefthook reads lefthook.yml → pre-push-scan.sh passes or blocks.
+The push scan: `setup.sh` runs `lefthook install`, which writes `.git/hooks/pre-push`; each `git push` then runs `pre-push-scan.sh`, which passes or blocks.
 
-1. **scripts/setup.sh**: run by hand once per clone: installs the tools, the hooks, then `uv sync`; `--check` only reports what the machine has.
-2. **lefthook.yml**: says which script runs on which git event; here, a scan before every push.
-3. **.git/hooks/pre-push**: hidden; the only place git looks; per clone, written by `lefthook install`.
-4. **.lefthook/pre-push-scan.sh**: collects the pushed commits' files and diffs, then scans them with gitleaks (secrets) + Trivy (packages, IaC); a finding blocks the push.
+1. **scripts/setup.sh**: once per clone: installs the tools and hooks, then `uv sync`; `--check` only reports.
+2. **lefthook.yml**: which script runs on which git event: a scan before every push.
+3. **.git/hooks/pre-push**: hidden and per clone, written by `lefthook install`.
+4. **.lefthook/pre-push-scan.sh**: scans the pushed commits with gitleaks (secrets) and Trivy (packages, IaC); a finding blocks the push.
 5. **.vscode/extensions.json**: suggests the scanner, Ruff, Python and Terraform extensions.
-6. **.editorconfig**: editor defaults for people and agents: LF, UTF-8, indent size, final newline.
-7. **.claude/**: Claude Code's folder; local settings and worktrees git-ignored; rules live in AGENTS.md.
-
-Other scripts, run by hand or by CI:
-
-8. **scripts/protect-main.sh**: by hand once, rerun after changes: locks main, squash-only merges, security features; `production` adds a required second reviewer.
-9. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open review threads and alerts; replies and resolves threads.
-10. **scripts/security-report.py**: CI: turns scanner results into PR annotations + one summary comment.
-11. **scripts/cost-report.py**: CI: turns Infracost results into PR annotations + one cost comment.
+6. **.editorconfig**: LF, UTF-8, indent size and a final newline.
+7. **.claude/**: Claude Code's folder; local settings and worktrees are git-ignored.
+8. **scripts/protect-main.sh**: once, by hand: locks `main`, squash-only merges, security features; `production` adds a second reviewer.
+9. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open threads and alerts; replies and resolves threads.
+10. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
+11. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment.
 
 ## 5. App code
 
-One folder per app in apps/. Python: pyproject.toml (section 1) + `src/<name>/` + tests/; Node: package.json + src/ + tests/.
+One folder per app in `apps/`: Python has `pyproject.toml`, `src/<name>/` and `tests/`; Node has `package.json`, `src/` and `tests/`.
 
-1. **apps/api/src/api/handler.py**: the function AWS Lambda calls for each request.
-2. **apps/api/src/api/\_\_init\_\_.py**: empty; marks the folder as a Python package so it can be imported.
-3. **apps/api/src/api/py.typed**: empty; tells pyright the package has type hints, or strict mode fails every import of it.
-4. **apps/api/tests/test_handler.py**: two pytest tests: one that it works, one that it's safe.
-5. **.coverage**: git-ignored; pytest-cov's record of tested lines.
-6. **.pytest_cache/, .ruff_cache/, \_\_pycache\_\_/**: git-ignored tool caches for speed; safe to delete.
+1. **apps/api/src/api/handler.py**: the function Lambda calls for each request.
+2. **apps/api/src/api/\_\_init\_\_.py**: empty; marks the folder as a package.
+3. **apps/api/src/api/py.typed**: empty; tells pyright the package has types, or strict mode fails its imports.
+4. **apps/api/tests/test_handler.py**: two tests: one that it works, one that it's safe.
+5. **.coverage**, **.pytest_cache/**, **.ruff_cache/**, **\_\_pycache\_\_/**: git-ignored tool output; safe to delete.
 
-How tests run: `uv run pytest`, or CI on every PR → runs the tests in apps/ → writes .coverage → fails on any failed test, or coverage under `fail_under` in `pyproject.toml` (80%, or 50% for a prototype).
+Tests run with `uv run pytest` locally, or in CI on every PR. They fail on any failed test, or on coverage under `fail_under` (80%, or 50% for a prototype).
 
 ## 6. CI/CD (.github/)
 
-How a change ships: open a PR → ci, security and codeql run → aws plans → review → merge → aws deploys dev.
+A change ships like this: PR → `ci`, `security` and `codeql` run → `aws` plans → review → merge → `aws` deploys `dev`.
 
-1. **pull_request_template.md**: pre-fills every PR: what changed, security impact, checks. Fixed name.
-2. **CODEOWNERS** *(not included)*: auto-requests reviewers per path; add it once a team shares the repo.
-3. **dependabot.yml**: weekly update PRs for actions, Python, Terraform; waits 7 days too. Fixed name.
-4. **workflows/ci.yml**: every PR: lint, type-check and test only the apps the PR changed.
-5. **workflows/security.yml**: the pre-push scan again (hooks can be skipped) + Checkov, Semgrep, terraform validate; weekly.
-6. **workflows/codeql.yml**: GitHub's code scanning for bugs and vulnerabilities; PRs, main, weekly.
-7. **workflows/aws.yml**: Terraform plan + cost on PRs; on merge, plans every unit and deploys the changed ones to dev after approval; prod by hand.
-8. **workflows/images.yml**: for each app with a Dockerfile: builds and scans its image on PRs; on merge, scans it again, keeps its SBOM and pushes it to ECR. Idle until an app has one.
+1. **pull_request_template.md**: pre-fills each PR: what changed, security, checks.
+2. **CODEOWNERS** *(not included)*: requests reviewers per path; add it once a team shares the repo.
+3. **dependabot.yml**: weekly update PRs for actions, Python and Terraform, each release 7 days old.
+4. **workflows/ci.yml**: lint, types and tests for only the apps a PR changes.
+5. **workflows/security.yml**: the push scan again, plus Checkov, Semgrep and `terraform validate`; weekly too.
+6. **workflows/codeql.yml**: GitHub's code scanning on PRs, `main` and weekly.
+7. **workflows/aws.yml**: Terraform plan and cost on PRs; on merge, applies the changed units to `dev`, and `prod` by hand.
+8. **workflows/images.yml**: builds, scans and pushes each app's image to ECR, with its SBOM; idle until an app has a Dockerfile.
 
 ## 7. Cloud (infra/aws/)
 
-How it deploys: bootstrap once by hand → aws.yml plans the changed units on PRs → applies after approval.
+Bootstrap once by hand; then `aws.yml` plans the changed units on PRs and applies them after merge.
 
-1. **bootstrap/bootstrap.yaml**: CloudFormation, by hand once per account: GitHub login, roles, state bucket, budget emails.
-2. **`<unit>/`**: one Terraform folder per deployable unit (e.g. api/), each with its own state.
-   1. **versions.tf**: pins the Terraform and provider versions.
+1. **bootstrap/bootstrap.yaml**: CloudFormation, by hand once per account: GitHub sign-in, roles, state bucket and the budget alert.
+2. **`<unit>/`**: one Terraform folder per deployable unit (such as `api/`), each with its own state:
+   1. **versions.tf**: pins Terraform and the providers.
    2. **variables.tf**: inputs (project, environment, region), set by the pipeline.
-   3. **main.tf**: the unit's resources, e.g. Lambda, API Gateway, roles, logs.
-   4. **outputs.tf**: values printed after deploy, e.g. a URL.
-   5. **.terraform.lock.hcl**: uv.lock for Terraform: exact provider versions + hashes. Never edit.
+   3. **main.tf**: the unit's resources, such as Lambda, API Gateway, roles and logs.
+   4. **outputs.tf**: values printed after a deploy, such as a URL.
+   5. **.terraform.lock.hcl**: exact provider versions and hashes. Never edit.
