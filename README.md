@@ -84,6 +84,7 @@ What it doesn't cover is written down too: [guides/03-security-trade-offs.md](gu
 2. [The files](guides/02-the-files.md): what every file is and why it's there.
 3. [Security trade-offs](guides/03-security-trade-offs.md): the risks the template accepts, and the fix for each.
 4. [The guardrails](guides/04-the-guardrails.md): how each control in the checklist works, stage by stage.
-5. [Cleaning up AWS](guides/05-aws-cleanup.md): removing a project from AWS so nothing is charged, and proving it.
+5. [Cleaning up AWS](guides/05-aws-cleanup.md): removing a project from AWS, and proving nothing is charged.
+6. [The secure ADLC](guides/06-secure-adlc.md): the six stages, with each stage's controls and gates.
 
 To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md); report vulnerabilities through [SECURITY.md](SECURITY.md). [MIT licence](LICENSE).
