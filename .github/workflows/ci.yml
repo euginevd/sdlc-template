@@ -59,7 +59,7 @@ jobs:
         run: |
           grep -qE '^Profile: .(prototype|production).' docs/spec.md || { echo "No profile yet: kickoff isn't finished, nothing to check."; exit 0; }
           if grep -rnF --include='*.md' '*(to fill in)*' docs/; then
-            echo "::error::Kickoff left the lines above unfilled (AGENTS.md rule 13): write each one, or delete it."
+            echo "::error::Kickoff left the lines above unfilled (AGENTS.md rule 7): write each one, or delete it."
             exit 1
           fi
           echo "Every to-fill-in line in docs/ is written."
@@ -71,13 +71,13 @@ jobs:
             words=$(wc -w < "$1")
             [ "$words" -le "$2" ] || { echo "::error file=$1::$1 is $words words, over its $2 (code-standards 23): cut or link."; code=1; }
           }
-          check AGENTS.md 1750
+          check AGENTS.md 1400
           check README.md 1200
           for f in docs/*.md; do check "$f" 1000; done
           for f in guides/*.md; do check "$f" 2500; done
           exit $code
 
-  # Agents edit the workflows and scripts (AGENTS.md rule 10), so each change is linted: actionlint for
+  # Agents edit the workflows and scripts (AGENTS.md rule 3), so each change is linted: actionlint for
   # syntax, expressions and the shell in run steps, zizmor for injection, credentials and permissions,
   # shellcheck for the repo's scripts at warning level. All from pinned images, offline.
   workflows:

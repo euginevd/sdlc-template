@@ -41,7 +41,7 @@ It checks your machine and asks whether this is a prototype or production. A pro
 
 ## Two profiles
 
-You pick one at kickoff. The agent works on its own between gates and stops at the ones its profile has ([AGENTS.md](AGENTS.md) rule 12).
+You pick one at kickoff. The agent works on its own between gates and stops at the ones its profile has ([AGENTS.md](AGENTS.md) rule 5).
 
 | | Prototype: speed first | Production: gates at key stages |
 |---|---|---|

@@ -2,7 +2,7 @@
 
 Profile: *(to fill in)* `prototype` or `production` · Owner: *(to fill in)* · Status: *(to fill in)* Idea, Building or Live · Started: *(to fill in)* · Updated: *(to fill in)*
 
-The project brief: your idea in your own words, written before kickoff and updated when it changes. The agent drafts [spec.md](spec.md) from it and asks about anything unclear, but only you change this file; where the two differ, the spec is what gets built. The repo may be public, so no real balances, keys or personal details: those stay in `local/`, which git ignores.
+The project brief: your idea in your own words, written before kickoff and updated when it changes. Fill it in yourself, or answer its questions in chat at kickoff and the agent writes your answers in for you to check. The agent drafts [spec.md](spec.md) from it but never changes your words unasked; where the two differ, the spec is what gets built. The repo may be public, so no real balances, keys or personal details: those stay in `local/`, which git ignores.
 
 ## Brief
 
@@ -16,7 +16,7 @@ The project brief: your idea in your own words, written before kickoff and updat
 
 ## Research
 
-What's out there, so the build borrows rather than reinvents. The agent checks each licence and that each library is real and maintained ([AGENTS.md](../AGENTS.md) rule 24).
+What's out there, so the build borrows rather than reinvents. The agent checks each licence and that each library is real and maintained ([AGENTS.md](../AGENTS.md) rule 16).
 
 - Commercial: *(to fill in)* products to learn from, and what each is the model for: features, a later direction, or the look.
 - Open source: *(to fill in)* libraries or projects to build on or study, each with its licence.

@@ -4,7 +4,7 @@ How to take a project from an empty repo to a deployed app with your coding agen
 
 ## 1. Pick a profile
 
-The agent asks for this first ([AGENTS.md](../AGENTS.md) rules 11 to 13). Where each profile stops for you is the gate table in rule 12; section 4 is the prototype's path and section 5 is production's.
+The agent asks for this first ([AGENTS.md](../AGENTS.md) rules 4 to 7). Where each profile stops for you is the gate table in rule 5; section 4 is the prototype's path and section 5 is production's.
 
 | | `prototype`: a working MVP, fast | `production`: gated |
 |---|---|---|
@@ -15,7 +15,7 @@ The agent asks for this first ([AGENTS.md](../AGENTS.md) rules 11 to 13). Where 
 | When unsure | The agent takes the simpler option and says so | The agent asks |
 | Trade-offs | All accepted | Each fixed, or accepted by a named person |
 
-In both, one branch holds a session's work. A prototype's agent commits, pushes, opens the PR and merges on its own; in production it does each only when you ask. It runs local commands itself and gives you cloud commands as bash for AWS CloudShell; what it asks first and never does is in [AGENTS.md](../AGENTS.md) rules 22 to 28.
+In both, one branch holds a session's work. A prototype's agent commits, pushes, opens the PR and merges on its own; in production it does each only when you ask. It runs local commands itself and gives you cloud commands as bash for AWS CloudShell; what it asks first and never does is in [AGENTS.md](../AGENTS.md) rules 4 and 14 to 17.
 
 ## 2. Set up the repo
 
@@ -36,7 +36,7 @@ Gate G0, once per project. `docs/` starts by describing the health-check API the
 
 | You say | The agent | You |
 |---------|-----------|-----|
-| *"Kick off `<name>`: `<notes on the business, problem, users and stack>`"* | Checks the machine, asks the profile and the repo type | Answer, and fill in `docs/project-brief.md` |
+| *"Kick off `<name>`: `<notes on the business, problem, users and stack>`"* | Checks the machine, reads `docs/project-brief.md`, and asks the profile and repo type if it doesn't say | Answer, then fill in the brief, or answer its questions in chat and check what the agent writes |
 | | Drafts `spec.md`, Business section included, from the brief, asks about gaps, and puts the first item in `TODO.md` | Correct it until it's right |
 | | Runs a short spike on the deploy target: what each managed service refuses or limits, into `decisions.md` | Agree the target |
 | | With UI: drafts `design-system.md` and mocks up the MVP's main screens in `docs/mockups/mvp.html` | Open the mockup; ask for changes, then approve |
@@ -52,7 +52,7 @@ One TODO item at a time. Once you approve its spec and mockup, nothing else wait
 | You say | The agent | You |
 |---------|-----------|-----|
 | *"Build `<the work>`"*, once you approve its spec and mockup | Builds on the session's one branch: code, main-path tests, local checks, `features.md` and `TODO.md` | Interrupt if the direction is wrong |
-| | New cloud service: deploys a walking skeleton to `dev` first, one service at a time ([AGENTS.md](../AGENTS.md) rule 17) | |
+| | New cloud service: deploys a walking skeleton to `dev` first, one service at a time ([docs/deploy.md](../docs/deploy.md)) | |
 | | A fresh subagent reviews the whole branch; it fixes what it blocks and reports | Try it; ask for more |
 | | Once you say the batch is ready, or the session ends, and the local checks pass: commits, pushes (the pre-push scan runs), opens one PR, fixes the findings and squash-merges once checks pass | |
 | | The pipeline deploys to `dev`; first-deploy fixes stay on one branch until green, then it smoke-tests | Try it in `dev` |
@@ -62,7 +62,7 @@ It still stops before spending past the monthly limit in spec 10, before weakeni
 
 ## 5. Build for production
 
-The same loop, stopping at gates G1 to G4 ([AGENTS.md](../AGENTS.md) rule 12). The ↺ marks a step the agent repeats until it's clean.
+The same loop, stopping at gates G1 to G4 ([AGENTS.md](../AGENTS.md) rule 5). The ↺ marks a step the agent repeats until it's clean.
 
 | # | Gate | You say | The agent | You |
 |:-:|------|---------|-----------|-----|

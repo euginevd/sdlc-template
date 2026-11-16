@@ -6,7 +6,7 @@
 # Usage: bash scripts/protect-main.sh [production]
 # production: a PR needs a second reviewer, so GitHub, not a rule, stops the agent merging alone: one approval
 # that isn't the author's, given after the last push, with every review thread resolved. Without it, the
-# prototype settings: no review needed (AGENTS.md rule 12).
+# prototype settings: no review needed (AGENTS.md rule 5).
 set -uo pipefail
 
 case "${1:-prototype}" in

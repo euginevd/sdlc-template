@@ -39,7 +39,7 @@ fetch() {
   local cmd=$1 v arch base file sums want tmp bin="$HOME/.local/bin"
   mkdir -p "$bin" && export PATH="$bin:$PATH"
   case "$cmd" in
-    # From PyPI, at least a week old (AGENTS.md rule 24).
+    # From PyPI, at least a week old (AGENTS.md rule 16).
     lefthook) uv tool install --quiet --exclude-newer "7 days" lefthook; return ;;
   esac
   # The pipeline pins no gh, so its version is pinned here: raise it by hand (trade-offs 3).

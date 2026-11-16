@@ -11,7 +11,7 @@ The template's lifecycle on one page: six stages, the security controls in each 
 | 5. Deploy | The agent opens the PR; the pipeline plans and applies Terraform | Protected `main`, security summary, cost comment, OIDC roles, read-only plan | **G2** merge, **G3** `dev`, **G4** `prod` |
 | 6. Maintain | Rescans and alerts find what changed; each finding becomes a new TODO line | Weekly rescans, Dependabot, budget alert, access logs | **G5**: I check cost and alarms the day after |
 
-G0, kickoff, comes once before all six ([docs/kickoff.md](../docs/kickoff.md)). Who approves each gate in each profile is the table in AGENTS.md rule 12.
+G0, kickoff, comes once before all six ([docs/kickoff.md](../docs/kickoff.md)). Who approves each gate in each profile is the table in AGENTS.md rule 5.
 
 ## The rules behind the gates
 

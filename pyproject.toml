@@ -7,7 +7,7 @@ dependencies = ["api"]
 
 [tool.uv]
 package = false
-# Packages must be a week old before uv picks them (AGENTS.md rule 24).
+# Packages must be a week old before uv picks them (AGENTS.md rule 16).
 exclude-newer = "7 days"
 
 [tool.uv.workspace]
