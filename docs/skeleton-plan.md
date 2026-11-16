@@ -13,6 +13,18 @@ Files: <each file added or changed>.
 
 Each risk with its control and its threat-model ID, or "None: touches no users, data, auth or endpoints".
 
+## Constraints
+
+Each Security line in the brief and each Rule in the spec this change touches, and what meets it.
+
+| Constraint | Met by |
+|---|---|
+| <brief Security line or spec rule> | <the design choice, control or test> |
+
+## Open questions and concerns
+
+Each question still open, and each conflict between rules or docs, with who decides it; a prototype takes the simpler option and says so here.
+
 ## Phases
 
 ### 1. <what this phase delivers> (<the spec, feature and risk IDs it meets>)
