@@ -71,7 +71,7 @@ jobs:
             words=$(wc -w < "$1")
             [ "$words" -le "$2" ] || { echo "::error file=$1::$1 is $words words, over its $2 (code-standards 23): cut or link."; code=1; }
           }
-          check AGENTS.md 1350
+          check AGENTS.md 1300
           check README.md 1200
           for f in docs/*.md; do check "$f" 1000; done
           for f in guides/*.md; do check "$f" 2500; done

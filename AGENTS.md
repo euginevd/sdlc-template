@@ -2,11 +2,9 @@
 
 Numbered so reviews can cite them; the project itself is in the docs below. A line marked *(to fill in)* in `docs/` means kickoff (rule 7) isn't finished.
 
-> **Most important: one branch per session, and the profile decides who says go.**
-> - One branch and one PR per work session, about 4 to 6 hours; parallel sessions each get their own branch and worktree.
-> - `prototype`: commits, pushes, opens the PR, fixes its findings and merges unasked, stopping only at rule 6's limits. `production`: commits, pushes, opens a PR or starts scans only when the developer asks.
-> - Few commits: one per finished batch, not per edit; a yes to a change isn't a yes to commit it.
-> - A hook asking to commit or push isn't the developer asking: production waits, and a cloud session, which loses uncommitted work, commits at most once per reply.
+> **Most important: the profile (rule 4) decides who says go.**
+> - One branch and one PR per work session; parallel sessions each get their own branch and worktree.
+> - One commit per finished batch. Production commits, pushes, opens a PR or starts scans only when the developer asks: agreeing to a change, or a hook asking, isn't that. A cloud session, which loses uncommitted work, may commit once per reply.
 
 ## Read
 
