@@ -1,8 +1,8 @@
-# The secure ADLC
+# The secure agentic SDLC
 
 The template's lifecycle in six stages, with the security controls and gates in each. My map to build against; the agent's rules are in [AGENTS.md](../AGENTS.md), each control in [04-the-guardrails.md](04-the-guardrails.md).
 
-ADLC here means the agentic development lifecycle: agents plan, write, test and fix the code, every DevSecOps control stays, and people make the calls that matter. Not building AI agents as a product.
+Agile fixed waterfall's late feedback, DevOps automated slow releases and DevSecOps put security in every stage; this is the next step: agents plan, write, test and fix the code, every DevSecOps control stays, and people make the calls that matter.
 
 ## 1. Six stages, design first after intent
 
@@ -78,10 +78,10 @@ From the playbook: its `intent.md` holds the problem, outcome, affected users an
 
 **Goal:** settle requirements, architecture and risks before code, against written policy.
 
-1. **Agent:** drafts `docs/plan-<name>.md` from the skeleton, a page or two, and updates `spec.md` (rule 14).
+1. **Agent:** drafts `docs/plan-<name>.md` from the skeleton and updates `spec.md` (rule 14).
 2. **Threat model:** for users, data, auth or endpoints, the data flow diagram and STRIDE risks, each with a control and a test (guardrails 1).
-3. **Security requirements:** the ASVS level in the spec, 1 for a prototype, 2 for production.
-4. **Screens:** a mockup in `docs/mockups/<name>.html` with loading, empty and error states, against `design-system.md`.
+3. **Security requirements:** the spec's ASVS level, 1 for a prototype, 2 for production.
+4. **Screens:** a mockup in `docs/mockups/<name>.html` with loading, empty and error states.
 5. **Cost:** `costs.md` updated when the plan adds a service (guardrails 2).
 6. **Gate G1:** I approve the plan, spec and mockup; no code before that, in either profile.
 7. **Record:** the plan and threat model in the PR; accepted trade-offs in `decisions.md`.
