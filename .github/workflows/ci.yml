@@ -65,6 +65,9 @@ jobs:
           echo "Every to-fill-in line in docs/ is written."
       # Every session reads AGENTS.md and docs/, so their length is checked, not left to a rule (code-standards 23).
       - name: Docs within their length
+        # wc counts words by locale; set it so a local run counts the same as CI.
+        env:
+          LC_ALL: C.UTF-8
         run: |
           code=0
           check() {

@@ -53,7 +53,7 @@ You pick one at kickoff. The agent works on its own between gates and stops at t
 | When unsure | The agent decides, records it and says so | The agent asks |
 | Commits, PRs, merges | The agent, unasked | Only when you ask |
 
-A prototype still stops before spending past the monthly limit in the spec, before weakening its own floor (no direct AWS changes, no secrets in output, no skipped hooks, no AI attribution), and before real users, customer data or payments. In both, one branch holds a session's work. New cloud services start as a small deploy to `dev`, one at a time, and actual cost is checked the day after. Moving a prototype up: [guide 01](guides/01-using-the-template.md) section 7.
+A prototype still stops before spending past the monthly limit in the spec, before weakening its own floor (no direct AWS changes, no secrets in output, no skipped hooks, no AI attribution), and before real users, customer data or payments. New cloud services start as a small deploy to `dev`, and actual cost is checked the day after. Moving a prototype up: [guide 01](guides/01-using-the-template.md) section 7.
 
 ## What's inside
 
