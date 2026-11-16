@@ -1,4 +1,4 @@
-<!-- Skeleton for docs/plan-<name>.md (AGENTS.md rule 9): copy it, keep it to two pages at most, and delete this line and any section that doesn't apply. -->
+<!-- Skeleton for docs/plan-<name>.md (AGENTS.md rule 9): copy it, keep it to two pages at most, and delete this line and any section that doesn't apply; a prototype's plan needs only Design, Files and Phases. -->
 # Plan: <name>
 
 Spec items: <numbers>. Features: <numbers>. Threat-model risks: <IDs>. Profile: <prototype or production>.

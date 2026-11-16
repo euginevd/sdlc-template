@@ -32,7 +32,7 @@ my-project/
    1. **kickoff.md**, **pull-requests.md**, **deploy.md**: the steps for kickoff, a PR and a deploy, which the agent opens when it reaches each.
    1. **project-brief.md**: your idea in your own words, with research; you write it, or answer in chat at kickoff and the agent writes it for you to check.
    1. **spec.md**: the business, then problem, users, stack, done-when and rules, drafted from the brief; you approve (production).
-   2. **code-standards.md**: numbered coding rules the pipeline can't check, including the length of docs.
+   2. **code-standards.md**: numbered coding rules, most of which the pipeline can't check.
    3. **features.md**: each feature by app, with its status and PR.
    4. **decisions.md**: the decisions in force, why, and what they replaced.
    5. **known-mistakes.md**: mistakes an agent has made, each with its fix, by area, with AWS and DSQL in `known-mistakes/aws.md`; the agent reads an area's before working in it.

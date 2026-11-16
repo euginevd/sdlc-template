@@ -50,7 +50,7 @@ h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:58px;line-heig
  <div>
   <div class="eyebrow mono">sdlc-template</div>
   <h1>Same pipeline. You choose where it stops.</h1>
-  <p class="sub">The profile you pick at kickoff decides which steps wait for a person. A prototype has none: the agent runs it end to end.</p>
+  <p class="sub">The profile you pick at kickoff decides which steps wait for a person. A prototype has one, your yes to each item before code; the agent runs the rest end to end.</p>
  </div>
  <div class="legend">
   <div><span class="gate" style="width:26px;height:26px;border-radius:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>A person approves</div>
@@ -71,7 +71,7 @@ h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:58px;line-heig
  <div class="lane">
   <div class="track short"></div><div class="track dash"></div>
   <div class="cell"><div class="node"><span class="dot"></span></div><div class="who a mono">Agent</div><div class="what">Drafts the docs</div><div class="why">You review when you like</div></div>
-  <div class="cell"><div class="node"><span class="dot"></span></div><div class="who a mono">Agent</div><div class="what">Writes a short plan</div><div class="why">Decides, then says so</div></div>
+  <div class="cell"><div class="node"><span class="gate">LOCK</span></div><div class="who g mono">You</div><div class="what">Approve each item</div><div class="why">Its spec and mockup</div></div>
   <div class="cell"><div class="node"><span class="dot"></span></div><div class="who a mono">Agent</div><div class="what">Tests main paths</div><div class="why">50%, one review</div></div>
   <div class="cell"><div class="node"><span class="dot"></span></div><div class="who a mono">Agent</div><div class="what">Pushes and merges</div><div class="why">Unasked, on green checks</div></div>
   <div class="cell"><div class="node"><span class="dot"></span></div><div class="who a mono">Pipeline</div><div class="what">Applies on merge</div><div class="why">Then a smoke test</div></div>

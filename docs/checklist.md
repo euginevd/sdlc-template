@@ -12,7 +12,7 @@ The guardrails in DevSecOps stage order. Clear it before real users, customer da
 | 6 | Build | Secrets, SCA, IaC scanning | Gitleaks, Trivy, Checkov | Both |
 | 7 | Build | SAST | Semgrep, CodeQL, GitHub AI Scan | Both |
 | 8 | Build | Supply chain security | Pinned versions, SBOM | Both |
-| 9 | Test | Unit and abuse-case tests, coverage | pytest, `ci` workflow | Both |
+| 9 | Test | Unit tests and coverage; abuse cases in production | pytest, `check.sh`, `ci` workflow | Both |
 | 10 | Test | DAST, unauthenticated | OWASP ZAP baseline scan | Production |
 | 11 | Test | DAST, authenticated | OWASP ZAP with a test login | Production |
 | 12 | Release | Branch protection | `main` ruleset | Both |
@@ -26,5 +26,5 @@ The guardrails in DevSecOps stage order. Clear it before real users, customer da
 | 20 | Operate | Weekly re-scans | `security`, `codeql`, Dependabot | Both |
 | 21 | Operate | Budget alert | AWS Budgets | Both |
 | 22 | Monitor | Access logs, throttling | API Gateway, CloudWatch | Both |
-| 23 | Monitor | Audit logging | CloudTrail | Both |
+| 23 | Monitor | Audit logging | CloudTrail *(planned)* | Both |
 | 24 | Monitor | Threat detection, alarms | GuardDuty, CloudWatch alarms | Production |

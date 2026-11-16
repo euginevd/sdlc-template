@@ -11,7 +11,7 @@ Pick a prototype the agent builds and ships on its own, or a production system w
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="guides/assets/flow-dark.png">
-  <img src="guides/assets/flow.png" width="900" alt="Six stages, kick off to release, on two tracks. Prototype: no stops; the agent drafts the docs at kickoff, plans, builds with main-path tests at 50% coverage, merges on green checks and the pipeline applies to dev on merge; there is no prod. Production: you approve the spec, threat model and costs, then the plan; the agent builds with abuse-case tests at 80% coverage and a review per phase; a second reviewer approves the PR, the dev apply and the prod release. Always on in both: Gitleaks and Trivy before every push, Semgrep, Checkov, CodeQL and app tests on every PR, a full rescan and SBOM on main and weekly, pipeline-only deploys over OIDC with no stored keys, and actual cost checked the day after a deploy.">
+  <img src="guides/assets/flow.png" width="900" alt="Six stages, kick off to release, on two tracks. Prototype: one stop, your yes to each item; the agent drafts the docs at kickoff, builds with main-path tests at 50% coverage, merges on green checks and the pipeline applies to dev on merge; there is no prod. Production: you approve the spec, threat model and costs, then the plan; the agent builds with abuse-case tests at 80% coverage and a review per phase; a second reviewer approves the PR, the dev apply and the prod release. Always on in both: Gitleaks and Trivy before every push, Semgrep, Checkov, CodeQL and app tests on every PR, a full rescan and SBOM on main and weekly, pipeline-only deploys over OIDC with no stored keys, and actual cost checked the day after a deploy.">
 </picture>
 
 </div>
@@ -53,7 +53,7 @@ You pick one at kickoff. The agent works on its own between gates and stops at t
 | When unsure | The agent decides, records it and says so | The agent asks |
 | Commits, PRs, merges | The agent, unasked | Only when you ask |
 
-A prototype still stops before spending past the monthly limit in the spec, before weakening its own floor (no direct AWS changes, no secrets in output, no skipped hooks, no AI attribution), and before real users, customer data or payments. In both, one branch holds a session's work. New cloud services start as a small deploy to `dev`, one at a time, and actual cost is checked the day after. Moving a prototype up is one prompt and `bash scripts/protect-main.sh production`.
+A prototype still stops before spending past the monthly limit in the spec, before weakening its own floor (no direct AWS changes, no secrets in output, no skipped hooks, no AI attribution), and before real users, customer data or payments. In both, one branch holds a session's work. New cloud services start as a small deploy to `dev`, one at a time, and actual cost is checked the day after. Moving a prototype up: [guide 01](guides/01-using-the-template.md) section 7.
 
 ## What's inside
 

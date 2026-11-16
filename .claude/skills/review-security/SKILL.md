@@ -16,6 +16,8 @@ Review what this branch changes, against the repo's own standards. You report; t
 
 ## Check
 
+A prototype with only the starter threat model and no plan skips 1 and 10, and the production-only parts of the standards.
+
 1. **Threat model:** each risk the change touches still has its control, and a new route, data store, outside service or model call has a risk row. A missing row is a finding.
 2. **Access:** every new endpoint checks authorisation on the server and denies by default (code-standards 10); nothing is open because only our code calls it.
 3. **Input and output:** input validated against a schema at the boundary, unknown fields rejected (9); each state-changing action emits an audit event (8); model output and uploads treated as untrusted and validated (18); limits and payments enforced in code, not a prompt (17).

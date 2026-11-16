@@ -14,7 +14,7 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 
 6. Handle an error only where you can do something useful with it; otherwise let it surface.
 7. Fail closed: when a security or payment check can't complete, deny.
-8. Log structured JSON with a request ID. Never put secrets or personal data in logs or error messages; redact at the source. Every state-changing action emits an audit event: actor, action, entity and time.
+8. Log structured JSON with a request ID. Never put secrets or personal data in logs or error messages; redact at the source. In production, every state-changing action emits an audit event: actor, action, entity and time.
 
 ## Safe by design
 
@@ -41,7 +41,7 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 17. The model decides; deterministic code acts. Limits, payments and permissions are enforced in code, never in a prompt.
 18. Model output and uploaded content are untrusted: keep content apart from instructions, ask for structured output, and validate it against a schema.
 19. Every model call uses an explicit model ID (never "latest"), a timeout, a token limit and a retry cap.
-20. Prompts and model settings live in the repo; changing them is a code change. Evals run in CI against a held-out answer set the agent never sees, plus a red-team set of prompt-injection attacks, each with its OWASP ID. A case passes only when no action goes beyond what the input honestly supports.
+20. Prompts and model settings live in the repo; changing them is a code change. In production, evals run in CI against a held-out answer set the agent never sees, plus a red-team set of prompt-injection attacks, each with its OWASP ID. A case passes only when no action goes beyond what the input honestly supports.
 21. Instructions give the goal, the inputs and what done looks like, not the steps.
 
 ## Containers

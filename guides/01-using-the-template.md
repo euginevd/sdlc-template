@@ -43,7 +43,7 @@ Gate G0, once per project. `docs/` starts by describing the health-check API the
 | | Extends `threat-model.md` and `costs.md`; a prototype keeps the starter's | `production`: approve each |
 | | Records the profile, accepted trade-offs and code owner in `decisions.md` | Say which trade-offs you accept |
 | *"Rename the project"* | Renames the README, `spec.md` and `pyproject.toml` (then `uv lock`); a prototype sets `fail_under = 50` | Replace `LICENSE` and `guides/assets/`; a private project deletes `CONTRIBUTING.md` and `social.png` |
-| *"Commit and push"*, production only | Opens one PR with all of it | Approve it, and the agent merges. A prototype's agent does this unasked |
+| *"Commit and push"*, production only | Opens one PR with all of it | Approve it, then say *"Merge it"*. A prototype's agent does both unasked |
 
 ## 4. Build a prototype
 
@@ -53,7 +53,7 @@ One TODO item at a time. Once you approve its spec and mockup, nothing else wait
 |---------|-----------|-----|
 | *"Build `<the work>`"*, once you approve its spec and mockup | Builds on the session's one branch: code, main-path tests, local checks, `features.md` and `TODO.md` | Interrupt if the direction is wrong |
 | | New cloud service: deploys a walking skeleton to `dev` first, one service at a time ([docs/deploy.md](../docs/deploy.md)) | |
-| | A fresh subagent reviews the whole branch with the `review-security` and, for UI, `review-design` skills; the agent fixes what it blocks and reports | Try it; ask for more |
+| | A fresh subagent reviews the whole branch with the `review-security` and, for UI, `review-design` skills, and the verifier runs the app; the agent fixes what it blocks and reports | Try it; ask for more |
 | | Once you say the batch is ready, or the session ends, and the local checks pass: commits, pushes (the pre-push scan runs), opens one PR, fixes the findings and squash-merges once checks pass | |
 | | The pipeline deploys to `dev`; first-deploy fixes stay on one branch until green, then it smoke-tests | Try it in `dev` |
 | | The day after a deploy, compares actual cost with `costs.md` | Read the report |
