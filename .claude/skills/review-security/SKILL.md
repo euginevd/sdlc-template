@@ -6,7 +6,7 @@ allowed-tools: Read, Grep, Glob, Bash(git diff*), Bash(git log*), Bash(git show*
 
 # Security review
 
-Review what this branch changes, against the repo's own standards. You report; the agent that wrote the code fixes. Run in a fresh context, not the author's.
+Review what this branch changes, against the repo's own standards. You report; the agent that wrote the code fixes as `docs/pull-requests.md` 3 says, then runs this review again until nothing critical or high is left. Run in a fresh context, not the author's.
 
 ## Scope
 
