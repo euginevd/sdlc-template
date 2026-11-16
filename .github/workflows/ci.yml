@@ -71,10 +71,15 @@ jobs:
             words=$(wc -w < "$1")
             [ "$words" -le "$2" ] || { echo "::error file=$1::$1 is $words words, over its $2 (code-standards 23): cut or link."; code=1; }
           }
-          check AGENTS.md 1400
+          check AGENTS.md 1350
           check README.md 1200
           for f in docs/*.md; do check "$f" 1000; done
           for f in guides/*.md; do check "$f" 2500; done
+          # What the agent reads every session (AGENTS.md rule 1), together.
+          km=$(awk '/^## (Repo|Docs)$/{f=1;print;next} /^## /{f=0} f' docs/known-mistakes.md | wc -w)
+          total=$(( $(cat AGENTS.md docs/project-brief.md docs/spec.md docs/features.md TODO.md | wc -w) + km ))
+          [ "$total" -le 3500 ] || { echo "::error::The every-session docs are $total words, over 3500 (code-standards 23): cut or link."; code=1; }
+          echo "Every-session docs: $total of 3500 words."
           exit $code
 
   # Agents edit the workflows and scripts (AGENTS.md rule 3), so each change is linted: actionlint for

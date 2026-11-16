@@ -50,7 +50,7 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 
 ## Docs
 
-23. Each fact lives in one place; everywhere else links to it. Write what's true now; mark future work *(planned)*. Keep docs short, as numbered points or tables: each point or cell is at most two short sentences. What an agent reads stays short: 1,000 words for a doc in `docs/`, 1,400 for `AGENTS.md`; the README 1,200 and a guide 2,500. CI's `kickoff` check fails past that, so cut or link rather than add.
+23. Each fact lives in one place; everywhere else links to it. Write what's true now; mark future work *(planned)*. Keep docs short, as numbered points or tables: each point or cell is at most two short sentences. What an agent reads stays short: 1,000 words for a doc in `docs/`, 1,350 for `AGENTS.md`, and 3,500 for everything read every session (`AGENTS.md` rule 1) together; the README 1,200 and a guide 2,500. CI's `kickoff` check fails past that, so cut or link rather than add.
 24. Root files are uppercase (`README.md`, `AGENTS.md`); everything in `docs/` and `guides/` is lowercase kebab-case.
 
 ## Web UI

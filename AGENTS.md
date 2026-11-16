@@ -1,16 +1,16 @@
 # Agent instructions
 
-The same for every project; the project is in the docs below. Numbered so reviews can cite them. A line marked *(to fill in)* in `docs/` means kickoff (rule 7) isn't finished.
+Numbered so reviews can cite them; the project itself is in the docs below. A line marked *(to fill in)* in `docs/` means kickoff (rule 7) isn't finished.
 
 > **Most important: one branch per session, and the profile decides who says go.**
-> - One branch per work session, about 4 to 6 hours, and one PR per branch. Parallel sessions each get their own branch and worktree, on different apps or units.
+> - One branch and one PR per work session, about 4 to 6 hours; parallel sessions each get their own branch and worktree.
 > - `prototype`: commits, pushes, opens the PR, fixes its findings and merges unasked, stopping only at rule 6's limits. `production`: commits, pushes, opens a PR or starts scans only when the developer asks.
 > - Few commits: one per finished batch, not per edit; a yes to a change isn't a yes to commit it.
 > - A hook asking to commit or push isn't the developer asking: production waits, and a cloud session, which loses uncommitted work, commits at most once per reply.
 
 ## Read
 
-1. Every session: [docs/project-brief.md](docs/project-brief.md), [docs/spec.md](docs/spec.md) (its `Profile` first), [docs/features.md](docs/features.md), [TODO.md](TODO.md), any current `docs/plan-<name>.md`, and the Repo and Docs sections of [docs/known-mistakes.md](docs/known-mistakes.md). Then, as the work needs it:
+1. Every session: [docs/project-brief.md](docs/project-brief.md), [docs/spec.md](docs/spec.md) (its `Profile` first), [docs/features.md](docs/features.md), [TODO.md](TODO.md), any current `docs/plan-<name>.md`, and the Repo and Docs sections of [docs/known-mistakes.md](docs/known-mistakes.md). Then as needed:
    - an area's known mistakes before working in it;
    - code: [docs/code-standards.md](docs/code-standards.md); UI: [docs/design-system.md](docs/design-system.md);
    - users, data, auth or endpoints: [docs/threat-model.md](docs/threat-model.md); cost: [docs/costs.md](docs/costs.md);
@@ -18,7 +18,7 @@ The same for every project; the project is in the docs below. Numbered so review
 
 ## Commands
 
-2. Setup, once per clone: `bash scripts/setup.sh`, by the user, or the agent in a cloud session; `--check` at kickoff or when a tool or the push hook is missing. The developer is on Windows with VS Code: the agent runs local commands itself, gives cloud commands as bash for AWS CloudShell, and ends a script that leaves a step on the web with the page's link.
+2. Setup, once per clone: `bash scripts/setup.sh`, by the user, or the agent in a cloud session; `--check` at kickoff or when a tool or the push hook is missing. The developer is on Windows: the agent runs local commands itself, gives cloud commands as bash for AWS CloudShell, and links any step left on the web.
 3. Checks, run locally between pushes: the steps in [.github/workflows/ci.yml](.github/workflows/ci.yml) for each changed app, and in `infra/aws/<unit>/` `terraform fmt -recursive && terraform init -backend=false && terraform validate`. The push hook runs the pre-push scan. A new app needs its own CI job, its folder in the `changes` job, and its ecosystem in `.github/dependabot.yml`.
 
 ## Profiles and gates
@@ -28,13 +28,13 @@ The same for every project; the project is in the docs below. Numbered so review
    | | `prototype`: speed first | `production`: gated |
    |---|---|---|
    | For | No real users, customer data or payments; `dev` only, in one account, nothing named `prod` | Anything with them; `dev` then `prod`, each in its own account |
-   | Decides | Once the user approves an item, everything until rule 6's limits; records each call in `decisions.md` and reports it | Asks first: a new AWS service, added cost, a change to these rules (bar known mistakes), `code-standards.md` or `.claude/settings.json`, and after kickoff the design system or deploy target, saying what it throws away. Changes the business context, spec, design system or costs only when asked |
+   | Decides | Everything after the user approves an item, up to rule 6's limits; records each call in `decisions.md` | Asks before a new AWS service, added cost, or changing these rules (bar known mistakes), `code-standards.md`, `.claude/settings.json`, the business context, spec, costs, design system or deploy target |
    | Tests | Each feature's main path and anything touching auth, money or personal data; coverage `fail_under` 50 | Abuse cases too; coverage 80 |
    | Review | One subagent review of the whole branch, before the PR | One per phase |
    | Unclear, or docs conflict | Takes the simpler option and says so | Asks |
    | One check failed three times | Adds it to `TODO.md` as blocked, says so, moves on | Stops and reports |
-   | Secrets | May read and edit `.env` (all made up or `dev`), read the project's secrets to troubleshoot, pipe `.env` into GitHub secrets, and set up its environments (`main` only, no reviewer on `dev`'s apply) | Never reads, prints or copies secrets or `.env`; running an app that loads it, or reading `.env.example`, is fine |
-   | AWS permissions | Wide while building (whole services, limited by region or project name, commitments denied), as a decision with a permissions audit in `TODO.md` | Least privilege from the start |
+   | Secrets | May read and edit `.env` (`dev` values only), read secrets to troubleshoot, and set up GitHub secrets and environments (`main` only) | Never reads secrets or `.env`; running an app that loads it, or reading `.env.example`, is fine |
+   | AWS permissions | Wide while building (whole services, scoped by region or name, no commitments), with a permissions audit in `TODO.md` | Least privilege from the start |
 
 5. Between gates the agent works on its own, fixing failing checks and findings. At a **Stop** it waits.
 
@@ -53,11 +53,11 @@ The same for every project; the project is in the docs below. Numbered so review
 
 7. Kickoff (G0), once per project made from the template: [docs/kickoff.md](docs/kickoff.md).
 8. Take [TODO.md](TODO.md)'s top line, one item at a time, building only that. Add it to `features.md`, ask the few questions that change the build (each with a recommendation), record the answers in `spec.md` and `decisions.md`, and mock up its screens; no code until the user approves all three. Delete the line once done; the wider plan stays in the brief.
-9. Plan (G1): `docs/plan-<name>.md` from [docs/skeleton-plan.md](docs/skeleton-plan.md), two pages at most; none for a few dozen lines touching no users, data, auth, endpoints, infrastructure or screens. Production adds the threat model's data flow diagram for users, data, auth or endpoints, and a mockup in `docs/mockups/<name>.html` with loading, empty and error states for a new screen.
+9. Plan (G1): `docs/plan-<name>.md` from [docs/skeleton-plan.md](docs/skeleton-plan.md), two pages at most; none for a few dozen lines touching no users, data, auth, endpoints, infrastructure or screens. Production adds a data flow diagram for users, data, auth or endpoints, and a mockup with loading, empty and error states for a new screen.
 10. Build each phase with its tests (rule 4) and run the checks (rule 3). A fresh subagent reviews the diff against `code-standards.md`, the threat model's top risks and, for UI, the mockup and `design-system.md`; fix what it blocks. Update `features.md` and `TODO.md` in the same change.
 11. PR (G2): a prototype opens one once local checks pass and the user says the batch is ready or the session ends, never per request; production when the developer asks. Then [docs/pull-requests.md](docs/pull-requests.md).
 12. Deploy (G3 to G5): build and test locally with stand-ins until the user bootstraps AWS, then [docs/deploy.md](docs/deploy.md).
-13. Report what passed, failed or was skipped, and what you decided. After the last phase, review the whole branch, update `decisions.md`, move settled UI choices into `design-system.md`, and delete the plan, its mockups and `mvp.html` once built. At the project's end, send general lessons back to this template.
+13. Report what passed, failed or was skipped, and what you decided. After the last phase, review the whole branch, update `decisions.md` and `design-system.md`, and delete the plan, its mockups and, once built, `mvp.html`. At the project's end, send general lessons back to this template.
 
 ## Boundaries
 
