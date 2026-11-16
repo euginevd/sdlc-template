@@ -31,7 +31,12 @@ Repo: *(to fill in)* `personal` (public) or `work` (private).
 
 Template defaults: GitHub Actions, Terraform on AWS, the pre-push scan and the PR security checks.
 
+Each app with its language, how to run it locally, what it may and may never call, and each outside service's limits.
+
 6. `api`: Python on Lambda behind an HTTP API, the template's sample. Keep it, build on it or replace it.
+   - Run: no local server; its tests exercise the handler, and on `dev` it's `GET <api url>/health`.
+   - Talks to: nothing; only the HTTP API calls it.
+   - Outside limits: none.
 
 ## Done when
 

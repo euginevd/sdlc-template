@@ -43,7 +43,8 @@ venv = ".venv"
 
 [tool.pytest.ini_options]
 testpaths = ["apps", "scripts/tests"]
-addopts = "--import-mode=importlib --cov --cov-report=term-missing"
+addopts = "--import-mode=importlib --cov --cov-report=term-missing -m 'not integration'"
+markers = ["integration: needs Docker or a running service; run with bash scripts/check.sh itest"]
 
 [tool.coverage.run]
 source = ["apps"]

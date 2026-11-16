@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # One command for the checks CI runs (AGENTS.md rule 3). CI's python and web jobs call this script, so a pass here
 # is a pass there; security.yml runs the same Terraform checks from a pinned image.
-# Usage: bash scripts/check.sh [python|web|terraform|all]. With no argument, it checks what differs from origin/main,
-# committed or not. Paste its last lines as the evidence when reporting a task done (AGENTS.md rule 13).
+# Usage: bash scripts/check.sh [python|web|terraform|all|itest]; itest runs the tests marked integration.
+# With no argument, it checks what differs from origin/main, committed or not. Paste its last lines as the evidence when reporting a task done (AGENTS.md rule 13).
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 
@@ -37,6 +37,18 @@ check_web() {
   run "web typecheck" web run typecheck
   run "web test" web test
   run "web build" web run build
+}
+
+check_itest() {
+  [ -f pyproject.toml ] || return 0
+  local code=0
+  echo "--- integration tests"
+  uv run pytest -q -m integration --no-cov || code=$?
+  case $code in
+    0) passed+=("integration") ;;
+    5) echo "No integration tests yet." ;;
+    *) failed+=("integration") ;;
+  esac
 }
 
 tf_validate() { terraform -chdir="$1" init -backend=false -input=false > /dev/null && terraform -chdir="$1" validate; }
@@ -78,10 +90,10 @@ changed() {
 }
 
 case "${1:-changed}" in
-  python | web | terraform) targets=$1 ;;
+  python | web | terraform | itest) targets=$1 ;;
   all) targets="python web terraform" ;;
   changed) targets=$(changed) ;;
-  *) echo "Usage: bash scripts/check.sh [python|web|terraform|all]"; exit 2 ;;
+  *) echo "Usage: bash scripts/check.sh [python|web|terraform|all|itest]"; exit 2 ;;
 esac
 
 [ -n "$targets" ] || { echo "Nothing to check: only docs changed."; exit 0; }

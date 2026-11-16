@@ -14,11 +14,11 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 
 6. Handle an error only where you can do something useful with it; otherwise let it surface.
 7. Fail closed: when a security or payment check can't complete, deny.
-8. Log structured JSON with a request ID. Never log secrets or personal data; redact at the source.
+8. Log structured JSON with a request ID. Never put secrets or personal data in logs or error messages; redact at the source. Every state-changing action emits an audit event: actor, action, entity and time.
 
 ## Safe by design
 
-9. Validate every input at the boundary (API, files, queues) against a schema, and reject what doesn't match. Serve uploaded files with `Content-Security-Policy: default-src 'none'; sandbox`, never as a page.
+9. Validate every input at the boundary (API, files, queues) against a schema, and reject what doesn't match, unknown fields included. Serve uploaded files with `Content-Security-Policy: default-src 'none'; sandbox`, never as a page.
 10. Check authorisation on every request, on the server, and deny by default, internal services included: nothing reachable from the internet is left open because only our code calls it. Services trust each other through IAM roles and signed requests, not shared keys, and secrets never travel in payloads, URLs, logs or environment variables.
 
 ## Tests
