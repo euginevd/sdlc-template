@@ -30,7 +30,8 @@ my-project/
 3. **AGENTS.md**: the rules every coding agent follows, with the gates for each profile; changes rarely. Kept short, as every session reads it.
 4. **docs/**: the project context agents read and keep current:
    1. **kickoff.md**: the steps of kickoff, which the agent follows once per project.
-   1. **spec.md**: the business, then problem, users, stack, done-when and rules; the agent drafts, you approve (production).
+   1. **project-brief.md**: your idea in your own words, with research; only you change it.
+   1. **spec.md**: the business, then problem, users, stack, done-when and rules, drafted from the brief; you approve (production).
    2. **code-standards.md**: numbered coding rules the pipeline can't check, including the length of docs.
    3. **features.md**: each feature by app, with its status and PR.
    4. **decisions.md**: the decisions in force, why, and what they replaced.
@@ -43,7 +44,7 @@ my-project/
 5. **guides/**: for people: 01 using the template, 02 this tour, 03 accepted risks, 04 each guardrail, 05 removing a project from AWS, 06 the six lifecycle stages and their gates. `assets/` holds the README's images, `flow.html` that renders them, and `social.png`.
 6. **SECURITY.md**: how to report a vulnerability privately.
 7. **LICENSE**: MIT; replace it per project.
-8. **TODO.md**: your inbox of ideas and tasks; in production the agent confirms before starting one, a prototype's just starts.
+8. **TODO.md**: what to work on next, one line each, top first; empty when nothing is planned.
 
 ## 3. Git and ignore files
 

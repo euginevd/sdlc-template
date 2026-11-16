@@ -66,7 +66,7 @@ G0, kickoff, sits before all six, once per project ([docs/kickoff.md](../docs/ki
 
 **Goal:** decide what's worth building, and why, before anyone designs it.
 
-1. **Input:** an item in [TODO.md](../TODO.md), from me, a Maintain finding or a known mistake.
+1. **Input:** [TODO.md](../TODO.md)'s top line, from my brief, a finding or a known mistake.
 2. **Agent:** adds it to `features.md` and asks the few questions that change what gets built, each with a recommendation (AGENTS.md rule 23).
 3. **Security:** name the data it touches and its class; flag users, auth, endpoints, money or new AWS services early.
 4. **Gate:** I accept the item and answer the questions. Production also asks before any new AWS service or cost (rule 22).
