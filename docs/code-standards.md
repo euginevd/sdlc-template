@@ -46,7 +46,7 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 
 ## Containers
 
-22. Images are multi-stage, pinned by digest, run as a non-root user and have a `HEALTHCHECK`; local ports bind to `127.0.0.1`; a missing setting fails at start (`${VAR:?}`), and `.env.example` lists each one. A `.dockerignore` keeps `.env*` and `.git` out of every image. An app's `Dockerfile` in `apps/<app>/`, built from the repo root, is picked up by the `images` workflow, which scans it before pushing it to the app's ECR repository, `<project>/<app>`.
+22. Images are multi-stage, pinned by digest, run as a non-root user and have a `HEALTHCHECK`; local ports bind to `127.0.0.1`; a missing setting fails at start (`${VAR:?}`), and `.env.example` lists each one. A `.dockerignore` keeps `.env*` and `.git` out of every image. The `images` workflow builds each `apps/<app>/Dockerfile` from the repo root and scans it before pushing it to ECR as `<project>/<app>`.
 
 ## Docs
 
@@ -60,3 +60,8 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 27. Styles use `design-system.md`'s tokens as CSS variables, never raw values. Fonts and images are served with the app, never from a third-party CDN; images have explicit dimensions and alt text (empty when decorative).
 28. Every screen has a loading state in its own layout, an empty state that says what to do, and an error state with a retry.
 29. AI output is labelled: show what the agent decided, its reasons and sources, and how to ask for a person to review it.
+
+## Browser tests and MCP
+
+30. Browser tests use Playwright in `e2e/`, with axe for accessibility, against the app running locally. `bash scripts/check.sh e2e` runs them, starting and stopping the app through `e2e/package.json`'s `stack` and `stack:down` scripts.
+31. No MCP server without a decision in `decisions.md`. A script run through the shell comes first: Playwright tests over Playwright MCP. An approved server is pinned like a package (`AGENTS.md` rule 16), set in `.mcp.json`, limited to `localhost` or one environment, read-only where it can be, and never holds secrets or reads untrusted content such as web pages or issues.

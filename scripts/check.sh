@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # One command for the checks CI runs (AGENTS.md rule 3). CI's python and web jobs call this script, so a pass here
 # is a pass there; security.yml runs the same Terraform checks from a pinned image.
-# Usage: bash scripts/check.sh [python|web|terraform|all|itest]; itest runs the tests marked integration.
+# Usage: bash scripts/check.sh [python|web|terraform|all|itest|e2e]; itest runs the tests marked integration,
+# e2e the Playwright tests in e2e/. Neither runs by default, as both are slower.
 # With no argument, it checks what differs from origin/main, committed or not. Paste its last lines as the evidence when reporting a task done (AGENTS.md rule 13).
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
@@ -51,6 +52,16 @@ check_itest() {
   esac
 }
 
+e2e() { npm --prefix e2e "$@"; }
+has_script() { grep -q "\"$1\":" e2e/package.json; }
+check_e2e() {
+  [ -f e2e/package.json ] || { echo "No e2e/ yet: a project with screens adds Playwright tests there."; return 0; }
+  run "e2e npm ci" e2e ci || return 0
+  if has_script stack; then run "e2e stack up" e2e run stack || return 0; fi
+  run "e2e tests" e2e test
+  if has_script stack:down; then e2e run stack:down > /dev/null; fi
+}
+
 tf_validate() { terraform -chdir="$1" init -backend=false -input=false > /dev/null && terraform -chdir="$1" validate; }
 check_terraform() {
   if ! command -v terraform > /dev/null; then
@@ -90,10 +101,10 @@ changed() {
 }
 
 case "${1:-changed}" in
-  python | web | terraform | itest) targets=$1 ;;
+  python | web | terraform | itest | e2e) targets=$1 ;;
   all) targets="python web terraform" ;;
   changed) targets=$(changed) ;;
-  *) echo "Usage: bash scripts/check.sh [python|web|terraform|all|itest]"; exit 2 ;;
+  *) echo "Usage: bash scripts/check.sh [python|web|terraform|all|itest|e2e]"; exit 2 ;;
 esac
 
 [ -n "$targets" ] || { echo "Nothing to check: only docs changed."; exit 0; }

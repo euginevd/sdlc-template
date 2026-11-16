@@ -63,7 +63,7 @@ The push scan: `setup.sh` runs `lefthook install`, which writes `.git/hooks/pre-
 5. **.vscode/extensions.json**: suggests the scanner, Ruff, Python and Terraform extensions.
 6. **.editorconfig**: LF, UTF-8, indent size and a final newline.
 7. **.claude/settings.json**: Claude Code's shared settings: no AI attribution on commits or PRs, and deny rules for force-pushes, skipped hooks, Terraform applies and `.env` reads. `.claude/skills/` holds the review skills AGENTS.md rule 10 uses, `review-security` and `review-design`, and `.claude/agents/verifier.md` the subagent that runs the app to check a change. Local settings and worktrees are git-ignored.
-8. **scripts/check.sh**: runs what CI runs, for what changed; CI's app jobs call it too, and the agent pastes its result when reporting done.
+8. **scripts/check.sh**: runs what CI runs, for what changed, plus `itest` and `e2e` (Playwright, in `e2e/` once a project has screens) on request; CI's app jobs call it too, and the agent pastes its result when reporting done.
 9. **scripts/protect-main.sh**: once, by hand: locks `main`, squash-only merges, security features, apply environments that take `main` only; `production` adds a second reviewer.
 10. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open threads and alerts; replies and resolves threads.
 11. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.

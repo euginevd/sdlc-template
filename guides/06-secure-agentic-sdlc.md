@@ -23,4 +23,4 @@ G0, kickoff, comes once before all six ([docs/kickoff.md](../docs/kickoff.md)). 
 
 ## Next
 
-Not in the template yet, in order: the agent's own GitHub identity, Claude Code hooks for protected paths, evals for the agent's config, DAST on `dev`, signed images, and monitoring with CloudTrail, GuardDuty and alarms.
+Not in the template yet, in order: the agent's own GitHub identity, Claude Code hooks for protected paths, evals for the agent's config, DAST on `dev`, deploy MCP servers per environment behind hooks, signed images, and monitoring with CloudTrail, GuardDuty and alarms.
