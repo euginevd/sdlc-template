@@ -2,7 +2,7 @@
 
 Gate G0, once per project made from the template ([AGENTS.md](../AGENTS.md) rule 7). CI's `kickoff` check fails while a to-fill-in line is left once a profile is set.
 
-1. Run `bash scripts/setup.sh --check` and report it. Read `project-brief.md`; ask the profile and the repo type (personal or portfolio: public; work: private) unless it gives them, and record both in `spec.md`.
+1. Check the one-time setup in [guide 01](../guides/01-using-the-template.md) section 2 is done: run `bash scripts/setup.sh --check`, and ask whether `protect-main.sh` has run and, once AWS is wanted, the bootstrap. Walk the developer through any step that's missing before going on. Read `project-brief.md`; ask the profile and the repo type (personal or portfolio: public; work: private) unless it gives them, and record both in `spec.md`.
 2. If the brief still has lines to fill in, offer two ways: the user edits it, or answers its questions in chat and the agent writes their answers in, in their words, for them to check.
 3. Draft `spec.md` from the brief, ask about gaps that change the build (a prototype fills small ones itself and says so), and put the first item in `TODO.md`.
 4. Replace every other line marked to fill in, in `docs/`, fixing numbered references that move, or delete a doc that doesn't apply. A prototype keeps the starter `threat-model.md` and `costs.md`, deleting only their to-fill-in lines.
