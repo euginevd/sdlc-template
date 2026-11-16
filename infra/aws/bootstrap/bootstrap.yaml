@@ -8,7 +8,7 @@
 # 2. GitHub environments: aws-<Target>-plan, and aws-<Target>-apply with a required reviewer, main only
 #    (scripts/protect-main.sh creates the apply environment that way, and checks it on a rerun).
 #    A production project's reviewer is a second person, with Prevent self-review on, so whoever merged can't approve.
-#    A prototype (AGENTS.md rule 12) leaves the reviewer off aws-dev-apply, so a merge deploys to dev unattended.
+#    A prototype (AGENTS.md rule 4) leaves the reviewer off aws-dev-apply, so a merge deploys to dev unattended.
 # 3. GitHub variables: PROJECT_NAME on the repo; this stack's outputs on the environments (see Outputs).
 # Deploy: a merge to main applies to dev (production: once its reviewer approves); prod is a manual run of the aws workflow.
 # Cleanup: run the aws workflow with destroy for each target, empty the state bucket, delete the CLI user's
@@ -353,9 +353,9 @@ Resources:
         - { Key: Project, Value: !Ref ProjectName }
         - { Key: ManagedBy, Value: CloudFormation }
 
-  # Read-only, for an agent to troubleshoot from logs and settings (AGENTS.md rules 17 and 28): AWS's
+  # Read-only, for an agent to troubleshoot from logs and settings (AGENTS.md rule 4, docs/deploy.md): AWS's
   # ReadOnlyAccess, so it can't change anything. In dev it reads values too, as every value there is made
-  # up; in any other target it reads logs and settings but not the data itself (AGENTS.md rule 26).
+  # up; in any other target it reads logs and settings but not the data itself (AGENTS.md rule 4).
   # Anyone in this account allowed sts:AssumeRole on it can use it.
   TroubleshootRole:
     Type: AWS::IAM::Role

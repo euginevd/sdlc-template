@@ -59,25 +59,33 @@ jobs:
         run: |
           grep -qE '^Profile: .(prototype|production).' docs/spec.md || { echo "No profile yet: kickoff isn't finished, nothing to check."; exit 0; }
           if grep -rnF --include='*.md' '*(to fill in)*' docs/; then
-            echo "::error::Kickoff left the lines above unfilled (AGENTS.md rule 13): write each one, or delete it."
+            echo "::error::Kickoff left the lines above unfilled (AGENTS.md rule 7): write each one, or delete it."
             exit 1
           fi
           echo "Every to-fill-in line in docs/ is written."
       # Every session reads AGENTS.md and docs/, so their length is checked, not left to a rule (code-standards 23).
       - name: Docs within their length
+        # wc counts words by locale; set it so a local run counts the same as CI.
+        env:
+          LC_ALL: C.UTF-8
         run: |
           code=0
           check() {
             words=$(wc -w < "$1")
             [ "$words" -le "$2" ] || { echo "::error file=$1::$1 is $words words, over its $2 (code-standards 23): cut or link."; code=1; }
           }
-          check AGENTS.md 1750
+          check AGENTS.md 1300
           check README.md 1200
           for f in docs/*.md; do check "$f" 1000; done
           for f in guides/*.md; do check "$f" 2500; done
+          # What the agent reads every session (AGENTS.md rule 1), together.
+          km=$(awk '/^## (Repo|Docs)$/{f=1;print;next} /^## /{f=0} f' docs/known-mistakes.md | wc -w)
+          total=$(( $(cat AGENTS.md docs/project-brief.md docs/spec.md docs/features.md TODO.md | wc -w) + km ))
+          [ "$total" -le 3500 ] || { echo "::error::The every-session docs are $total words, over 3500 (code-standards 23): cut or link."; code=1; }
+          echo "Every-session docs: $total of 3500 words."
           exit $code
 
-  # Agents edit the workflows and scripts (AGENTS.md rule 10), so each change is linted: actionlint for
+  # Agents edit the workflows and scripts (AGENTS.md rule 3), so each change is linted: actionlint for
   # syntax, expressions and the shell in run steps, zizmor for injection, credentials and permissions,
   # shellcheck for the repo's scripts at warning level. All from pinned images, offline.
   workflows:
@@ -111,14 +119,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      # The same script the agent runs before reporting done (AGENTS.md rule 3), so local and CI can't drift.
       - name: Format, lint, types and tests
         if: hashFiles('pyproject.toml') != ''
-        run: |
-          uv sync --locked
-          uv run ruff format --check
-          uv run ruff check
-          uv run pyright
-          uv run pytest -q
+        run: bash scripts/check.sh python
 
   web:
     needs: changes
@@ -132,10 +136,4 @@ jobs:
           persist-credentials: false
       - name: Lint, types, tests and build
         if: hashFiles('apps/web/package-lock.json') != ''
-        working-directory: apps/web
-        run: |
-          npm ci
-          npm run lint
-          npm run typecheck
-          npm test
-          npm run build
+        run: bash scripts/check.sh web

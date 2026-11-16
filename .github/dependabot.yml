@@ -1,4 +1,4 @@
-# Weekly update PRs for pinned versions, one per ecosystem; a release must be 7 days old (AGENTS.md rule 24).
+# Weekly update PRs for pinned versions, one per ecosystem; a release must be 7 days old (AGENTS.md rule 16).
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -16,7 +16,7 @@ updates:
     schedule: { interval: weekly }
     cooldown: { default-days: 7 }
     groups: { terraform: { patterns: ["*"] } }
-  # Add one entry per ecosystem a new app brings (AGENTS.md rule 10), in the same form. An `ignore` holds
+  # Add one entry per ecosystem a new app brings (AGENTS.md rule 3), in the same form. An `ignore` holds
   # back updates that need a person, with the reason beside it. For example:
   # - package-ecosystem: npm
   #   directories: ["/apps/web"]

@@ -1,6 +1,6 @@
 # Spec
 
-A starter: it describes the sample the template ships, a health-check API, and each line marked to fill in says what to write. Kickoff fills it in from your notes. In `production` the user approves every change; a `prototype`'s agent makes them itself and says so ([AGENTS.md](../AGENTS.md) rules 12 and 23). New requirements start in [TODO.md](../TODO.md); once one is approved (a prototype's agent takes them as they come), the agent adds it to [features.md](features.md) and any rule, limit or done-when it needs here. What each feature does is its row in `features.md`, not a line here.
+What gets built, agreed from [project-brief.md](project-brief.md) at kickoff and changed as each item is approved ([AGENTS.md](../AGENTS.md) rules 4 and 8). It starts out describing the template's sample, a health-check API. What each feature does is its row in [features.md](features.md), not a line here.
 
 ## Business
 
@@ -22,16 +22,21 @@ Profile: *(to fill in)* `prototype` or `production`.
 Repo: *(to fill in)* `personal` (public) or `work` (private).
 
 1. Name: `starter`
-2. Problem: *(to fill in)* what's slow, costly or missing today, and for whom.
+2. Problem: *(to fill in)* the brief's Why, as agreed.
 3. Goal: *(to fill in)* what's true once this works.
-4. Users: *(to fill in)* who uses it, and what each of them does.
+4. Users: *(to fill in)* the brief's Who, as agreed: each kind of user and what they do.
 5. AWS: *(to fill in)* the accounts, region and environments. The pipeline deploys `dev` on merge and `prod` by hand.
 
 ## Stack
 
 Template defaults: GitHub Actions, Terraform on AWS, the pre-push scan and the PR security checks.
 
+Each app with its language, how to run it locally, what it may and may never call, and each outside service's limits.
+
 6. `api`: Python on Lambda behind an HTTP API, the template's sample. Keep it, build on it or replace it.
+   - Run: no local server; its tests exercise the handler, and on `dev` it's `GET <api url>/health`.
+   - Talks to: nothing; only the HTTP API calls it.
+   - Outside limits: none.
 
 ## Done when
 

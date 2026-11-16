@@ -11,7 +11,7 @@ Pick a prototype the agent builds and ships on its own, or a production system w
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="guides/assets/flow-dark.png">
-  <img src="guides/assets/flow.png" width="900" alt="Six stages, kick off to release, on two tracks. Prototype: no stops; the agent drafts the docs at kickoff, plans, builds with main-path tests at 50% coverage, merges on green checks and the pipeline applies to dev on merge; there is no prod. Production: you approve the spec, threat model and costs, then the plan; the agent builds with abuse-case tests at 80% coverage and a review per phase; a second reviewer approves the PR, the dev apply and the prod release. Always on in both: Gitleaks and Trivy before every push, Semgrep, Checkov, CodeQL and app tests on every PR, a full rescan and SBOM on main and weekly, pipeline-only deploys over OIDC with no stored keys, and actual cost checked the day after a deploy.">
+  <img src="guides/assets/flow.png" width="900" alt="Six stages, kick off to release, on two tracks. Prototype: one stop, your yes to each item; the agent drafts the docs at kickoff, builds with main-path tests at 50% coverage, merges on green checks and the pipeline applies to dev on merge; there is no prod. Production: you approve the spec, threat model and costs, then the plan; the agent builds with abuse-case tests at 80% coverage and a review per phase; a second reviewer approves the PR, the dev apply and the prod release. Always on in both: Gitleaks and Trivy before every push, Semgrep, Checkov, CodeQL and app tests on every PR, a full rescan and SBOM on main and weekly, pipeline-only deploys over OIDC with no stored keys, and actual cost checked the day after a deploy.">
 </picture>
 
 </div>
@@ -37,11 +37,11 @@ Then tell your coding agent:
 
 > Kick off my-project: *your notes on the business, the problem, the users and the stack*
 
-It checks your machine and asks whether this is a prototype or production. A prototype's agent then drafts the docs from your notes and keeps going: *"Build the sign-up page"* builds it, opens the PR, merges and ships it to `dev` without another word from you. In production it waits for your approval at each gate, and *"Commit and push"* starts the PR. Every step: [guides/01-using-the-template.md](guides/01-using-the-template.md).
+It checks your machine and asks whether this is a prototype or production. A prototype's agent then drafts the docs from your notes and keeps going: *"Build the sign-up page"* builds it, and once you say the batch is ready, opens one PR, merges and ships it to `dev`. In production it waits for your approval at each gate, and *"Commit and push"* starts the PR. Every step: [guides/01-using-the-template.md](guides/01-using-the-template.md).
 
 ## Two profiles
 
-You pick one at kickoff. The agent works on its own between gates and stops at the ones its profile has ([AGENTS.md](AGENTS.md) rule 12).
+You pick one at kickoff. The agent works on its own between gates and stops at the ones its profile has ([AGENTS.md](AGENTS.md) rule 5).
 
 | | Prototype: speed first | Production: gates at key stages |
 |---|---|---|
@@ -53,7 +53,7 @@ You pick one at kickoff. The agent works on its own between gates and stops at t
 | When unsure | The agent decides, records it and says so | The agent asks |
 | Commits, PRs, merges | The agent, unasked | Only when you ask |
 
-A prototype still stops before spending past the monthly limit in the spec, before weakening its own floor (no direct AWS changes, no secrets in output, no skipped hooks, no AI attribution), and before real users, customer data or payments. In both, one branch holds a session's work. New cloud services start as a small deploy to `dev`, one at a time, and actual cost is checked the day after. Moving a prototype up is one prompt and `bash scripts/protect-main.sh production`.
+A prototype still stops before spending past the monthly limit in the spec, before weakening its own floor (no direct AWS changes, no secrets in output, no skipped hooks, no AI attribution), and before real users, customer data or payments. New cloud services start as a small deploy to `dev`, and actual cost is checked the day after. Moving a prototype up: [guide 01](guides/01-using-the-template.md) section 7.
 
 ## What's inside
 
@@ -84,6 +84,7 @@ What it doesn't cover is written down too: [guides/03-security-trade-offs.md](gu
 2. [The files](guides/02-the-files.md): what every file is and why it's there.
 3. [Security trade-offs](guides/03-security-trade-offs.md): the risks the template accepts, and the fix for each.
 4. [The guardrails](guides/04-the-guardrails.md): how each control in the checklist works, stage by stage.
-5. [Cleaning up AWS](guides/05-aws-cleanup.md): removing a project from AWS so nothing is charged, and proving it.
+5. [Cleaning up AWS](guides/05-aws-cleanup.md): removing a project from AWS, and proving nothing is charged.
+6. [The secure agentic SDLC](guides/06-secure-agentic-sdlc.md): the six stages, with each stage's controls and gates.
 
 To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md); report vulnerabilities through [SECURITY.md](SECURITY.md). [MIT licence](LICENSE).

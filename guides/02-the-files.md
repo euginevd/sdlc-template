@@ -29,21 +29,22 @@ my-project/
 2. **CONTRIBUTING.md**: how a person or agent sets up and makes a change.
 3. **AGENTS.md**: the rules every coding agent follows, with the gates for each profile; changes rarely. Kept short, as every session reads it.
 4. **docs/**: the project context agents read and keep current:
-   1. **kickoff.md**: the steps of kickoff, which the agent follows once per project.
-   1. **spec.md**: the business, then problem, users, stack, done-when and rules; the agent drafts, you approve (production).
-   2. **code-standards.md**: numbered coding rules the pipeline can't check, including the length of docs.
+   1. **kickoff.md**, **pull-requests.md**, **deploy.md**: the steps for kickoff, a PR and a deploy, which the agent opens when it reaches each.
+   1. **project-brief.md**: your idea in your own words, with research; you write it, or answer in chat at kickoff and the agent writes it for you to check.
+   1. **spec.md**: the business, then problem, users, stack, done-when and rules, drafted from the brief; you approve (production).
+   2. **code-standards.md**: numbered coding rules, most of which the pipeline can't check.
    3. **features.md**: each feature by app, with its status and PR.
    4. **decisions.md**: the decisions in force, why, and what they replaced.
-   5. **known-mistakes.md**: mistakes an agent has made, each with its fix, by area; the agent reads an area's before working in it.
+   5. **known-mistakes.md**: mistakes an agent has made, each with its fix, by area, with AWS and DSQL in `known-mistakes/aws.md`; the agent reads an area's before working in it.
    6. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks and spend; optional.
    7. **checklist.md**: the guardrails by DevSecOps stage and profile, to clear before go-live.
    8. **skeleton-plan.md**: the outline each plan is copied from.
    9. **plan-\<name\>.md**, **mockups/\<name\>.html**: the plan being built and its screens; deleted when done.
    10. **mockups/mvp.html**: the MVP's screens from kickoff; deleted once all are built.
-5. **guides/**: for people: 01 using the template, 02 this tour, 03 accepted risks, 04 each guardrail, 05 removing a project from AWS. `assets/` holds the README's images, `flow.html` that renders them, and `social.png`.
+5. **guides/**: for people: 01 using the template, 02 this tour, 03 accepted risks, 04 each guardrail, 05 removing a project from AWS, 06 the six lifecycle stages and their gates. `assets/` holds the README's images, `flow.html` that renders them, and `social.png`.
 6. **SECURITY.md**: how to report a vulnerability privately.
 7. **LICENSE**: MIT; replace it per project.
-8. **TODO.md**: your inbox of ideas and tasks; in production the agent confirms before starting one, a prototype's just starts.
+8. **TODO.md**: what to work on next, one line each, top first; empty when nothing is planned.
 
 ## 3. Git and ignore files
 
@@ -61,12 +62,13 @@ The push scan: `setup.sh` runs `lefthook install`, which writes `.git/hooks/pre-
 4. **.lefthook/pre-push-scan.sh**: scans the pushed commits with gitleaks (secrets) and Trivy (packages, IaC); a finding blocks the push.
 5. **.vscode/extensions.json**: suggests the scanner, Ruff, Python and Terraform extensions.
 6. **.editorconfig**: LF, UTF-8, indent size and a final newline.
-7. **.claude/settings.json**: Claude Code's shared settings: no AI attribution on commits or PRs, and deny rules for force-pushes, skipped hooks, Terraform applies and `.env` reads. Local settings and worktrees are git-ignored.
-8. **scripts/protect-main.sh**: once, by hand: locks `main`, squash-only merges, security features, apply environments that take `main` only; `production` adds a second reviewer.
-9. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open threads and alerts; replies and resolves threads.
-10. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
-11. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment.
-12. **scripts/tests/**: tests for the two report scripts; they run with the apps' tests.
+7. **.claude/settings.json**: Claude Code's shared settings: no AI attribution on commits or PRs, and deny rules for force-pushes, skipped hooks, Terraform applies and `.env` reads. `.claude/skills/` holds the review skills AGENTS.md rule 10 uses, `review-security` and `review-design`, and `.claude/agents/verifier.md` the subagent that runs the app to check a change. Local settings and worktrees are git-ignored.
+8. **scripts/check.sh**: runs what CI runs, for what changed; CI's app jobs call it too, and the agent pastes its result when reporting done.
+9. **scripts/protect-main.sh**: once, by hand: locks `main`, squash-only merges, security features, apply environments that take `main` only; `production` adds a second reviewer.
+10. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open threads and alerts; replies and resolves threads.
+11. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
+12. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment.
+13. **scripts/tests/**: tests for the two report scripts; they run with the apps' tests.
 
 ## 5. App code
 
@@ -78,7 +80,7 @@ One folder per app in `apps/`: Python has `pyproject.toml`, `src/<name>/` and `t
 4. **apps/api/tests/test_handler.py**: two tests: one that it works, one that it's safe.
 5. **.coverage**, **.pytest_cache/**, **.ruff_cache/**, **\_\_pycache\_\_/**: git-ignored tool output; safe to delete.
 
-Tests run with `uv run pytest` locally, or in CI on every PR. They fail on any failed test, or on coverage under `fail_under` (80%, or 50% for a prototype).
+Tests run with `bash scripts/check.sh` locally, or in CI on every PR. They fail on any failed test, or on coverage under `fail_under` (80%, or 50% for a prototype).
 
 ## 6. CI/CD (.github/)
 

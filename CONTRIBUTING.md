@@ -17,7 +17,7 @@
 
 1. Start from the spec: a change it doesn't cover starts with an update to [docs/spec.md](docs/spec.md).
 2. Follow the project's profile: [guides/01-using-the-template.md](guides/01-using-the-template.md), section 4 for a `prototype`, section 5 for `production`.
-3. Never push to `main` or skip the pre-push scan.
+3. Run `bash scripts/check.sh` before pushing; it runs what CI runs. Never push to `main` or skip the pre-push scan.
 
 ## Pull requests
 

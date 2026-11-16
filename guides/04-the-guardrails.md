@@ -18,7 +18,7 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 **Tool:** `docs/costs.md`. **Profile:** production; a prototype keeps the starter's.
 
 - **Does:** estimates each environment's monthly cost by service, against a monthly limit.
-- **When:** at kickoff, and whenever a plan adds a service or cost (AGENTS.md rule 22).
+- **When:** at kickoff, and whenever a plan adds a service or cost (AGENTS.md rule 4).
 - **On a finding:** you approve the estimate or change the plan.
 - **Limits:** an estimate, not a bill; data transfer and model tokens are hardest to predict.
 
@@ -44,7 +44,7 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 **Tool:** `AGENTS.md`, the agent tool's permission settings, and for production the agent's own GitHub account. **Profile:** both.
 
-- **Does:** `AGENTS.md` holds the rules every agent reads (rules 25 and 26: never touch secrets, cloud resources or hooks). `.claude/settings.json` enforces what Claude Code can: it denies force-pushes, `--no-verify`, `terraform apply` and `destroy`, and `.env` reads (a prototype drops the last at kickoff), and turns off AI attribution on commits and PRs (rule 29).
+- **Does:** `AGENTS.md` holds the rules every agent reads (rules 4 and 14: never touch secrets, cloud resources or hooks). `.claude/settings.json` enforces what Claude Code can: it denies force-pushes, `--no-verify`, `terraform apply` and `destroy`, and `.env` reads (a prototype drops the last at kickoff), and turns off AI attribution on commits and PRs (rule 15).
 - **When:** in every session.
 - **On a finding:** hooks and required checks catch a broken rule; add a known mistake to `docs/known-mistakes.md`.
 - **Limits:** deny rules match how a command starts, so a reworded command can slip past; other agents need their own settings (trade-offs 2). The only AWS key on the agent's machine is the read-only troubleshoot user's (trade-offs 14); while it works as you on GitHub, its actions look like yours (trade-offs 1).
@@ -72,7 +72,7 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 **Tool:** pins in the workflows, `exclude-newer` in `pyproject.toml`, `cooldown` in `dependabot.yml`, and the `sbom` job. **Profile:** both.
 
-- **Does:** actions are pinned by commit and images by digest. Packages wait 7 days before use, unless a release fixes a named vulnerability (AGENTS.md rule 24). Trivy builds a CycloneDX SBOM from the lock files.
+- **Does:** actions are pinned by commit and images by digest. Packages wait 7 days before use, unless a release fixes a named vulnerability (AGENTS.md rule 16). Trivy builds a CycloneDX SBOM from the lock files.
 - **When:** pins and the wait on every install; the SBOM on every push to `main`.
 - **On a finding:** nothing fails; these prevent. The SBOM is under the `main` run's Artifacts.
 - **Limits:** the SBOM isn't signed and GitHub deletes it after 90 days; for production, keep it with a release or in S3. Signing, SLSA provenance and a licence policy aren't in the template yet.
@@ -153,10 +153,10 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 **Tool:** a required reviewer on each `aws-<env>-apply` environment. **Profile:** production.
 
-- **Does:** holds every apply until a second reviewer approves it, after the plan and cost comment (AGENTS.md rule 12, G3 and G4).
+- **Does:** holds every apply until a second reviewer approves it, after the plan and cost comment (AGENTS.md rule 5, G3 and G4).
 - **When:** on every apply, `dev` and `prod`.
 - **On a finding:** the reviewer rejects the run and nothing applies.
-- **Limits:** a prototype leaves the reviewer off, so `dev` applies unattended; it has no `prod` (AGENTS.md rule 27).
+- **Limits:** a prototype leaves the reviewer off, so `dev` applies unattended; it has no `prod` (AGENTS.md rule 4).
 
 ## 18. Deploy: runtime secrets
 
@@ -174,7 +174,7 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 - **Does:** non-public endpoints need a signed-in caller: a JWT authoriser for users, IAM for services (known-mistakes 9). WAF blocks common attacks; CORS allows only your origins.
 - **When:** on every request.
 - **On a finding:** `401` unauthenticated, `403` blocked; DAST (10, 11) checks they hold.
-- **Limits:** not in the template yet; `/health` is public by design. WAF costs monthly, so ask first (AGENTS.md rule 22).
+- **Limits:** not in the template yet; `/health` is public by design. WAF costs monthly, so ask first (AGENTS.md rule 4).
 
 ## 20. Operate: weekly re-scans
 
@@ -219,4 +219,4 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 - **Does:** GuardDuty spots stolen credentials, mining and bad addresses. Alarms watch errors, `5xx`, throttling and latency.
 - **When:** all the time.
 - **On a finding:** follow the project's incident runbook: contain, rotate and restore.
-- **Limits:** not in the template yet. GuardDuty costs after 30 days, so ask first (AGENTS.md rule 22).
+- **Limits:** not in the template yet. GuardDuty costs after 30 days, so ask first (AGENTS.md rule 4).
