@@ -116,14 +116,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      # The same script the agent runs before reporting done (AGENTS.md rule 3), so local and CI can't drift.
       - name: Format, lint, types and tests
         if: hashFiles('pyproject.toml') != ''
-        run: |
-          uv sync --locked
-          uv run ruff format --check
-          uv run ruff check
-          uv run pyright
-          uv run pytest -q
+        run: bash scripts/check.sh python
 
   web:
     needs: changes
@@ -137,10 +133,4 @@ jobs:
           persist-credentials: false
       - name: Lint, types, tests and build
         if: hashFiles('apps/web/package-lock.json') != ''
-        working-directory: apps/web
-        run: |
-          npm ci
-          npm run lint
-          npm run typecheck
-          npm test
-          npm run build
+        run: bash scripts/check.sh web
