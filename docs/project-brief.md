@@ -1,8 +1,8 @@
-# Project brief
+# *(to fill in)* the repo's name
 
-Owner: *(to fill in)* · Status: *(to fill in)* Idea, Building or Live · Started: *(to fill in)* · Updated: *(to fill in)*
+Profile: *(to fill in)* `prototype` or `production` · Owner: *(to fill in)* · Status: *(to fill in)* Idea, Building or Live · Started: *(to fill in)* · Updated: *(to fill in)*
 
-Your idea in your own words, written before kickoff and updated when it changes. The agent drafts [spec.md](spec.md) from it and asks about anything unclear, but only you change this file; where the two differ, the spec is what gets built. The repo may be public, so no real balances, keys or personal details: those stay in `local/`, which git ignores.
+The project brief: your idea in your own words, written before kickoff and updated when it changes. The agent drafts [spec.md](spec.md) from it and asks about anything unclear, but only you change this file; where the two differ, the spec is what gets built. The repo may be public, so no real balances, keys or personal details: those stay in `local/`, which git ignores.
 
 ## Brief
 
