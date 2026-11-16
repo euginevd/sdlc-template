@@ -34,7 +34,7 @@ my-project/
    2. **code-standards.md**: numbered coding rules the pipeline can't check, including the length of docs.
    3. **features.md**: each feature by app, with its status and PR.
    4. **decisions.md**: the decisions in force, why, and what they replaced.
-   5. **known-mistakes.md**: mistakes an agent has made, each with its fix, by area; the agent reads an area's before working in it.
+   5. **known-mistakes.md**: mistakes an agent has made, each with its fix, by area, with AWS and DSQL in `known-mistakes/aws.md`; the agent reads an area's before working in it.
    6. **design-system.md**, **threat-model.md**, **costs.md**: UI, risks and spend; optional.
    7. **checklist.md**: the guardrails by DevSecOps stage and profile, to clear before go-live.
    8. **skeleton-plan.md**: the outline each plan is copied from.

@@ -37,7 +37,7 @@ Then tell your coding agent:
 
 > Kick off my-project: *your notes on the business, the problem, the users and the stack*
 
-It checks your machine and asks whether this is a prototype or production. A prototype's agent then drafts the docs from your notes and keeps going: *"Build the sign-up page"* builds it, opens the PR, merges and ships it to `dev` without another word from you. In production it waits for your approval at each gate, and *"Commit and push"* starts the PR. Every step: [guides/01-using-the-template.md](guides/01-using-the-template.md).
+It checks your machine and asks whether this is a prototype or production. A prototype's agent then drafts the docs from your notes and keeps going: *"Build the sign-up page"* builds it, and once you say the batch is ready, opens one PR, merges and ships it to `dev`. In production it waits for your approval at each gate, and *"Commit and push"* starts the PR. Every step: [guides/01-using-the-template.md](guides/01-using-the-template.md).
 
 ## Two profiles
 
