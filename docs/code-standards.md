@@ -14,7 +14,7 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 
 6. Handle an error only where you can do something useful with it; otherwise let it surface.
 7. Fail closed: when a security or payment check can't complete, deny.
-8. Log structured JSON with a request ID. Never put secrets or personal data in logs or error messages; redact at the source. In production, every state-changing action emits an audit event: actor, action, entity and time.
+8. Log structured JSON with a request ID; keep secrets and personal data out of logs and error messages, redacted at the source. In production, every state-changing action emits an audit event: actor, action, entity and time.
 
 ## Safe by design
 
@@ -46,11 +46,11 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 
 ## Containers
 
-22. Images are multi-stage, pinned by digest, run as a non-root user and have a `HEALTHCHECK`; local ports bind to `127.0.0.1`; a missing setting fails at start (`${VAR:?}`), and `.env.example` lists each one. A `.dockerignore` keeps `.env*` and `.git` out of every image. An app's `Dockerfile` in `apps/<app>/`, built from the repo root, is picked up by the `images` workflow, which scans it before pushing it to the app's ECR repository, `<project>/<app>`.
+22. Images are multi-stage, pinned by digest, run as a non-root user and have a `HEALTHCHECK`; local ports bind to `127.0.0.1`; a missing setting fails at start (`${VAR:?}`), and `.env.example` lists each one. A `.dockerignore` keeps `.env*` and `.git` out of every image. The `images` workflow builds each `apps/<app>/Dockerfile` from the repo root and scans it before pushing it to ECR as `<project>/<app>`.
 
 ## Docs
 
-23. Each fact lives in one place; everywhere else links to it. Write what's true now; mark future work *(planned)*. Keep docs short, as numbered points or tables: each point or cell is at most two short sentences. What an agent reads stays short: 1,000 words for a doc in `docs/`, 1,300 for `AGENTS.md`, and 3,500 for everything read every session (`AGENTS.md` rule 1) together; the README 1,200 and a guide 2,500. CI's `kickoff` check fails past that, so cut or link rather than add.
+23. Each fact lives in one place; everywhere else links to it. Write what's true now; mark future work *(planned)*. Use numbered points or tables, each point or cell at most two short sentences. What an agent reads stays short: 1,000 words for a doc in `docs/`, 1,300 for `AGENTS.md`, and 3,500 for everything read every session (`AGENTS.md` rule 1) together; the README 1,200 and a guide 2,500. CI's `kickoff` check fails past that, so cut or link rather than add.
 24. Root files are uppercase (`README.md`, `AGENTS.md`); everything in `docs/` and `guides/` is lowercase kebab-case.
 
 ## Web UI
@@ -60,3 +60,8 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 27. Styles use `design-system.md`'s tokens as CSS variables, never raw values. Fonts and images are served with the app, never from a third-party CDN; images have explicit dimensions and alt text (empty when decorative).
 28. Every screen has a loading state in its own layout, an empty state that says what to do, and an error state with a retry.
 29. AI output is labelled: show what the agent decided, its reasons and sources, and how to ask for a person to review it.
+
+## Browser tests and MCP
+
+30. Browser tests: Playwright, with axe, in `e2e/`. `bash scripts/check.sh e2e` runs them, starting and stopping the app with `e2e/package.json`'s `stack` and `stack:down` scripts.
+31. No MCP server without a decision in `decisions.md`; a shell script comes first, such as Playwright tests over Playwright MCP. An approved one is pinned (`AGENTS.md` rule 16), set in `.mcp.json`, limited to `localhost` or one environment, read-only where it can be, and reads no secrets or untrusted content such as web pages or issues. Prefer its code mode, if it has one, with the agent's code sandboxed to the server's limits.
