@@ -55,16 +55,15 @@ Colours in OKLCH, light and dark, following the system setting with a toggle.
 20. Purple-blue gradients, gradient text, glassmorphism and glows.
 21. Emoji, sparkle icons and "AI-powered" badges.
 22. A centred hero over three feature cards; every block in a shadowed rounded card.
-23. Placeholder copy, stock illustration and generated images.
 
 ## Words
 
-24. Plain and specific, in sentence case. Buttons say what happens ("Send invoice"); errors say what to do next.
+23. Plain and specific, in sentence case. Buttons say what happens ("Send invoice"); errors say what to do next.
 
 ## This project
 
-25. Locale: *(to fill in)* language, currency and date format. Numbers are rounded to at most 2 decimal places; money always shows 2.
-26. Shell: *(to fill in)* the navigation and page layout.
-27. Screens: *(to fill in)* one line for each key screen: what's on it and what stands out.
-28. Charts: a line for trends, a bar for comparisons, `ink-3` axes, `accent` for the series in focus, and a table view of the same numbers.
-29. Status: *(to fill in)* each status with its word, icon and colour token.
+24. Locale: *(to fill in)* language, currency and date format. Numbers are rounded to at most 2 decimal places; money always shows 2.
+25. Shell: *(to fill in)* the navigation and page layout.
+26. Screens: *(to fill in)* one line for each key screen: what's on it and what stands out.
+27. Charts: a line for trends, a bar for comparisons, `ink-3` axes, `accent` for the series in focus, and a table view of the same numbers.
+28. Status: *(to fill in)* each status with its word, icon and colour token.

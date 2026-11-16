@@ -1,6 +1,6 @@
 # Features
 
-The agreed features, by app and audience; the agent adds a row when you approve one and updates its status with the work. New requirements start in [TODO.md](../TODO.md), and so do known gaps. Each row here is what the feature does; the rules every feature keeps are in [spec.md](spec.md). How to run it: the README. Numbered across the file so reviews can cite them (features 2). One row per feature, and one PR per row: the one that first built it.
+What each app does, one row per feature, added when you approve its TODO item ([AGENTS.md](../AGENTS.md) rule 8). The rules every feature keeps are in [spec.md](spec.md). Numbered across the file so reviews can cite them (features 2); the PR is the one that first built it.
 
 | App | For | Link |
 |---|---|---|

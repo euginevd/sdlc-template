@@ -20,10 +20,6 @@ Each risk with its control and its threat-model ID, or "None: touches no users, 
 - [ ] Tests cover it (prototype: the main path; production: abuse cases too)
 - [ ] Checks pass and the subagent review is clean (prototype: one review, after the last phase)
 
-## PR groups
-
-1. Phases 1–2: <title>, one branch per work session (AGENTS.md, the box at the top)
-
 ## Ask first
 
-New AWS services, costs or rule changes: production needs a yes before building (AGENTS.md rule 4); a prototype lists what it decided. New packages, each checked as rule 16 says.
+New AWS services, costs, packages or rule changes, each with why: production needs a yes before building; a prototype lists what it decided (AGENTS.md rule 4).
