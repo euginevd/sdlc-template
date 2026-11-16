@@ -53,7 +53,7 @@ One TODO item at a time. Once you approve its spec and mockup, nothing else wait
 |---------|-----------|-----|
 | *"Build `<the work>`"*, once you approve its spec and mockup | Builds on the session's one branch: code, main-path tests, local checks, `features.md` and `TODO.md` | Interrupt if the direction is wrong |
 | | New cloud service: deploys a walking skeleton to `dev` first, one service at a time ([docs/deploy.md](../docs/deploy.md)) | |
-| | A fresh subagent reviews the whole branch; it fixes what it blocks and reports | Try it; ask for more |
+| | A fresh subagent reviews the whole branch with the `review-security` and, for UI, `review-design` skills; the agent fixes what it blocks and reports | Try it; ask for more |
 | | Once you say the batch is ready, or the session ends, and the local checks pass: commits, pushes (the pre-push scan runs), opens one PR, fixes the findings and squash-merges once checks pass | |
 | | The pipeline deploys to `dev`; first-deploy fixes stay on one branch until green, then it smoke-tests | Try it in `dev` |
 | | The day after a deploy, compares actual cost with `costs.md` | Read the report |

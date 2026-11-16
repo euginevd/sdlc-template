@@ -18,7 +18,7 @@ Each risk with its control and its threat-model ID, or "None: touches no users, 
 - [ ] <a result someone can check>
 - [ ] New cloud service: a walking skeleton applied to `dev` and called once ([deploy.md](deploy.md))
 - [ ] Tests cover it (prototype: the main path; production: abuse cases too)
-- [ ] Checks pass and the subagent review is clean (prototype: one review, after the last phase)
+- [ ] Checks pass and the `review-security` (and, for UI, `review-design`) review is clean (prototype: one review, after the last phase)
 
 ## Ask first
 
