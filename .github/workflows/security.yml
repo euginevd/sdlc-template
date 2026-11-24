@@ -1,7 +1,7 @@
 name: security
 
-# The pre-push scan again on every PR and main (a hook can be skipped), plus Checkov, Semgrep and
-# terraform validate. Tools run from pinned container images, so no third-party action code runs in the pipeline.
+# The pre-push scan again on every PR and main (a hook can be skipped), plus Checkov, Semgrep,
+# terraform validate and tflint. Tools run from pinned container images, so no third-party action code runs in the pipeline.
 # Each scan marks its findings on the PR's changed lines; the report job posts one summary comment.
 # On a PR, Gitleaks scans only the PR's commits and Semgrep reports only findings the PR adds;
 # main and the weekly run scan everything, so nothing older is missed.
@@ -84,6 +84,15 @@ jobs:
             { tf "$dir" init -backend=false -input=false > /dev/null && tf "$dir" validate; } || code=1
           done
           exit $code
+      # AWS mistakes validate can't see, such as an invalid instance type or a retired Lambda runtime.
+      # The token only lifts GitHub's rate limit on downloading the AWS ruleset, whose signature tflint checks.
+      - name: tflint
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          docker run --rm --entrypoint sh -e GITHUB_TOKEN -v "$PWD:/repo" -w /repo/infra/aws ghcr.io/terraform-linters/tflint:v0.65.0@sha256:2788f4d4fc663c0e953b011b01bf443fe5bfce7587ee916e588e6057b85d6359 \
+            -c 'tflint --init --config /repo/infra/aws/.tflint.hcl && tflint --recursive --config /repo/infra/aws/.tflint.hcl'
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:

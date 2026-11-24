@@ -46,14 +46,14 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 - **Does:** `AGENTS.md` holds the rules every agent reads (rules 4 and 14: never touch secrets, cloud resources or hooks). `.claude/settings.json` enforces what Claude Code can: it denies force-pushes, `--no-verify`, `terraform apply` and `destroy`, and `.env` reads (a prototype drops the last at kickoff), and turns off AI attribution on commits and PRs (rule 15).
 - **When:** in every session.
-- **On a finding:** hooks and required checks catch a broken rule; add a known mistake to `docs/known-mistakes.md`.
+- **On a finding:** hooks and required checks catch a broken rule: the commit hook and the `rules` check fail on AI attribution, and on a numbered reference that points at the wrong item. Add a known mistake to `docs/known-mistakes.md`.
 - **Limits:** deny rules match how a command starts, so a reworded command can slip past; other agents need their own settings (trade-offs 2). The only AWS key on the agent's machine is the read-only troubleshoot user's (trade-offs 14); while it works as you on GitHub, its actions look like yours (trade-offs 1).
 
 ## 6. Build: secrets, SCA and IaC scanning
 
 **Tool:** Gitleaks, Trivy and Checkov, in `.github/workflows/security.yml`. **Profile:** both.
 
-- **Does:** the pre-push scans again, plus Checkov and `terraform fmt` and `validate`.
+- **Does:** the pre-push scans again, plus Checkov, `terraform fmt` and `validate`, and tflint for AWS mistakes `validate` can't see, such as an invalid instance type or a retired Lambda runtime.
 - **When:** on every PR, on `main` and weekly, so a vulnerability published after a merge still fails a run.
 - **On a finding:** a required check fails; findings are marked on the PR and listed by `bash scripts/pr-findings.sh <pr>`.
 - **Limits:** scans files, not images; the `images` workflow scans each built image before it reaches ECR.

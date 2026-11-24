@@ -1,0 +1,35 @@
+name: rules
+
+# AGENTS.md rules that a check can hold, so they don't depend on the agent remembering:
+# numbered references still point at the right item, and no AI attribution in commits or the PR
+# description (rule 15). Reruns when the description is edited, so fixing it clears the check.
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  rules:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      # HEAD is the PR merged into main; its first parent is main and its second the PR's last commit.
+      - name: Numbered references
+        if: always()
+        run: python3 scripts/check-refs.py HEAD^1
+      # Dependabot's PRs quote upstream release notes, which can carry another project's footer.
+      - name: No AI attribution
+        if: ${{ !cancelled() && github.event.pull_request.user.login != 'dependabot[bot]' }}
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          dir=$(mktemp -d)
+          printf '%s\n' "$BODY" > "$dir/pr-description"
+          git log --format=%B HEAD^1..HEAD^2 > "$dir/commits"
+          python3 scripts/check-attribution.py "$dir/pr-description" "$dir/commits"

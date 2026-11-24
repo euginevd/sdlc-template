@@ -74,6 +74,13 @@ check_terraform() {
     ls "$dir"*.tf > /dev/null 2>&1 || continue
     run "terraform validate ${dir%/}" tf_validate "$dir"
   done
+  if command -v tflint > /dev/null; then
+    run "tflint init" tflint --chdir=infra/aws --init --config "$PWD/infra/aws/.tflint.hcl" || return 0
+    run "tflint" tflint --chdir=infra/aws --recursive --config "$PWD/infra/aws/.tflint.hcl"
+  else
+    echo "tflint isn't installed: run bash scripts/setup.sh"
+    failed+=("tflint")
+  fi
 }
 
 # What changed, sorted the way ci.yml's changes job sorts it.
