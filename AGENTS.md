@@ -18,7 +18,7 @@ Numbered so reviews can cite them; the project is in the docs below.
 ## Commands
 
 2. Setup, once per clone: `bash scripts/setup.sh` (the agent runs it in a cloud session); `--check` when a tool or the push hook is missing. The developer is on Windows: run local commands yourself, give cloud ones as bash for AWS CloudShell, and link any step left on the web.
-3. Checks: [`bash scripts/check.sh`](scripts/check.sh) runs what CI runs, for what changed; the push hook runs the pre-push scan. Add an app with the [`new-app`](.claude/skills/new-app/SKILL.md) skill.
+3. Checks: [`bash scripts/check.sh`](scripts/check.sh) runs what CI runs, for what changed; the push hook runs the pre-push scan and the numbered-reference check, the commit hook the attribution check (rule 15). Add an app with the [`new-app`](.claude/skills/new-app/SKILL.md) skill.
 
 ## Profiles and gates
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# One-time setup: installs the GitHub CLI, gitleaks, Trivy, lefthook, uv and Terraform if missing, then the
-# Git hooks and the Python environment, and reports what the machine has. Windows (winget), macOS (Homebrew)
+# One-time setup: installs the GitHub CLI, gitleaks, Trivy, lefthook, uv, Terraform and TFLint if missing, then
+# the Git hooks and the Python environment, and reports what the machine has. Windows (winget), macOS (Homebrew)
 # and Linux (Homebrew, or checked downloads into ~/.local/bin, as in an agent's cloud container).
 # Usage: bash scripts/setup.sh           install what's missing, then report
 #        bash scripts/setup.sh --check   report only, changing nothing; exits 1 if something is missing
@@ -30,6 +30,7 @@ exact() {
     trivy) grep -ho 'aquasec/trivy:[0-9.]*' .github/workflows/security.yml ;;
     uv) grep -ho 'astral-sh/uv:[0-9.]*' .github/workflows/ci.yml ;;
     terraform) grep -ho 'TF_VERSION: [0-9.]*' .github/workflows/aws.yml ;;
+    tflint) grep -ho 'terraform-linters/tflint:v[0-9.]*' .github/workflows/security.yml ;;
   esac 2>/dev/null | head -1 | grep -o '[0-9][0-9.]*$'
 }
 
@@ -54,6 +55,8 @@ fetch() {
     trivy-aarch64) file="trivy_${v}_Linux-ARM64.tar.gz" ;;
     terraform-x86_64) file="terraform_${v}_linux_amd64.zip" ;;
     terraform-aarch64) file="terraform_${v}_linux_arm64.zip" ;;
+    tflint-x86_64) file="tflint_linux_amd64.zip" ;;
+    tflint-aarch64) file="tflint_linux_arm64.zip" ;;
     gh-x86_64) file="gh_${v}_linux_amd64.tar.gz" ;;
     gh-aarch64) file="gh_${v}_linux_arm64.tar.gz" ;;
     uv-x86_64 | uv-aarch64) file="uv-$arch-unknown-linux-gnu.tar.gz" ;;
@@ -64,6 +67,7 @@ fetch() {
     trivy) base="https://github.com/aquasecurity/trivy/releases/download/v$v"; sums="trivy_${v}_checksums.txt" ;;
     terraform) base="https://releases.hashicorp.com/terraform/$v"; sums="terraform_${v}_SHA256SUMS" ;;
     gh) base="https://github.com/cli/cli/releases/download/v$v"; sums="gh_${v}_checksums.txt" ;;
+    tflint) base="https://github.com/terraform-linters/tflint/releases/download/v$v"; sums="checksums.txt" ;;
     uv) base="https://github.com/astral-sh/uv/releases/download/$v"; sums="$file.sha256" ;;
   esac
   tmp=$(mktemp -d) || return 1
@@ -115,14 +119,15 @@ pinned() {
     trivy) grep -ho 'aquasec/trivy:[0-9]*\.[0-9]*' .github/workflows/security.yml ;;
     uv) grep -ho 'astral-sh/uv:[0-9]*\.[0-9]*' .github/workflows/ci.yml ;;
     terraform) grep -ho 'TF_VERSION: [0-9]*\.[0-9]*' .github/workflows/aws.yml ;;
+    tflint) grep -ho 'terraform-linters/tflint:v[0-9]*\.[0-9]*' .github/workflows/security.yml ;;
   esac 2>/dev/null | head -1 | grep -o '[0-9]*\.[0-9]*$'
 }
 
 # One line per thing the workflow needs. A version that differs from the pipeline's is a note, not a failure.
 report() {
   local missing=0 tool have want
-  line() { printf '  %-10s %s\n' "$1" "$2"; }
-  for tool in git gh gitleaks trivy lefthook uv terraform; do
+  line() { printf '  %-11s %s\n' "$1" "$2"; }
+  for tool in git gh gitleaks trivy lefthook uv terraform tflint; do
     if ! command -v "$tool" >/dev/null; then
       line "$tool" "MISSING"
       missing=$((missing + 1))
@@ -165,6 +170,12 @@ report() {
     line "push hook" "MISSING: pushes from this clone aren't scanned"
     missing=$((missing + 1))
   fi
+  if grep -qs lefthook "$(git rev-parse --git-path hooks/commit-msg)"; then
+    line "commit hook" "ok"
+  else
+    line "commit hook" "MISSING: commit messages aren't checked; run lefthook install"
+    missing=$((missing + 1))
+  fi
   if [ -f pyproject.toml ] && [ ! -d .venv ]; then
     line "python env" "MISSING"
     missing=$((missing + 1))
@@ -185,6 +196,7 @@ install trivy AquaSecurity.Trivy trivy || exit 1
 install uv astral-sh.uv uv || exit 1
 install lefthook evilmartians.lefthook lefthook || exit 1
 install terraform Hashicorp.Terraform hashicorp/tap/terraform || exit 1
+install tflint TerraformLinters.tflint tflint || exit 1
 lefthook install || exit 1
 [ -f pyproject.toml ] && { uv sync || exit 1; }
 

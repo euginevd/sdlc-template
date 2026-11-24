@@ -73,7 +73,8 @@ gh api "${target[@]}" --input - >/dev/null <<JSON || { echo "Could not set the r
         "required_status_checks": [
           { "context": "python" }, { "context": "web" }, { "context": "kickoff" },
           { "context": "workflows" }, { "context": "secrets" }, { "context": "packages-and-iac" },
-          { "context": "terraform" }, { "context": "code" }, { "context": "plan-result" }
+          { "context": "terraform" }, { "context": "code" }, { "context": "plan-result" },
+          { "context": "rules" }
         ]
       }
     },

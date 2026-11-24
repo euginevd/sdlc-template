@@ -4,3 +4,9 @@ pre-push:
     - name: scan
       run: bash .lefthook/pre-push-scan.sh
       use_stdin: true
+    - name: numbered references
+      run: uv run --no-project python scripts/check-refs.py origin/main
+commit-msg:
+  jobs:
+    - name: no AI attribution
+      run: uv run --no-project python scripts/check-attribution.py {1}

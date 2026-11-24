@@ -29,7 +29,7 @@ You'll need: a GitHub account with the `gh` CLI, Git Bash or similar, and an AWS
 ```bash
 gh repo create my-project --template euginevd/sdlc-template --public --clone  # --private for a work project
 cd my-project
-bash scripts/setup.sh         # tools and the pre-push scan
+bash scripts/setup.sh         # tools and the Git hooks
 bash scripts/protect-main.sh  # security features, the main ruleset, main-only deploys
 ```
 
@@ -71,7 +71,7 @@ A prototype still stops before spending past the monthly limit in the spec, befo
 The same in both profiles:
 
 1. **Before every push:** Gitleaks and Trivy scan the pushed commits, so a secret added and then removed is still caught.
-2. **On every PR:** secrets (Gitleaks), vulnerable packages and misconfiguration (Trivy, Checkov), static analysis (Semgrep, and CodeQL on public repos), `terraform validate` and a required Terraform plan, lint for workflows and scripts (actionlint, zizmor, shellcheck), a check that kickoff left nothing unfilled, and lint, types and tests for the apps it changes. One summary comment lists the findings, and the agent fixes from it.
+2. **On every PR:** secrets (Gitleaks), vulnerable packages and misconfiguration (Trivy, Checkov), static analysis (Semgrep, and CodeQL on public repos), `terraform validate`, tflint and a required Terraform plan, lint for workflows and scripts (actionlint, zizmor, shellcheck), checks that kickoff left nothing unfilled, references are right and nothing has AI attribution, and lint, types and tests for the apps it changes. One summary comment lists the findings, and the agent fixes from it.
 3. **On `main` and weekly:** the full scans again, so a vulnerability published after a merge still fails a run, plus a list of every package in the code (SBOM).
 4. **Deploys:** only the pipeline touches AWS, signing in through GitHub OIDC with no stored keys. It plans with a read-only role and applies a saved plan, `dev` on merge and `prod` by hand.
 5. **Supply chain:** actions pinned by commit, scanner images by digest, and packages at least a week old before they're installed.
