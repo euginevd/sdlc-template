@@ -1,6 +1,6 @@
 # Lessons
 
-Mistakes an agent has made, each with its one-line fix, by area ([AGENTS.md](../AGENTS.md) rules 1 and 18). Read Repo and Docs every session, and an area's section before working in it. Numbered so reviews can cite them (lessons 9); a line goes once a check catches the mistake.
+Mistakes an agent has made, each with its one-line fix, by area ([AGENTS.md](../AGENTS.md) rules 1 and 18). Read Repo and Docs every session, and an area's section before working in it. Numbered so reviews can cite them (lessons 2); a line goes once a check catches the mistake.
 
 ## Repo
 

@@ -103,12 +103,13 @@ All core, except `cost-report.py`, which only an AWS project needs.
 10. **scripts/agent-evals.py**: runs the agent evals in `.claude/evals/` through Claude Code in plan mode, which changes nothing; CI's `agent-evals` workflow calls it.
 11. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
 12. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment (AWS module).
-13. **scripts/tests/**: tests for the scripts; they run with the apps' tests.
+13. **scripts/new-project.py**: the `new-project` skill's builder: copies the template to a new folder without the parts a project doesn't need (AWS, screens), and lists what still names them. Template only; a new project doesn't get it.
+14. **scripts/tests/**: tests for the scripts; they run with the apps' tests.
 
 ### 3.4 Agent setup (core)
 
 1. **.claude/settings.json**: Claude Code's shared settings: no AI attribution on commits or PRs, asking before each `git push` (production), a guard before each edit or command, a Stop hook that runs the quick checks when the agent ends a turn with uncommitted edits, and deny rules for force-pushes, skipped hooks, Terraform applies and `.env` reads.
-2. **.claude/skills/**: the steps the agent loads when it reaches them: `kickoff`, `pull-request` and `deploy` (AWS module), the `review-security` and `review-design` reviews AGENTS.md rule 10 runs, and `new-app` for adding an app.
+2. **.claude/skills/**: the steps the agent loads when it reaches them: `new-project` (template only) to make a repo, `kickoff`, `pull-request` and `deploy` (AWS module), the `review-security` and `review-design` reviews AGENTS.md rule 10 runs, and `new-app` for adding an app.
 3. **.claude/agents/verifier.md**: the subagent that runs the app to check a change. It and the two review skills run on Sonnet, a different model from the session that wrote the code, for a second opinion.
 4. **.claude/evals/**: the agent evals' cases, each a prompt and the patterns its answer must and mustn't have, and the pinned Claude Code CLI that `scripts/agent-evals.py` runs them with.
 

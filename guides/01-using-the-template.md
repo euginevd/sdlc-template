@@ -19,6 +19,23 @@ In both, one branch holds a session's work. A prototype's agent commits, pushes,
 
 ## 2. Set up the repo
 
+The easy way: open Claude Code in a clone of this template (`gh repo clone euginevd/sdlc-template`) on your own machine and say *"Start a new project"*. The template's `new-project` skill (in `.claude/skills/`, left out of the projects it makes) walks you through it one question at a time:
+
+| Step | It asks or does |
+|------|-----------------|
+| 1 | Checks the template is up to date and `gh` is signed in |
+| 2 | The repo name, and checks it's free |
+| 3 | Your intent, heading by heading: problem, outcome, users, constraints, success, open questions |
+| 4 | Reads it back to you until it's right |
+| 5 | Prototype or production, with its recommendation |
+| 6 | Public or private |
+| 7 | Whether it needs AWS and screens; what's not needed isn't copied |
+| 8 | Shows a summary and waits for your yes |
+| 9 to 11 | Makes the folder with only those parts, writes your intent in, fixes the links to what it left out, runs `setup.sh`, creates the repo on GitHub and runs `protect-main.sh` |
+| 12 | Tells you to open the new folder and say *"Kick off"* (section 3) |
+
+It needs your machine, as a cloud session can't create repos. The manual way, which copies everything:
+
 Once per project, by you. Steps 1 to 3 need the GitHub CLI, signed in with `gh auth login`.
 
 1. **Create it:** `gh repo create <name> --template euginevd/sdlc-template --public --clone` for a personal or portfolio project, built in the open; `--private` for a work project. On a public repo anyone signed in can download `main`'s Terraform plans for a day, so nothing secret goes in code or Terraform (trade-offs 5). A private repo needs a paid GitHub plan (Pro or Team) for step 3.

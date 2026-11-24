@@ -26,6 +26,8 @@ You'll need: a GitHub account with the `gh` CLI, Git Bash or similar, and an AWS
 
 ## Quick start
 
+Open Claude Code in a clone of this repo and say *"Start a new project"*: it asks the name, your intent, the profile and which parts you need, then creates the repo with only those and sets it up ([guide 01](guides/01-using-the-template.md) section 2). Or by hand:
+
 ```bash
 gh repo create my-project --template euginevd/sdlc-template --public --clone  # --private for a work project
 cd my-project
