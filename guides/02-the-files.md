@@ -153,7 +153,7 @@ A change ships like this: issue → PR → `ci`, `security`, `codeql` and `rules
 
 ### 5.3 GitHub settings (core)
 
-1. **ISSUE_TEMPLATE/intent.yml**: the form for a new issue, with `intent.md`'s headings, so each issue is one change's intent.
+1. **ISSUE_TEMPLATE/**: the forms for a new issue. `intent.yml` has `intent.md`'s headings, so each issue is one change's intent; `incident.yml` records an incident or finding and what stops a repeat, so Maintain feeds the next Plan.
 2. **pull_request_template.md**: pre-fills each PR: what changed, security, checks, and `Closes #<issue>`.
 3. **dependabot.yml**: weekly update PRs for actions, Python and Terraform, each release 7 days old; an app adds its own, such as npm or Docker.
 4. **CODEOWNERS** *(not included)*: requests reviewers per path; add it once a team shares the repo.

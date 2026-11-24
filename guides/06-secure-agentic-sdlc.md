@@ -9,7 +9,7 @@ The template's lifecycle on one page: six stages, the security controls in each 
 | 3. Build | A fresh session (`/clear`) codes each phase from the plan, with tests, on one branch; a fresh subagent reviews it with the review skills and the verifier runs it | Pre-push scan (Gitleaks, Trivy), agent deny rules and the Stop hook's checks, no secrets or cloud access | None: the checks decide |
 | 4. Test | Every push runs the checks; the agent fixes each failure at its cause | Tests and coverage, Semgrep, CodeQL, Trivy, Checkov, pinned supply chain | None: a failed check blocks the merge |
 | 5. Deploy | The agent opens the PR; the pipeline plans and applies Terraform | Protected `main`, security summary, cost comment, OIDC roles, read-only plan | **G2** merge, **G3** `dev`, **G4** `prod` |
-| 6. Maintain | Rescans and alerts find what changed; each finding becomes a new issue | Weekly rescans, Dependabot, budget alert, access logs | **G5**: I check cost and alarms the day after |
+| 6. Maintain | Rescans and alerts find what changed; each finding becomes an issue from the Incident form | Weekly rescans, Dependabot, budget alert, access logs | **G5**: I check cost and alarms the day after |
 
 G0, kickoff, comes once before all six (the [`kickoff`](../.claude/skills/kickoff/SKILL.md) skill). Who approves each gate in each profile is the table in AGENTS.md rule 5.
 

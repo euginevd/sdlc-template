@@ -171,5 +171,5 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 - **Does:** GuardDuty spots stolen credentials, mining and bad addresses. Alarms watch errors, `5xx`, throttling and latency.
 - **When:** all the time.
-- **On a finding:** follow the project's incident runbook: contain, rotate and restore.
+- **On a finding:** contain, rotate and restore, then open an issue from the Incident form so the fix and its check are planned.
 - **Limits:** not in the template yet. GuardDuty costs after 30 days, so ask first (AGENTS.md rule 4).
