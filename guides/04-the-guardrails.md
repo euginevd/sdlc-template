@@ -165,11 +165,11 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 - **Does:** records every AWS API call: who, what, when and from where.
 - **When:** on every AWS API call.
 - **On a finding:** search the console, or Athena for a trail in S3.
-- **Limits:** not in the template yet. Event history keeps 90 days free; a trail to S3 keeps longer for storage cost.
+- **Limits:** CloudTrail's Event history is on in every account and keeps 90 days of management events free, which the template relies on; a trail to S3, which keeps longer for storage cost, isn't in the template yet.
 
 ## 24. Maintain: threat detection and alarms
 
-- **Does:** GuardDuty spots stolen credentials, mining and bad addresses. Alarms watch errors, `5xx`, throttling and latency.
-- **When:** all the time.
+- **Does:** GuardDuty spots stolen credentials, mining and bad addresses, and emails its high-severity findings. Alarms on the `api` unit email on function errors and `5xx`.
+- **When:** all the time, once turned on: the bootstrap's `Monitoring` parameter set to `on` creates GuardDuty and a `<project>-alerts` topic that emails `BudgetEmail`, and the `MONITORING` repo variable set to `on` adds the alarms.
 - **On a finding:** contain, rotate and restore ([guide 08](08-incident-runbook.md)), then open an issue from the Incident form so the fix and its check are planned.
-- **Limits:** not in the template yet. GuardDuty costs after 30 days, so ask first (AGENTS.md rule 4).
+- **Limits:** off by default, as GuardDuty costs after 30 days: production turns it on before go-live, a prototype asks first (AGENTS.md rule 6). An account has one detector per region, so a second project in it leaves `Monitoring` off. No alarms yet for throttling or latency.

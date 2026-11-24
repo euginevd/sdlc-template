@@ -38,4 +38,4 @@ For auditors: the eight DevSecOps stages map onto these six. Plan stays Plan (it
 
 ## Next
 
-Not in the template yet: the template's [issues labelled `template`](https://github.com/euginevd/sdlc-template/issues?q=is%3Aissue+is%3Aopen+label%3Atemplate), in priority order. Among them: authenticated DAST, and monitoring with CloudTrail, GuardDuty and alarms.
+Not in the template yet: the template's [issues labelled `template`](https://github.com/euginevd/sdlc-template/issues?q=is%3Aissue+is%3Aopen+label%3Atemplate), in priority order. Among them: authenticated DAST, and a CloudTrail trail that keeps longer than 90 days.

@@ -3,6 +3,8 @@
 #    Repos created after 2026-07-15 send GitHub's immutable OIDC subject: set GitHubOwnerId and GitHubRepoId
 #    from: gh api repos/<owner>/<repo> --jq '.owner.id, .id'
 #    Set BudgetEmail to be emailed at 80% spent, 100% forecast and 100% spent of MonthlyBudgetUsd.
+#    Monitoring=on turns on GuardDuty and emails BudgetEmail its high findings and the units' alarms (set the
+#    MONITORING repo variable to on for the alarms); GuardDuty is charged after 30 days, so production turns it on.
 #    For the agent's read-only access: make an access key for the <ProjectName>-cli user in the console,
 #    then aws configure --profile <ProjectName>-cli, and a profile that assumes TroubleshootRoleArn with it.
 # 2. GitHub environments: aws-<Target>-plan, and aws-<Target>-apply with a required reviewer, main only
@@ -59,12 +61,21 @@ Parameters:
     Default: 50
     MinValue: 1
     Description: The account's monthly spend limit in US dollars, for the budget emails
+  Monitoring:
+    Type: String
+    AllowedValues: ['off', 'on']
+    Default: 'off'
+    Description: >-
+      on: GuardDuty, and an alerts topic that emails BudgetEmail on high-severity findings and the units' alarms.
+      GuardDuty is free for 30 days, then charged by usage; an account has one detector per region
 
 Conditions:
   CreateOidc: !Equals [!Ref CreateOidcProvider, 'true']
   CreateBudget: !Not [!Equals [!Ref BudgetEmail, '']]
   ImmutableSubject: !Not [!Equals [!Ref GitHubRepoId, '']]
   NotDev: !Not [!Equals [!Ref Target, dev]]
+  MonitoringOn: !Equals [!Ref Monitoring, 'on']
+  MonitoringEmail: !And [!Condition MonitoringOn, !Condition CreateBudget]
 
 Resources:
 
@@ -252,6 +263,17 @@ Resources:
                 Effect: Allow
                 Action: ecr:GetAuthorizationToken
                 Resource: '*'
+              # The units' CloudWatch alarms, named ${ProjectName}-*, which publish to the alerts topic.
+              - Sid: CloudWatchProjectAlarms
+                Effect: Allow
+                Action:
+                  - cloudwatch:DeleteAlarms
+                  - cloudwatch:DescribeAlarms
+                  - cloudwatch:ListTagsForResource
+                  - cloudwatch:PutMetricAlarm
+                  - cloudwatch:TagResource
+                  - cloudwatch:UntagResource
+                Resource: !Sub 'arn:${AWS::Partition}:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:${ProjectName}-*'
               # The pipeline roles, the troubleshoot role and the CLI user are out of reach, so the pipeline
               # can't rewrite who may assume them.
               - Sid: DenyPipelineRoles
@@ -346,6 +368,11 @@ Resources:
                   - ecr:GetRepositoryPolicy
                   - ecr:ListTagsForResource
                 Resource: !Sub 'arn:${AWS::Partition}:ecr:${AWS::Region}:${AWS::AccountId}:repository/${ProjectName}/*'
+              - Effect: Allow
+                Action:
+                  - cloudwatch:DescribeAlarms
+                  - cloudwatch:ListTagsForResource
+                Resource: !Sub 'arn:${AWS::Partition}:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:${ProjectName}-*'
               - Effect: Deny
                 Action: sts:AssumeRole
                 Resource: '*'
@@ -483,6 +510,74 @@ Resources:
             ThresholdType: PERCENTAGE
           Subscribers:
             - { SubscriptionType: EMAIL, Address: !Ref BudgetEmail }
+
+  # Monitoring, when the Monitoring parameter is on (guide 04, control 24): GuardDuty watches the account for
+  # stolen credentials, mining and bad addresses, and its high-severity findings and the units' alarms
+  # (Monitoring variable on the repo) email BudgetEmail through the alerts topic.
+  GuardDutyDetector:
+    Type: AWS::GuardDuty::Detector
+    Condition: MonitoringOn
+    Properties:
+      Enable: true
+      FindingPublishingFrequency: FIFTEEN_MINUTES
+      Tags:
+        - { Key: Project, Value: !Ref ProjectName }
+        - { Key: ManagedBy, Value: CloudFormation }
+
+  AlertsTopic:
+    Type: AWS::SNS::Topic
+    Condition: MonitoringOn
+    Metadata:
+      checkov:
+        skip:
+          - id: CKV_AWS_26
+            comment: EventBridge and CloudWatch can't publish to a topic under the AWS-managed SNS key; alerts carry no data
+    Properties:
+      TopicName: !Sub '${ProjectName}-alerts'
+      Tags:
+        - { Key: Project, Value: !Ref ProjectName }
+        - { Key: ManagedBy, Value: CloudFormation }
+
+  AlertsTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Condition: MonitoringOn
+    Properties:
+      Topics: [!Ref AlertsTopic]
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [events.amazonaws.com, cloudwatch.amazonaws.com]
+            Action: sns:Publish
+            Resource: !Ref AlertsTopic
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Ref AWS::AccountId
+
+  AlertsEmail:
+    Type: AWS::SNS::Subscription
+    Condition: MonitoringEmail
+    Properties:
+      TopicArn: !Ref AlertsTopic
+      Protocol: email
+      Endpoint: !Ref BudgetEmail
+
+  # High and critical findings only (severity 7 and up), so an email means act now.
+  GuardDutyHighFindings:
+    Type: AWS::Events::Rule
+    Condition: MonitoringOn
+    Properties:
+      Name: !Sub '${ProjectName}-guardduty-high'
+      Description: GuardDuty findings of severity 7 and up, to the alerts topic
+      EventPattern:
+        source: [aws.guardduty]
+        detail-type: [GuardDuty Finding]
+        detail:
+          severity: [{ numeric: ['>=', 7] }]
+      Targets:
+        - Id: alerts
+          Arn: !Ref AlertsTopic
 
 Outputs:
   BoundaryArn:

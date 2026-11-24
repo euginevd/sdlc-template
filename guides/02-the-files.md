@@ -169,7 +169,7 @@ Bootstrap once by hand; after that the units deploy only through `aws.yml` (sect
 
 ### 6.1 Bootstrap
 
-1. **bootstrap/bootstrap.yaml**: CloudFormation you deploy by hand once per account: GitHub's sign-in (OIDC), a read-only plan role, a bounded deploy role, a read-only troubleshoot role with its CLI user, the state bucket and a budget alert.
+1. **bootstrap/bootstrap.yaml**: CloudFormation you deploy by hand once per account: GitHub's sign-in (OIDC), a read-only plan role, a bounded deploy role, a read-only troubleshoot role with its CLI user, the state bucket, a budget alert and, with `Monitoring` on, GuardDuty and an alerts topic.
 
 ### 6.2 Terraform units
 
