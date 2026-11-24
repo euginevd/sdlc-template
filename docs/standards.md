@@ -64,4 +64,4 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 ## Browser tests (screens module) and MCP
 
 30. Browser tests: Playwright, with axe, in `e2e/`. `bash scripts/check.sh e2e` runs them, starting and stopping the app with `e2e/package.json`'s `stack` and `stack:down` scripts.
-31. No MCP server without a decision in `decisions.md`; a shell script comes first, such as Playwright tests over Playwright MCP. An approved one is pinned (`AGENTS.md` rule 16), set in `.mcp.json`, limited to `localhost` or one environment, read-only where it can be, and reads no secrets or untrusted content such as web pages or issues. Prefer its code mode, if it has one.
+31. No MCP server without a decision in `decisions.md`; a shell script comes first, such as Playwright tests over Playwright MCP. An approved one is pinned (`AGENTS.md` rule 16), set in `.mcp.json`, one entry per environment (`<server>-dev`; the guard denies `prod`), read-only where possible, and reads no secrets or untrusted content such as web pages or issues. Prefer its code mode, if it has one.

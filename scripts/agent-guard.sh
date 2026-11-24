@@ -42,6 +42,11 @@ if [ "$prototype" = false ]; then
   fi
 fi
 
+# An MCP server is one per environment, named for it (standards 31, #208): no agent calls one for `prod`.
+if grep -Eqi '^mcp__([^_]|_[^_])*_?prod' <<< "$(field tool_name)"; then
+  decide deny "No agent calls an MCP server for prod (standards 31): only the pipeline changes prod."
+fi
+
 [ -n "$rel" ] && [ -f "$root/$rel" ] || exit 0
 
 # 2. An existing test (#179): fix the code, not the test (AGENTS.md rule 13).
