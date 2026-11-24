@@ -7,10 +7,13 @@ only for a project with that part, and the marker itself is dropped. The folder 
 fresh Git repo with everything staged, for the skill to commit and push.
 Usage: python scripts/new-project.py <folder> --name <name> --profile prototype|production
            --visibility public|private [--aws] [--ui]
+       python scripts/new-project.py <folder> --upgrade [--profile production] [--aws] [--ui]
+           adds what a move to production or a new part needs to an existing project
 """
 
 import argparse
 import fnmatch
+import json
 import posixpath
 import re
 import shutil
@@ -145,17 +148,24 @@ def relink(text: str, out: str, picked: dict[str, str]) -> str:
     return re.sub(r"\]\(([^)#\s]+)(#[^)\s]*)?\)", fix, text)
 
 
+def render(src: str, out: str, have: set[str], picked: dict[str, str]) -> str:
+    """A template text file as this project gets it."""
+    text = keep_lines((ROOT / src).read_text(encoding="utf-8"), have)
+    return relink(text, out, picked) if out.endswith(".md") else text
+
+
+def put(dest: Path, out: str, src: str, have: set[str], picked: dict[str, str]) -> None:
+    target = dest / out
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if Path(src).suffix in TEXT:
+        target.write_text(render(src, out, have, picked), encoding="utf-8")
+    else:
+        shutil.copy2(ROOT / src, target)
+
+
 def write(dest: Path, picked: dict[str, str], have: set[str], name: str, profile: str) -> None:
     for out, src in picked.items():
-        target = dest / out
-        target.parent.mkdir(parents=True, exist_ok=True)
-        if Path(src).suffix in TEXT:
-            text = keep_lines((ROOT / src).read_text(encoding="utf-8"), have)
-            if out.endswith(".md"):
-                text = relink(text, out, picked)
-            target.write_text(text, encoding="utf-8")
-        else:
-            shutil.copy2(ROOT / src, target)
+        put(dest, out, src, have, picked)
     (dest / "README.md").write_text(readme(name, profile), encoding="utf-8")
     (dest / "guides").mkdir(exist_ok=True)
     (dest / "guides/README.md").write_text(GUIDES, encoding="utf-8")
@@ -221,17 +231,34 @@ def left_out_paths(picked: dict[str, str]) -> list[str]:
 def parse(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Builds a new project from this template.")
     parser.add_argument("folder", type=Path)
-    parser.add_argument("--name", required=True)
-    parser.add_argument("--profile", required=True, choices=["prototype", "production"])
-    parser.add_argument("--visibility", required=True, choices=["public", "private"])
+    parser.add_argument("--upgrade", action="store_true", help="add to an existing project")
+    parser.add_argument("--name")
+    parser.add_argument("--profile", choices=["prototype", "production"])
+    parser.add_argument("--visibility", choices=["public", "private"])
     parser.add_argument("--aws", action="store_true", help="it deploys to AWS")
     parser.add_argument("--ui", action="store_true", help="it has screens")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if not args.upgrade and not (args.name and args.profile and args.visibility):
+        parser.error("a new project needs --name, --profile and --visibility")
+    return args
 
 
-def main(argv: list[str]) -> int:
-    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[union-attr]  # Windows consoles
-    args = parse(argv)
+def report(dest: Path, picked: dict[str, str]) -> None:
+    """Prints each line still naming a file the project doesn't have."""
+    problems = stale(dest, left_out_paths(picked))
+    problems += subprocess.run(
+        [sys.executable, "scripts/check-refs.py"],
+        cwd=dest,
+        capture_output=True,
+        encoding="utf-8",
+        check=False,
+    ).stdout.splitlines()[:-1]
+    if problems:
+        print("\nStill naming a file the project doesn't have; reword or delete each:")
+        print("\n".join(f"  {p}" for p in problems))
+
+
+def create(args: argparse.Namespace) -> int:
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", args.name):
         print(f"{args.name}: a repo name here is lowercase letters, digits and hyphens.")
         return 2
@@ -245,22 +272,79 @@ def main(argv: list[str]) -> int:
     record(dest, args.name, args.profile, args.visibility)
     git(dest, "init", "-q", "-b", "main")
     git(dest, "add", "-A")
-
     parts = [p for p, on in (("AWS", args.aws), ("screens", args.ui)) if on]
     print(f"Made {dest}: {args.profile}, {args.visibility}, {len(picked) + 2} files,", end=" ")
     print(f"with {', '.join(parts) or 'the core only'}.")
-    problems = stale(dest, left_out_paths(picked))
-    problems += subprocess.run(
-        [sys.executable, "scripts/check-refs.py"],
-        cwd=dest,
-        capture_output=True,
-        encoding="utf-8",
-        check=False,
-    ).stdout.splitlines()[:-1]
-    if problems:
-        print("\nStill naming a file the project doesn't have; reword or delete each:")
-        print("\n".join(f"  {p}" for p in problems))
+    report(dest, picked)
     return 0
+
+
+def current(dest: Path) -> set[str]:
+    """An existing project's profile and repo, from its spec, and its parts, from its files."""
+    spec = (dest / "docs/spec.md").read_text(encoding="utf-8")
+    have = {m[1] for m in re.finditer(r"^Profile: `(prototype|production)`", spec, re.M)}
+    have |= {"private" if re.search(r"^Repo: `work`", spec, re.M) else "public"}
+    have |= {"aws"} if (dest / "infra/aws").is_dir() else set()
+    return have | ({"ui"} if (dest / "docs/web").is_dir() else set())
+
+
+def merge_deny_rules(dest: Path) -> None:
+    """Production's settings deny what the template denies, `.env` included."""
+    path = dest / ".claude/settings.json"
+    ours = json.loads(path.read_text(encoding="utf-8"))
+    theirs = json.loads((ROOT / ".claude/settings.json").read_text(encoding="utf-8"))
+    deny = ours.setdefault("permissions", {}).setdefault("deny", [])
+    deny += [rule for rule in theirs["permissions"]["deny"] if rule not in deny]
+    path.write_text(json.dumps(ours, indent=2) + "\n", encoding="utf-8")
+
+
+def to_production(dest: Path) -> None:
+    edit(dest / "docs/spec.md", r"^Profile: .*$", "Profile: `production`.")
+    edit(dest / "pyproject.toml", r"^fail_under = 50$", "fail_under = 80")
+    merge_deny_rules(dest)
+
+
+def upgrade(args: argparse.Namespace) -> int:
+    """Adds what a new profile or part needs to an existing project, keeping its own files."""
+    dest: Path = args.folder.resolve()
+    if not (dest / "docs/spec.md").is_file():
+        print(f"{dest} isn't a project made from this template: no docs/spec.md.")
+        return 2
+    had = current(dest)
+    have = set(had)
+    if args.profile:
+        have = (have - {"prototype", "production"}) | {args.profile}
+    have |= {part for part in ("aws", "ui") if vars(args)[part]}
+    picked = files_for(have)
+    added = [out for out in picked if not (dest / out).exists()]
+    for out in added:
+        put(dest, out, picked[out], have, picked)
+    if "prototype" in had and "production" in have:
+        put(dest, "AGENTS.md", "AGENTS.md", have, picked)
+        to_production(dest)
+        added.append("AGENTS.md")
+    # A file the project kept whose template wording now differs: the agent reconciles it by hand.
+    review = [
+        out
+        for out, src in picked.items()
+        if out not in added
+        and Path(src).suffix in TEXT
+        and render(src, out, had, picked) != render(src, out, have, picked)
+    ]
+    git(dest, "add", "-A")
+    print(f"Upgraded {dest} to {', '.join(sorted(have - {'public', 'private'}))}.")
+    print(f"Added {len(added)}: {', '.join(added) or 'nothing'}")
+    if review:
+        print("\nThe template words these differently now; bring each in line:")
+        print("\n".join(f"  {r}" for r in review))
+    report(dest, picked)
+    return 0
+
+
+def main(argv: list[str]) -> int:
+    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[union-attr]  # Windows consoles
+    args = parse(argv)
+    return upgrade(args) if args.upgrade else create(args)
 
 
 if __name__ == "__main__":

@@ -42,4 +42,8 @@ Runs in a clone of the template on the developer's machine, with `gh` signed in:
 16. Production stops here at G0: the developer approves the spec, its Business section, the threat model, costs, design system and mockup before any issue is built.
 17. Tell the developer to open `../<name>` in VS Code and start Claude Code there, as its rules and hooks load only in a session started in it. A prototype then says *"Go"*: its agent turns on the autopilot and builds the backlog until it's done or the time budget is spent. For a long run without permission prompts, start Claude Code in auto mode.
 
+## Later
+
+18. **A part, or production,** for a project this skill made: `uv run --no-project python scripts/new-project.py ../<name> --upgrade` with `--profile production`, `--aws` or `--ui`. It adds only what's missing and keeps the project's own files; bring in line each file it lists, fix each stale line, record the move in `decisions.md`, and open one PR for it in the project.
+
 End with the repo's URL and folder, the profile and parts, the issues in order, what's left to do by hand, and the next step.

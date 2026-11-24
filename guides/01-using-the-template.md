@@ -109,7 +109,7 @@ The same loop, stopping at gates G1 to G4 ([AGENTS.md](../AGENTS.md) rule 5). Th
 
 Say *"Make this project production"*, and the agent does steps 1 to 3 on one branch:
 
-1. `Profile` in `spec.md` becomes `production`, with a new decision, and it brings in what a prototype didn't get from the template: the full `AGENTS.md`, `threat-model.md`, `checklist.md`, the security guides and the production workflows (the `production` rows in `scripts/new-project.py`'s manifest).
+1. From a clone of the template, `uv run --no-project python scripts/new-project.py ../<name> --upgrade --profile production` brings in what a prototype didn't get: the full `AGENTS.md`, `threat-model.md`, `checklist.md`, the security guides and the production workflows. It sets `Profile` to `production`, coverage back to 80 and the `.env` deny rules, keeps every file the project already has, and lists any the template now words differently for the agent to bring in line. The same with `--aws` or `--ui` adds a part later. Then a new decision records the move.
 2. It extends the threat model and costs for you to approve.
 3. `fail_under` goes back to 80, and it adds the skipped tests, abuse cases included.
 4. You go through the trade-offs: each gets its fix, or a named person accepts it.

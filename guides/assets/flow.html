@@ -50,7 +50,7 @@ h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:58px;line-heig
  <div>
   <div class="eyebrow mono">sdlc-template</div>
   <h1>Same pipeline. You choose where it stops.</h1>
-  <p class="sub">The profile you pick at kickoff decides which steps wait for a person. A prototype has one, your yes to each item before code; the agent runs the rest end to end.</p>
+  <p class="sub">You answer once, at the start, and the profile you pick decides which steps wait for a person. A prototype waits for none: checks and a fresh reviewer pass its gates, issue after issue, for hours.</p>
  </div>
  <div class="legend">
   <div><span class="gate" style="width:26px;height:26px;border-radius:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>A person approves</div>
@@ -60,7 +60,7 @@ h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:58px;line-heig
 
 <div class="grid">
  <div style="border-bottom:1px solid var(--line)"></div>
- <div class="stage"><div class="n mono">01</div><div class="t">Kick off</div></div>
+ <div class="stage"><div class="n mono">01</div><div class="t">Start</div></div>
  <div class="stage"><div class="n mono">02</div><div class="t">Plan</div></div>
  <div class="stage"><div class="n mono">03</div><div class="t">Build</div></div>
  <div class="stage"><div class="n mono">04</div><div class="t">Merge</div></div>
@@ -70,10 +70,10 @@ h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:58px;line-heig
  <div class="lane-label"><div class="k mono">Speed first</div><div class="name">Prototype</div></div>
  <div class="lane">
   <div class="track short"></div><div class="track dash"></div>
-  <div class="cell"><div class="node"><span class="dot"></span></div><div class="who a mono">Agent</div><div class="what">Drafts the docs</div><div class="why">You review when you like</div></div>
-  <div class="cell"><div class="node"><span class="gate">LOCK</span></div><div class="who g mono">You</div><div class="what">Approve each item</div><div class="why">Its spec and mockup</div></div>
+  <div class="cell"><div class="node"><span class="gate">LOCK</span></div><div class="who g mono">You</div><div class="what">Answer once</div><div class="why">Then it builds alone</div></div>
+  <div class="cell"><div class="node"><span class="dot"></span></div><div class="who a mono">Reviewer agent</div><div class="what">Passes the plan</div><div class="why">Against your intent</div></div>
   <div class="cell"><div class="node"><span class="dot"></span></div><div class="who a mono">Agent</div><div class="what">Tests main paths</div><div class="why">50%, one review</div></div>
-  <div class="cell"><div class="node"><span class="dot"></span></div><div class="who a mono">Agent</div><div class="what">Pushes and merges</div><div class="why">Unasked, on green checks</div></div>
+  <div class="cell"><div class="node"><span class="dot"></span></div><div class="who a mono">Agent</div><div class="what">Merges on green</div><div class="why">Then the next issue</div></div>
   <div class="cell"><div class="node"><span class="dot"></span></div><div class="who a mono">Pipeline</div><div class="what">Applies on merge</div><div class="why">Then a smoke test</div></div>
   <div class="cell"><div class="node"><span class="none"></span></div><div class="who x mono">None</div><div class="what" style="color:var(--muted)">No prod</div><div class="why">Real users? Go production</div></div>
  </div>
@@ -81,7 +81,7 @@ h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:58px;line-heig
  <div class="lane-label"><div class="k mono" style="color:var(--amber)">Approval first</div><div class="name">Production</div></div>
  <div class="lane">
   <div class="track solid"></div>
-  <div class="cell"><div class="node"><span class="gate">LOCK</span></div><div class="who g mono">You</div><div class="what">Approve the spec</div><div class="why">Plus threat model, costs</div></div>
+  <div class="cell"><div class="node"><span class="gate">LOCK</span></div><div class="who g mono">You</div><div class="what">Answer, then approve</div><div class="why">Spec, threat model, costs</div></div>
   <div class="cell"><div class="node"><span class="gate">LOCK</span></div><div class="who g mono">You</div><div class="what">Approve the plan</div><div class="why">No code before it</div></div>
   <div class="cell"><div class="node"><span class="dot"></span></div><div class="who a mono">Agent</div><div class="what">Tests abuse cases</div><div class="why">80%, a review per phase</div></div>
   <div class="cell"><div class="node"><span class="gate">LOCK</span></div><div class="who g mono">Reviewer</div><div class="what">Approves the PR</div><div class="why">GitHub blocks the merge</div></div>

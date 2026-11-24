@@ -146,3 +146,46 @@ def test_a_used_folder_is_refused(tmp_path: Path):
         check=False,
     )
     assert result.returncode == 2
+
+
+def upgrade(dest: Path, *flags: str) -> str:
+    return subprocess.run(
+        [sys.executable, str(SCRIPT), str(dest), "--upgrade", *flags],
+        capture_output=True,
+        encoding="utf-8",
+        check=True,
+    ).stdout
+
+
+def test_a_prototype_moves_to_production_keeping_its_own_files(tmp_path: Path):
+    dest = tmp_path / "demo"
+    make(dest)
+    (dest / "docs/intent.md").write_text("Our own intent.\n", encoding="utf-8")
+    out = upgrade(dest, "--profile", "production")
+    assert read(dest, "docs/intent.md") == "Our own intent.\n"
+    assert read(dest, "AGENTS.md").startswith("# Agent instructions\n\nNumbered")
+    assert "Profile: `production`." in read(dest, "docs/spec.md")
+    assert "fail_under = 80" in read(dest, "pyproject.toml")
+    assert "Read(**/.env)" in read(dest, ".claude/settings.json")
+    for added in ["docs/threat-model.md", "docs/checklist.md", "SECURITY.md"]:
+        assert (dest / added).exists(), added
+    assert "AGENTS.md" in out.split("Added")[1].split("\n")[0]
+
+
+def test_a_part_added_later_lists_what_to_reconcile(tmp_path: Path):
+    dest = tmp_path / "demo"
+    make(dest)
+    out = upgrade(dest, "--aws")
+    assert (dest / "infra/aws/api/main.tf").exists()
+    assert "Profile: `prototype`." in read(dest, "docs/spec.md")
+    assert "docs/standards.md" in out.split("bring each in line")[1]
+
+
+def test_upgrade_needs_a_project(tmp_path: Path):
+    result = subprocess.run(
+        [sys.executable, str(SCRIPT), str(tmp_path), "--upgrade"],
+        capture_output=True,
+        encoding="utf-8",
+        check=False,
+    )
+    assert result.returncode == 2
