@@ -57,9 +57,9 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 ## 8. Test: supply chain security
 
-- **Does:** actions are pinned by commit and images by digest. Packages wait 7 days before use, unless a release fixes a named vulnerability (AGENTS.md rule 16). Trivy builds a CycloneDX SBOM from the lock files.
-- **When:** pins and the wait on every install; the SBOM on every push to `main`.
-- **On a finding:** nothing fails; these prevent. The SBOM is under the `main` run's Artifacts.
+- **Does:** actions are pinned by commit and images by digest. Packages wait 7 days before use, unless a release fixes a named vulnerability (AGENTS.md rule 16). `npm audit signatures` checks each web package's registry signature after `npm ci`. zizmor fails a workflow that checks out a PR's code under `pull_request_target`, or restores a dependency cache in a job that can get a cloud token (`id-token: write`). Trivy builds a CycloneDX SBOM from the lock files.
+- **When:** pins and the wait on every install; signatures on every web check; zizmor when a workflow changes; the SBOM on every push to `main`.
+- **On a finding:** a bad signature or a risky workflow fails its check; the rest prevent. The SBOM is under the `main` run's Artifacts.
 - **Limits:** the SBOM isn't signed and GitHub deletes it after 90 days; for production, keep it with a release or in S3. Signing, SLSA provenance and a licence policy aren't in the template yet.
 
 ## 9. Test: unit and abuse-case tests, coverage

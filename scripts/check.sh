@@ -34,6 +34,7 @@ web() { npm --prefix apps/web "$@"; }
 check_web() {
   [ -f apps/web/package-lock.json ] || return 0
   run "npm ci" web ci || return 0
+  run "npm signatures" web audit signatures
   run "web lint" web run lint
   run "web typecheck" web run typecheck
   run "web test" web test
