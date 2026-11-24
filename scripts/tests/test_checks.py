@@ -22,8 +22,8 @@ def load(name: str) -> ModuleType:
 refs = load("check-refs")
 attribution = load("check-attribution")
 RULE = refs.LISTS["AGENTS.md rule"][3]
-MISTAKE = refs.LISTS["known mistake"][3]
-DOCS = refs.LISTS["pull-requests"][3] + refs.LISTS["code-standards"][3]
+MISTAKE = refs.LISTS["lesson"][3]
+DOCS = refs.LISTS["pull-request skill"][3] + refs.LISTS["standards"][3]
 # CI's python job runs in uv's slim image, which has no git; the rules workflow runs the real check.
 needs_git = pytest.mark.skipif(
     shutil.which("git") is None, reason="no git here; rules.yml runs check-refs"
@@ -38,8 +38,8 @@ def test_expand_reads_lists_and_ranges():
     assert refs.expand("8-10") == [8, 9, 10]
 
 
-def test_references_finds_rules_and_known_mistakes():
-    text = "see rules 25 and 26\nknown-mistakes 40 and known mistakes 9 to 10\nnothing here"
+def test_references_finds_rules_and_lessons():
+    text = "see rules 25 and 26\nlessons 40 and lessons 9 to 10\nnothing here"
     assert [(line, n) for line, n, _ in refs.references("README.md", text, RULE)] == [
         (1, 25),
         (1, 26),
@@ -47,9 +47,12 @@ def test_references_finds_rules_and_known_mistakes():
     assert [n for _, n, _ in refs.references("README.md", text, MISTAKE)] == [40, 9, 10]
 
 
-def test_references_finds_docs_cited_as_links_and_paths():
-    text = "as [docs/pull-requests.md](docs/pull-requests.md) 3 says; `docs/code-standards.md` 15"
-    assert [n for _, n, _ in refs.references("AGENTS.md", text, DOCS)] == [3, 15]
+def test_references_finds_skills_and_docs_cited_as_links_and_paths():
+    text = (
+        "as the [`pull-request`](.claude/skills/pull-request/SKILL.md) skill 1 says; "
+        "`docs/standards.md` 15"
+    )
+    assert [n for _, n, _ in refs.references("AGENTS.md", text, DOCS)] == [1, 15]
 
 
 def test_numbering_needs_order_only_where_the_list_has_it():

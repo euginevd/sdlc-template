@@ -353,7 +353,7 @@ Resources:
         - { Key: Project, Value: !Ref ProjectName }
         - { Key: ManagedBy, Value: CloudFormation }
 
-  # Read-only, for an agent to troubleshoot from logs and settings (AGENTS.md rule 4, docs/deploy.md): AWS's
+  # Read-only, for an agent to troubleshoot from logs and settings (AGENTS.md rule 4, the deploy skill): AWS's
   # ReadOnlyAccess, so it can't change anything. In dev it reads values too, as every value there is made
   # up; in any other target it reads logs and settings but not the data itself (AGENTS.md rule 4).
   # Anyone in this account allowed sts:AssumeRole on it can use it.
@@ -380,7 +380,7 @@ Resources:
               Version: '2012-10-17'
               Statement:
                 # Stored data, secrets, queues, query results and function code. Add a line for each data
-                # store the project adds. Logs stay readable: code-standards 8 keeps personal data out of them.
+                # store the project adds. Logs stay readable: standards 8 keeps personal data out of them.
                 - Effect: Deny
                   Action:
                     - athena:GetQueryResults

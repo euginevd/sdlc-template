@@ -1,7 +1,7 @@
 name: images
 
 # Container images for each app with a Dockerfile (apps/<app>/Dockerfile, built from the repo root;
-# code-standards 22). Nothing runs until an app has one: the starter's api deploys as a zip.
+# standards 22). Nothing runs until an app has one: the starter's api deploys as a zip.
 # PR: build and scan each image, no AWS. main: build, scan, keep an SBOM of the image, then push it to the
 # app's ECR repository, ${PROJECT_NAME}/<app>, tagged with the commit; its Terraform unit creates the
 # repository and deploys the image by that tag. Scanning the built image is what the repo scans in the

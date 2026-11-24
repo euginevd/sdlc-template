@@ -28,5 +28,5 @@ coverage/
 test-results/
 playwright-report/
 
-# Local notes and drafts, never committed (the SDLC explainer and its diagram renderer)
+# Your own notes and drafts, never committed
 /local/

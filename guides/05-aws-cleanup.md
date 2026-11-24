@@ -1,6 +1,6 @@
 # Cleaning up AWS
 
-How to remove everything a project puts in AWS, so nothing is charged, then prove it. The code and the GitHub repo stay, so you can redeploy. Run it per account (`dev`, then `prod`), by hand: the agent never touches AWS ([AGENTS.md](../AGENTS.md) rule 14). Delete the bootstrap last, once the account is shown empty ([docs/deploy.md](../docs/deploy.md)). Run the AWS commands in **AWS CloudShell**, in the project's region.
+How to remove everything a project puts in AWS, so nothing is charged, then prove it. The code and the GitHub repo stay, so you can redeploy. Run it per account (`dev`, then `prod`), by hand: the agent never touches AWS ([AGENTS.md](../AGENTS.md) rule 14). Delete the bootstrap last, once the account is shown empty (the [`deploy`](../.claude/skills/deploy/SKILL.md) skill). Run the AWS commands in **AWS CloudShell**, in the project's region.
 
 Set these first, in CloudShell:
 

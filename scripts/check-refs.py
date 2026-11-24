@@ -1,6 +1,6 @@
-"""Checks numbered references: AGENTS.md rules, known mistakes, and the docs cited by number.
+"""Checks numbered references: AGENTS.md rules, lessons, and the docs cited by number.
 
-Fails when a list isn't numbered 1, 2, 3 and so on (known mistakes keep their numbers, so only
+Fails when a list isn't numbered 1, 2, 3 and so on (lessons keep their numbers, so only
 need them unique), when a reference names a number the list doesn't have, and, given a base Git
 ref, when a line the change didn't touch names an item that has since moved or gone: a rule added
 in the middle shifts every number after it. The base is compared from where the branch left it,
@@ -22,26 +22,36 @@ BARE = r"\((\d+(?:–\d+)?)(?: on)?\)"
 
 
 def doc(name: str, *, md: bool = False) -> str:
-    """How a doc is cited: "code-standards 10", "`docs/code-standards.md` (5–7)" or
-    "[docs/pull-requests.md](docs/pull-requests.md) 3". With md, only with its ".md", since
-    "deploy 2" is as likely to mean something else."""
+    """How a doc is cited: "standards 10", "`docs/standards.md` (5–7)" or
+    "[docs/intent.md](docs/intent.md) 3". With md, only with its ".md", since a bare name
+    is as likely to mean something else."""
     ext = r"\.md" if md else r"(?:\.md)?"
     return rf"\b{name}{ext}`?\)? \(?{NUMS}"
+
+
+def skill(name: str) -> str:
+    """How a skill's step is cited: "the `deploy` skill 2", or "[`deploy`](...) skill 2"."""
+    return rf"\b{name}`?(?:\]\([^)]*\))? skill {NUMS}"
 
 
 # Each list: its files, how an item starts, whether it runs 1, 2, 3, and how other files cite it.
 LISTS: dict[str, tuple[list[str], str, bool, list[str]]] = {
     "AGENTS.md rule": (["AGENTS.md"], NUMBERED, True, [rf"\b[Rr]ules? {NUMS}", BARE]),
-    "known mistake": (
-        ["docs/known-mistakes.md", "docs/known-mistakes/aws.md"],
+    "lesson": (
+        ["docs/lessons.md", "docs/aws/lessons.md"],
         NUMBERED,
         False,
-        [rf"\b[Kk]nown[- ]mistakes? {NUMS}"],
+        [rf"\b[Ll]essons? {NUMS}"],
     ),
     "spec": (["docs/spec.md"], NUMBERED, True, [rf"\bspec {NUMS}"]),
-    "code-standards": (["docs/code-standards.md"], NUMBERED, True, [doc("code-standards")]),
-    "pull-requests": (["docs/pull-requests.md"], NUMBERED, True, [doc("pull-requests", md=True)]),
-    "deploy": (["docs/deploy.md"], NUMBERED, True, [doc("deploy", md=True)]),
+    "standards": (["docs/standards.md"], NUMBERED, True, [doc("standards")]),
+    "pull-request skill": (
+        [".claude/skills/pull-request/SKILL.md"],
+        NUMBERED,
+        True,
+        [skill("pull-request")],
+    ),
+    "deploy skill": ([".claude/skills/deploy/SKILL.md"], NUMBERED, True, [skill("deploy")]),
     "trade-offs": (
         ["guides/03-security-trade-offs.md"],
         r"^\| (\d+) \| ([^|]*)",

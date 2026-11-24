@@ -1,0 +1,41 @@
+# One change's intent, with the same headings as docs/intent.md. The agent takes the oldest open issue
+# (AGENTS.md rule 8), so each field is what it builds from.
+name: Intent
+description: A change you want built, and why.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What's wrong today, and for whom.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Proposed outcome
+      description: What you want built, with what goes in and comes out.
+    validations:
+      required: true
+  - type: textarea
+    id: affected
+    attributes:
+      label: Affected users and systems
+      description: Who it changes things for, and the apps, data or services it touches.
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints
+      description: Limits it must respect, such as cost, data, security or a deadline.
+  - type: textarea
+    id: success
+    attributes:
+      label: Success criteria
+      description: How you'll know it works, as checks a person can run.
+    validations:
+      required: true
+  - type: textarea
+    id: questions
+    attributes:
+      label: Open questions
+      description: What's still undecided.
