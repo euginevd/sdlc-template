@@ -3,8 +3,8 @@ name: images
 # Container images for each app with a Dockerfile (apps/<app>/Dockerfile, built from the repo root;
 # standards 22). Nothing runs until an app has one: the starter's api deploys as a zip.
 # PR: build and scan each image, no AWS. main: build, scan, keep an SBOM of the image, then push it to the
-# app's ECR repository, ${PROJECT_NAME}/<app>, tagged with the commit; its Terraform unit creates the
-# repository and deploys the image by that tag. Scanning the built image is what the repo scans in the
+# app's ECR repository, ${PROJECT_NAME}/<app>, tagged with the commit, and sign its build provenance and SBOM;
+# its Terraform unit creates the repository and deploys the image by that tag. Scanning the built image is what the repo scans in the
 # security workflow can't do: it sees the base image's OS packages.
 on:
   pull_request:
@@ -80,9 +80,11 @@ jobs:
     timeout-minutes: 30
     # The deploy role, through the dev apply environment: main only, and approved where it has a reviewer.
     environment: aws-dev-apply
+    # id-token also signs the attestations (Sigstore, keyless); attestations stores them on GitHub.
     permissions:
       contents: read
       id-token: write
+      attestations: write
     env:
       APP: ${{ matrix.app }}
       PLATFORM: ${{ matrix.platform }}
@@ -138,6 +140,7 @@ jobs:
           retention-days: 90
 
       - name: Push
+        id: push
         if: steps.build.outputs.image != ''
         env:
           IMAGE: ${{ steps.build.outputs.image }}
@@ -145,4 +148,25 @@ jobs:
         run: |
           aws ecr get-login-password | docker login --username AWS --password-stdin "$REGISTRY"
           docker push "$IMAGE"
-          echo "Pushed \`$IMAGE\`, scanned, with its SBOM" >> "$GITHUB_STEP_SUMMARY"
+          digest=$(docker inspect --format '{{index .RepoDigests 0}}' "$IMAGE")
+          echo "name=${IMAGE%:*}" >> "$GITHUB_OUTPUT"
+          echo "digest=${digest#*@}" >> "$GITHUB_OUTPUT"
+          echo "Pushed \`$IMAGE\` (${digest#*@}), scanned, with its SBOM" >> "$GITHUB_STEP_SUMMARY"
+
+      # Signed proof of what was pushed: build provenance (SLSA: this repo, workflow and commit built it) and
+      # its SBOM, tied to the image's digest; public repos only, as a private one needs Enterprise Cloud.
+      # Check one with: gh attestation verify oci://<image> --repo <owner>/<repo>
+      - name: Attest build provenance
+        if: steps.push.outputs.digest != '' && !github.event.repository.private
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: ${{ steps.push.outputs.name }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+
+      - name: Attest the SBOM
+        if: steps.push.outputs.digest != '' && !github.event.repository.private
+        uses: actions/attest-sbom@c604332985a26aa8cf1bdc465b92731239ec6b9e # v4.1.0
+        with:
+          subject-name: ${{ steps.push.outputs.name }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          sbom-path: sbom-${{ matrix.app }}.cdx.json
