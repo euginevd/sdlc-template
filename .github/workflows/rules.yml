@@ -1,8 +1,8 @@
 name: rules
 
 # AGENTS.md rules that a check can hold, so they don't depend on the agent remembering:
-# numbered references still point at the right item, and no AI attribution in commits or the PR
-# description (rule 15). Reruns when the description is edited, so fixing it clears the check.
+# numbered references still point at the right item, agent hooks still work, and no AI attribution in
+# commits or the PR description (rule 15). Reruns when the description is edited, so fixing it clears the check.
 on:
   pull_request:
     types: [opened, edited, synchronize, reopened]
@@ -23,6 +23,10 @@ jobs:
       - name: Numbered references
         if: always()
         run: python3 scripts/check-refs.py HEAD^1
+      # A broken agent hook fails silently, so each must still load, run a script that parses, and the guard deny.
+      - name: Agent hooks
+        if: always()
+        run: python3 scripts/check-hooks.py
       # Dependabot's PRs quote upstream release notes, which can carry another project's footer.
       - name: No AI attribution
         if: ${{ !cancelled() && github.event.pull_request.user.login != 'dependabot[bot]' }}

@@ -99,9 +99,10 @@ All core, except `cost-report.py`, which only an AWS project needs.
 6. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open threads and alerts; replies and resolves threads.
 7. **scripts/check-refs.py**: fails when a numbered list skips a number, a reference names an item that doesn't exist, or an item cited elsewhere moved.
 8. **scripts/check-attribution.py**: fails on an AI co-author or "Generated with" line in a commit message or PR description (AGENTS.md rule 15).
-9. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
-10. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment (AWS module).
-11. **scripts/tests/**: tests for the scripts; they run with the apps' tests.
+9. **scripts/check-hooks.py**: fails when a Claude Code hook in `.claude/settings.json` no longer loads, runs a missing or broken script, or the guard stops denying a production `.env` edit, since a broken hook fails silently.
+10. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
+11. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment (AWS module).
+12. **scripts/tests/**: tests for the scripts; they run with the apps' tests.
 
 ### 3.4 Agent setup (core)
 
