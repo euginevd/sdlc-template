@@ -1,6 +1,7 @@
 ---
 name: review-design
 description: Design review of a changed screen against its mockup, this repo's design system and its web UI standards (AGENTS.md rule 10). Use when a phase changes a page or component, or when asked for a design or accessibility review. Reports findings; never edits code.
+model: sonnet  # A different model from the session that wrote the code, for a second opinion; haiku if that session runs Sonnet.
 ---
 
 # Design review

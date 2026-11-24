@@ -1,6 +1,7 @@
 ---
 name: review-security
 description: Security review of the branch's diff against this repo's threat model, standards and rules, before a PR or after each phase (AGENTS.md rule 10). Use when asked for a security review, or when the build reaches its review step. Reports findings; never edits code.
+model: sonnet  # A different model from the session that wrote the code, for a second opinion; haiku if that session runs Sonnet.
 allowed-tools: Read, Grep, Glob, Bash(git diff*), Bash(git log*), Bash(git show*), Bash(git status*)
 ---
 

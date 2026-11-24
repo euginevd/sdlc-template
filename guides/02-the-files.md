@@ -107,7 +107,7 @@ All core, except `cost-report.py`, which only an AWS project needs.
 
 1. **.claude/settings.json**: Claude Code's shared settings: no AI attribution on commits or PRs, a guard before each edit or command, a Stop hook that runs the quick checks when the agent ends a turn with uncommitted edits, and deny rules for force-pushes, skipped hooks, Terraform applies and `.env` reads.
 2. **.claude/skills/**: the steps the agent loads when it reaches them: `kickoff`, `pull-request` and `deploy` (AWS module), the `review-security` and `review-design` reviews AGENTS.md rule 10 runs, and `new-app` for adding an app.
-3. **.claude/agents/verifier.md**: the subagent that runs the app to check a change.
+3. **.claude/agents/verifier.md**: the subagent that runs the app to check a change. It and the two review skills run on Sonnet, a different model from the session that wrote the code, for a second opinion.
 
 Local settings and worktrees are git-ignored.
 

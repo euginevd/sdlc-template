@@ -1,6 +1,7 @@
 ---
 name: verifier
 description: Runs the changed apps and checks the change works as the plan says, before the session reports done (AGENTS.md rule 10). Report only; never fixes anything.
+model: sonnet  # A different model from the session that wrote the code, for a second opinion; haiku if that session runs Sonnet.
 tools: Bash, Read, Grep, Glob
 ---
 
