@@ -37,7 +37,7 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 - **Does:** `AGENTS.md` holds the rules every agent reads (rules 4 and 14: never touch secrets, cloud resources or hooks). `.claude/settings.json` enforces what Claude Code can: it denies force-pushes, `--no-verify`, `terraform apply` and `destroy`, and `.env` reads (a prototype drops the last at kickoff), and turns off AI attribution on commits and PRs (rule 15).
 - **Hooks:** before each edit or command, `scripts/agent-guard.sh` denies touching `.env` in production, even through a shell command (a prototype may, by its profile), denies any MCP server named for `prod`, and asks you before an existing test or a check's own settings (ruff, ESLint, Prettier, tsconfig, TFLint, the hooks, the workflows, `check.sh`, `.claude/settings.json`) is edited, so the agent fixes the code rather than the test or the check.
 - **When:** in every session; Claude Code's Stop hook also runs the quick checks whenever the agent ends a turn with uncommitted edits, and sends a failure back, once, for it to fix.
-- **On a finding:** hooks and required checks catch a broken rule: the commit hook and the `rules` check fail on AI attribution, and on a numbered reference that points at the wrong item; the `rules` check also fails on a broken agent hook. Add a lesson to `docs/lessons.md`.
+- **On a finding:** hooks and required checks catch a broken rule: the commit hook and the `rules` check fail on AI attribution, and on a numbered reference that points at the wrong item; the `rules` check also fails on a broken agent hook, and the `agent-evals` workflow, once a key is set, shows when a rule change makes the agent stop following one. Add a lesson to `docs/lessons.md`.
 - **Limits:** deny rules match how a command starts, so a reworded command can slip past; other agents need their own settings (trade-offs 2). The only AWS key on the agent's machine is the read-only troubleshoot user's (trade-offs 14); while it works as you on GitHub, its actions look like yours (trade-offs 1).
 
 ## 6. Test: secrets, SCA and IaC scanning
@@ -165,11 +165,11 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 - **Does:** records every AWS API call: who, what, when and from where.
 - **When:** on every AWS API call.
 - **On a finding:** search the console, or Athena for a trail in S3.
-- **Limits:** not in the template yet. Event history keeps 90 days free; a trail to S3 keeps longer for storage cost.
+- **Limits:** CloudTrail's Event history is on in every account and keeps 90 days of management events free, which the template relies on; a trail to S3, which keeps longer for storage cost, isn't in the template yet.
 
 ## 24. Maintain: threat detection and alarms
 
-- **Does:** GuardDuty spots stolen credentials, mining and bad addresses. Alarms watch errors, `5xx`, throttling and latency.
-- **When:** all the time.
+- **Does:** GuardDuty spots stolen credentials, mining and bad addresses, and emails its high-severity findings. Alarms on the `api` unit email on function errors and `5xx`.
+- **When:** all the time, once turned on: the bootstrap's `Monitoring` parameter set to `on` creates GuardDuty and a `<project>-alerts` topic that emails `BudgetEmail`, and the `MONITORING` repo variable set to `on` adds the alarms.
 - **On a finding:** contain, rotate and restore ([guide 08](08-incident-runbook.md)), then open an issue from the Incident form so the fix and its check are planned.
-- **Limits:** not in the template yet. GuardDuty costs after 30 days, so ask first (AGENTS.md rule 4).
+- **Limits:** off by default, as GuardDuty costs after 30 days: production turns it on before go-live, a prototype asks first (AGENTS.md rule 6). An account has one detector per region, so a second project in it leaves `Monitoring` off. No alarms yet for throttling or latency.

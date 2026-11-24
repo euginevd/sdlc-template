@@ -28,5 +28,5 @@ The guardrails by stage of the [secure agentic SDLC](../guides/06-secure-agentic
 | 20 | Maintain | Weekly re-scans | Weekly `security` and `codeql` runs, and Dependabot | Both |
 | 21 | Maintain | Budget alert | The AWS budget in `bootstrap.yaml` | Both |
 | 22 | Maintain | Access logs, throttling | The HTTP API's access logs and throttling, and Lambda logs, from `infra/aws/api/` | Both |
-| 23 | Maintain | Audit logging | AWS CloudTrail, per account *(planned)* | Both |
-| 24 | Maintain | Threat detection, alarms | Amazon GuardDuty and CloudWatch alarms, per account | Production |
+| 23 | Maintain | Audit logging | AWS CloudTrail Event history, 90 days; a trail to S3 *(planned)* | Both |
+| 24 | Maintain | Threat detection, alarms | Amazon GuardDuty and CloudWatch alarms: the bootstrap's `Monitoring` and the `MONITORING` variable, both `on` | Production |

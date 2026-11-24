@@ -62,8 +62,8 @@ A prototype still stops before spending past the spec's monthly limit, weakening
 | [AGENTS.md](AGENTS.md) | The numbered rules every coding agent reads: gates per profile, the workflow, what to ask first and what never to do |
 | [docs/](docs/) | What the agent reads and keeps current: spec, features, decisions, lessons by area, threat model, costs, design system and go-live checklist. Each starts with a *(to fill in)* line for what your project decides |
 | [apps/api/](apps/api/), [infra/aws/api/](infra/aws/api/) | The starter: a Lambda with a `/health` route and its Terraform, proving the pipeline end to end. Keep it, build on it or replace it |
-| [.github/workflows/](.github/workflows/) | `ci` for changed apps, `security` and `codeql` for scans, `rules` for rule checks, `images` for signed container images, `aws` for the plan, cost comment, apply and `dev` scan |
-| [infra/aws/bootstrap/](infra/aws/bootstrap/) | One stack per AWS account, deployed by you: the GitHub sign-in, a read-only plan role, a bounded deploy role, a read-only troubleshoot role, the state bucket and a budget alert |
+| [.github/workflows/](.github/workflows/) | `ci` for changed apps, `security` and `codeql` scans, `rules` checks, `images` for signed images, `aws` to plan, cost, apply and scan `dev`, `factory` to build labelled issues |
+| [infra/aws/bootstrap/](infra/aws/bootstrap/) | One stack per AWS account, deployed by you: the GitHub sign-in, a read-only plan role, a bounded deploy role, a read-only troubleshoot role, the state bucket, budget alert and optional GuardDuty |
 | [scripts/](scripts/) | `setup.sh` installs and checks a machine, `protect-main.sh` locks down the repo, `pr-findings.sh` lists what a PR still has to fix, and the agent's hooks |
 
 ## What always runs

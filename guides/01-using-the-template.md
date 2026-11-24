@@ -24,11 +24,25 @@ Once per project, by you. Steps 1 to 3 need the GitHub CLI, signed in with `gh a
 1. **Create it:** `gh repo create <name> --template euginevd/sdlc-template --public --clone` for a personal or portfolio project, built in the open; `--private` for a work project. On a public repo anyone signed in can download `main`'s Terraform plans for a day, so nothing secret goes in code or Terraform (trade-offs 5). A private repo needs a paid GitHub plan (Pro or Team) for step 3.
 2. **Tools and hooks:** `bash scripts/setup.sh` on every fresh clone installs the scanners, uv, Terraform and the push hook: with winget on Windows, Homebrew on macOS, and checked downloads on Linux, where an agent in a cloud container runs it itself. Until it runs, pushes aren't scanned; `bash scripts/setup.sh --check` only reports.
 3. **Protect `main`:** `bash scripts/protect-main.sh` sets the Actions limits, squash-only merges, security features, the `main` ruleset and the `aws-dev-apply` environment, which deploys from `main` only. On a free plan a private repo gets neither the ruleset nor the environment, so nothing is enforced and the script says so; a public one also needs everything under Settings → Advanced Security turned on by hand ([guide 04](04-the-guardrails.md), sections 4 and 7).
-4. **AWS, once the project works locally and you're happy with it:** follow the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml), once per account: `dev`, and for production `prod` (`Target=prod`) before its first release. Set `BudgetEmail` for spend alerts and `INFRACOST_API_KEY` for a cost comment on each PR; `protect-main.sh` has already limited each `aws-<env>-apply` environment to `main`; run it again to check ([guide 04](04-the-guardrails.md), section 16).
+4. **AWS, once the project works locally and you're happy with it:** follow the steps at the top of [bootstrap.yaml](../infra/aws/bootstrap/bootstrap.yaml), once per account: `dev`, and for production `prod` (`Target=prod`) before its first release. Set `BudgetEmail` for spend alerts, and for production `Monitoring=on` with the `MONITORING` repo variable for GuardDuty and alarms (charged after 30 days) and `INFRACOST_API_KEY` for a cost comment on each PR; `protect-main.sh` has already limited each `aws-<env>-apply` environment to `main`; run it again to check ([guide 04](04-the-guardrails.md), section 16).
 5. **Reviewers**, the one step that differs by profile:
    - `prototype`: none. Leave the reviewer off `aws-dev-apply`, so a merge deploys to `dev` unattended.
    - `production`: give a second reviewer write access, run `bash scripts/protect-main.sh production`, and make them the required reviewer on each apply environment, with *Prevent self-review* on.
-6. Keep `AGENTS.md`, `standards.md`, the workflows and the scripts as they are.
+6. **Optional, the agent's own identity and the factory:** create a GitHub App (Settings → Developer settings → GitHub Apps) with Contents, Pull requests and Issues set to read and write and no webhook, and install it on this repo only. Save its Client ID as the `AGENT_APP_CLIENT_ID` variable and a private key as the `AGENT_APP_PRIVATE_KEY` secret; the factory's PRs then show as the agent and run CI (trade-offs 1). The factory itself turns on with an `ANTHROPIC_API_KEY` secret, and each run is charged to that key: label an issue `factory` and a cloud agent builds it into a draft PR. Only your label starts it.
+
+   ```bash
+   gh variable set AGENT_APP_CLIENT_ID --body <client-id>
+   ```
+
+   ```bash
+   gh secret set AGENT_APP_PRIVATE_KEY < <downloaded-key>.pem
+   ```
+
+   ```bash
+   gh secret set ANTHROPIC_API_KEY
+   ```
+
+7. Keep `AGENTS.md`, `standards.md`, the workflows and the scripts as they are.
 
 ## 3. Kick off
 

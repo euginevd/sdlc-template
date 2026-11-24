@@ -1,0 +1,42 @@
+name: agent-evals
+
+# Evals for the agent's own config (#207): when a PR changes AGENTS.md, a skill, an agent, the settings or the
+# standards, Claude Code answers each case in .claude/evals/cases.json in plan mode, and the answers must still
+# follow the rules. Off until the owner adds the ANTHROPIC_API_KEY secret; each run is a few API calls.
+# Not a required check, so a model's off day doesn't block a merge; a failure is read like a review finding.
+on:
+  pull_request:
+    paths: [AGENTS.md, .claude/**, docs/standards.md, scripts/agent-evals.py, .github/workflows/agent-evals.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+    steps:
+      - name: Off until configured
+        if: env.HAS_KEY != 'true'
+        run: 'echo "::notice::Agent evals are off: add the ANTHROPIC_API_KEY secret to turn them on."'
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: env.HAS_KEY == 'true'
+        with:
+          persist-credentials: false
+
+      # From .claude/evals' lock file, which Dependabot updates (AGENTS.md rule 16). Its install script fetches
+      # the CLI's binary, so this install runs scripts, unlike the apps' (standards 16).
+      - name: Claude Code
+        if: env.HAS_KEY == 'true'
+        run: |
+          npm ci --prefix .claude/evals
+          echo "$PWD/.claude/evals/node_modules/.bin" >> "$GITHUB_PATH"
+
+      - name: Evals
+        if: env.HAS_KEY == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python3 scripts/agent-evals.py

@@ -1,0 +1,8 @@
+{
+  "name": "agent-evals",
+  "private": true,
+  "description": "The Claude Code CLI for the agent evals (#207), pinned so CI installs it from this lock file.",
+  "dependencies": {
+    "@anthropic-ai/claude-code": "2.1.326"
+  }
+}
