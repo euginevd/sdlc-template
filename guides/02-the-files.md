@@ -144,7 +144,7 @@ A change ships like this: issue → PR → `ci`, `security`, `codeql` and `rules
 
 ### 5.1 Workflows (core)
 
-1. **workflows/ci.yml**: lint, types and tests for only the apps a PR changes; actionlint, zizmor and shellcheck when workflows or scripts change; and the `kickoff` check for leftover *(to fill in)* lines and docs over their length.
+1. **workflows/ci.yml**: lint, types and tests for only the apps a PR changes; actionlint, zizmor and shellcheck when workflows or scripts change; and the `kickoff` check for leftover *(to fill in)* lines.
 2. **workflows/security.yml**: the push scan again, plus Checkov, Semgrep, `terraform validate` and TFLint; weekly too.
 3. **workflows/codeql.yml**: GitHub's code scanning on PRs, `main` and weekly.
 4. **workflows/rules.yml**: the hooks' reference and attribution checks again on every PR, as the required `rules` check, so a skipped hook can't get through, and `check-hooks.py` for the agent's hooks.
