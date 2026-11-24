@@ -54,11 +54,11 @@ my-project/
 
 ## 4. Local tools (hooks, editor, scripts)
 
-The push scan: `setup.sh` runs `lefthook install`, which writes `.git/hooks/pre-push`; each `git push` then runs `pre-push-scan.sh`, which passes or blocks.
+The hooks: `setup.sh` runs `lefthook install`, which writes `.git/hooks/pre-push` and `commit-msg`; each `git push` then runs `pre-push-scan.sh` and `check-refs.py`, and each commit `check-attribution.py`, which pass or block.
 
 1. **scripts/setup.sh**: once per clone, on Windows, macOS or Linux: installs the tools and hooks, then `uv sync`; `--check` only reports.
-2. **lefthook.yml**: which script runs on which git event: a scan before every push.
-3. **.git/hooks/pre-push**: hidden and per clone, written by `lefthook install`.
+2. **lefthook.yml**: which script runs on which git event: a scan and the reference check before every push, the attribution check on every commit.
+3. **.git/hooks/pre-push** and **commit-msg**: hidden and per clone, written by `lefthook install`.
 4. **.lefthook/pre-push-scan.sh**: scans the pushed commits with gitleaks (secrets) and Trivy (packages, IaC); a finding blocks the push.
 5. **.vscode/extensions.json**: suggests the scanner, Ruff, Python and Terraform extensions.
 6. **.editorconfig**: LF, UTF-8, indent size and a final newline.
@@ -68,7 +68,9 @@ The push scan: `setup.sh` runs `lefthook install`, which writes `.git/hooks/pre-
 10. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open threads and alerts; replies and resolves threads.
 11. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
 12. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment.
-13. **scripts/tests/**: tests for the two report scripts; they run with the apps' tests.
+13. **scripts/check-refs.py**: fails when a numbered list skips a number, a reference names an item that doesn't exist, or an item cited elsewhere moved; the push hook and the `rules` workflow run it.
+14. **scripts/check-attribution.py**: fails on an AI co-author or "Generated with" line in a commit message or PR description (AGENTS.md rule 15).
+15. **scripts/tests/**: tests for the report and check scripts; they run with the apps' tests.
 
 ## 5. App code
 
@@ -90,10 +92,11 @@ A change ships like this: PR → `ci`, `security` and `codeql` run → `aws` pla
 2. **CODEOWNERS** *(not included)*: requests reviewers per path; add it once a team shares the repo.
 3. **dependabot.yml**: weekly update PRs for actions, Python and Terraform, each release 7 days old.
 4. **workflows/ci.yml**: lint, types and tests for only the apps a PR changes; actionlint, zizmor and shellcheck when workflows or scripts change; and the `kickoff` check for leftover *(to fill in)* lines and docs over their length.
-5. **workflows/security.yml**: the push scan again, plus Checkov, Semgrep and `terraform validate`; weekly too.
+5. **workflows/security.yml**: the push scan again, plus Checkov, Semgrep, `terraform validate` and tflint (settings in `infra/aws/.tflint.hcl`); weekly too.
 6. **workflows/codeql.yml**: GitHub's code scanning on PRs, `main` and weekly.
 7. **workflows/aws.yml**: Terraform plan and cost on PRs, with one `plan-result` check the ruleset requires; on merge, applies the changed units to `dev`, and `prod` by hand.
 8. **workflows/images.yml**: builds, scans and pushes each app's image to ECR, with its SBOM; idle until an app has a Dockerfile.
+9. **workflows/rules.yml**: the hooks' rule checks again on every PR, as the required `rules` check: numbered references, and no AI attribution in the commits or the PR description.
 
 ## 7. Cloud (infra/aws/)
 

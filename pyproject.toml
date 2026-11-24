@@ -31,6 +31,8 @@ max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
 "apps/*/tests/*" = ["S101", "PLR2004"]
+# Run by hand, the hooks and CI, with fixed git arguments.
+"scripts/*.py" = ["S603", "S607"]
 "scripts/tests/*" = ["S101", "PLR2004"]
 
 [tool.pyright]
