@@ -524,6 +524,7 @@ Resources:
         - { Key: Project, Value: !Ref ProjectName }
         - { Key: ManagedBy, Value: CloudFormation }
 
+  # trivy:ignore:AWS-0095 EventBridge and CloudWatch can't publish under the AWS-managed SNS key, and a customer key costs monthly; alerts hold only what their email shows
   AlertsTopic:
     Type: AWS::SNS::Topic
     Condition: MonitoringOn
@@ -531,7 +532,7 @@ Resources:
       checkov:
         skip:
           - id: CKV_AWS_26
-            comment: EventBridge and CloudWatch can't publish to a topic under the AWS-managed SNS key; alerts carry no data
+            comment: EventBridge and CloudWatch can't publish under the AWS-managed SNS key; alerts hold only what their email shows
     Properties:
       TopicName: !Sub '${ProjectName}-alerts'
       Tags:
