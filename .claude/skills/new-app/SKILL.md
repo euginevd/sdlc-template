@@ -15,5 +15,6 @@ An app needs changes in several files beyond its own folder, and missing one fai
 6. **Infrastructure,** if it deploys: `infra/aws/<app>/`, copied from `infra/aws/api` and named as `docs/standards.md` 13 and 14 say. A new AWS service follows the `deploy` skill 2; production asks first (`AGENTS.md` rule 4).
 7. **Docs:** its Stack line in `docs/spec.md` with Run, Talks to and Outside limits; its section and first row in `docs/features.md`; a threat-model data flow and risks if it has users, data, auth or endpoints.
 8. **Browser tests,** if it has screens: its main path in `e2e/` (`docs/standards.md` 30).
+9. **Model calls,** if it calls a model: unit tests use a stand-in model, a fake client that returns fixed output, including a malformed reply, a refusal and a timeout, so tests are fast, free and repeatable; never the real API. Evals in `apps/<app>/evals/` (`docs/standards.md` 20), and an `evals` job in `ci.yml` that runs them when the prompts, model settings or model ID change, with the API key from a GitHub environment secret; that closes trade-offs 8.
 
 Finish with `bash scripts/check.sh all` passing, then show that the `changes` job selects the new app: a one-line edit in `apps/<app>/` must make `git diff` match its pattern in `ci.yml`.
