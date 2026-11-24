@@ -10,7 +10,7 @@ The guardrails by stage of the [secure agentic SDLC](../guides/06-secure-agentic
 | 2 | Design | Cost estimate | `docs/aws/costs.md` | Production; a prototype keeps the starter's |
 | 3 | Build, IDE | Secrets, SCA, IaC scanning | Gitleaks and Trivy, in `.lefthook/pre-push-scan.sh` | Both |
 | 4 | Build, repo | Push protection, SCA | GitHub push protection and Dependabot, turned on by `bash scripts/protect-main.sh` | Both |
-| 5 | Build, agent | Agent guardrails | `AGENTS.md`, the agent tool's permission settings, and for production the agent's own GitHub account | Both |
+| 5 | Build, agent | Agent guardrails | `AGENTS.md`, the agent tool's permission settings and Stop hook, and for production the agent's own GitHub account | Both |
 | 6 | Test | Secrets, SCA, IaC scanning | Gitleaks, Trivy and Checkov, in `.github/workflows/security.yml` | Both |
 | 7 | Test | SAST | Semgrep (`security.yml`), CodeQL (`codeql.yml`), and GitHub AI Scan, set by hand | Both |
 | 8 | Test | Supply chain security | Pins in the workflows, `exclude-newer` in `pyproject.toml`, `cooldown` in `dependabot.yml`, and the `sbom` job | Both |

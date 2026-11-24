@@ -5,6 +5,20 @@
     "pr": "",
     "sessionUrl": false
   },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/agent-stop-check.sh\"",
+            "timeout": 300,
+            "statusMessage": "Running the quick checks"
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Bash(uv sync*)",

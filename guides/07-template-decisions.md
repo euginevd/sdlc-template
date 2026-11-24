@@ -2,7 +2,7 @@
 
 Decisions about the template itself, from audits, one line each, newest last; cite as "guide 07 finding 2". Open work: the [issues labelled `template`](https://github.com/euginevd/sdlc-template/issues?q=is%3Aissue+is%3Aopen+label%3Atemplate). A project's own decisions: [docs/decisions.md](../docs/decisions.md).
 
-1. **Root files stay uppercase** (2026-11-24): agents and GitHub look for exact names like `AGENTS.md`, and Linux is case-sensitive, so `agents.md` goes unread there; the rest stays lowercase kebab-case ([code-standards 24](../docs/code-standards.md)).
+1. **Root files stay uppercase** (2026-11-24): agents and GitHub look for exact names like `AGENTS.md`, and Linux is case-sensitive, so `agents.md` goes unread there; the rest stays lowercase kebab-case ([standards 24](../docs/standards.md)).
 2. **Six SDLC stages, not eight DevSecOps ones** (2026-11-24): one model is simpler and has a gate per stage; Code joins Build, CI scans join Test, Release joins Deploy, Operate and Monitor become Maintain; control numbers unchanged ([guide 06](06-secure-agentic-sdlc.md)).
 3. **The template's backlog is GitHub issues** (2026-11-24): issues aren't copied into new projects, cost no context and keep their history.
 4. **GitHub issues replace `TODO.md` in projects too** (2026-11-24): parallel branches no longer conflict on one file, cloud agents and factories start from issues, a PR closes its issue, and closed ones keep their history; the agent takes the oldest open issue ([AGENTS.md](../AGENTS.md) rule 8).

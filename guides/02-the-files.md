@@ -94,16 +94,17 @@ All core, except `cost-report.py`, which only an AWS project needs.
 1. **scripts/setup.sh**: once per clone, on Windows, macOS or Linux: installs the tools and hooks, then `uv sync`; `--check` only reports.
 2. **scripts/check.sh**: runs what CI runs, for what changed, plus `itest` and `e2e` (Playwright, in `e2e/` once a project has screens) on request; CI's app jobs call it too, and the agent pastes its result when reporting done.
 3. **scripts/protect-main.sh**: once, by hand: locks `main`, squash-only merges, security features, apply environments that take `main` only; `production` adds a second reviewer.
-4. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open threads and alerts; replies and resolves threads.
-5. **scripts/check-refs.py**: fails when a numbered list skips a number, a reference names an item that doesn't exist, or an item cited elsewhere moved.
-6. **scripts/check-attribution.py**: fails on an AI co-author or "Generated with" line in a commit message or PR description (AGENTS.md rule 15).
-7. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
-8. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment (AWS module).
-9. **scripts/tests/**: tests for the scripts; they run with the apps' tests.
+4. **scripts/agent-stop-check.sh**: the Stop hook: runs `check.sh` and sends a failure back to the agent, once, so it can't loop.
+5. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open threads and alerts; replies and resolves threads.
+6. **scripts/check-refs.py**: fails when a numbered list skips a number, a reference names an item that doesn't exist, or an item cited elsewhere moved.
+7. **scripts/check-attribution.py**: fails on an AI co-author or "Generated with" line in a commit message or PR description (AGENTS.md rule 15).
+8. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
+9. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment (AWS module).
+10. **scripts/tests/**: tests for the scripts; they run with the apps' tests.
 
 ### 3.4 Agent setup (core)
 
-1. **.claude/settings.json**: Claude Code's shared settings: no AI attribution on commits or PRs, and deny rules for force-pushes, skipped hooks, Terraform applies and `.env` reads.
+1. **.claude/settings.json**: Claude Code's shared settings: no AI attribution on commits or PRs, a Stop hook that runs the quick checks when the agent ends a turn with uncommitted edits, and deny rules for force-pushes, skipped hooks, Terraform applies and `.env` reads.
 2. **.claude/skills/**: the steps the agent loads when it reaches them: `kickoff`, `pull-request` and `deploy` (AWS module), the `review-security` and `review-design` reviews AGENTS.md rule 10 runs, and `new-app` for adding an app.
 3. **.claude/agents/verifier.md**: the subagent that runs the app to check a change.
 
