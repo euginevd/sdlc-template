@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Claude Code's PreToolUse hook: runs before the agent edits a file or runs a command, and enforces what
 # AGENTS.md otherwise only asks. Production denies touching `.env` (rule 4; a prototype may edit it), and
-# editing an existing test asks a person first, so the agent fixes the code rather than the test (rule 13).
+# editing an existing test (rule 13) or a check's own settings (rule 14) asks a person first, so the agent fixes
+# the code rather than the test or the check.
 # Deny rules and other agents: see guide 04, control 5.
 set -uo pipefail
 
@@ -47,5 +48,18 @@ fi
 case "/$rel" in
   */tests/* | */test/* | */e2e/* | */test_*.py | */*_test.py | */*.test.ts | */*.test.tsx | */*.spec.ts | */*.spec.tsx)
     decide ask "This edits an existing test: approve only if the test itself is wrong (AGENTS.md rule 13)." ;;
+esac
+
+# 3. A check's own settings (#180): a check is never weakened to get a green run (AGENTS.md rule 14).
+case "$name" in
+  pyproject.toml | ruff.toml | .ruff.toml | eslint.config.* | .eslintrc* | .prettierrc* | prettier.config.* | \
+    tsconfig*.json | .tflint.hcl | lefthook.yml | .gitleaks.toml | .semgrepignore | .npmrc | .editorconfig | \
+    .gitattributes | dependabot.yml)
+    decide ask "This edits a check's settings: approve only if it doesn't weaken a check (AGENTS.md rule 14)." ;;
+esac
+case "/$rel" in
+  */.github/workflows/* | */.lefthook/* | */.claude/settings.json | */scripts/check.sh | */scripts/check-*.py | \
+    */scripts/agent-*.sh)
+    decide ask "This edits a check or a hook: approve only if it doesn't weaken it (AGENTS.md rule 14)." ;;
 esac
 exit 0
