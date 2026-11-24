@@ -1,5 +1,6 @@
 """Tests for new-project.py: a new repo gets only what it needs, with nothing stale."""
 
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -7,6 +8,8 @@ from pathlib import Path
 import pytest
 
 SCRIPT = Path(__file__).resolve().parents[1] / "new-project.py"
+# CI's python job runs in uv's slim image, which has no git; a developer's machine has it.
+pytestmark = pytest.mark.skipif(shutil.which("git") is None, reason="needs git")
 COMBOS: dict[str, tuple[str, list[str]]] = {
     "slim prototype": ("prototype", []),
     "prototype with everything": ("prototype", ["--aws", "--ui"]),
