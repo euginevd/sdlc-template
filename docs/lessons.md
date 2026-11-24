@@ -21,6 +21,7 @@ Mistakes an agent has made, each with its one-line fix, by area ([AGENTS.md](../
 32. ESLint and `tsc` passing isn't the web lint: `npm run lint` also runs `prettier --check`. Run it in each changed app before pushing.
 33. CI's pyright checks `tests` as well as `src`: run `uv run pyright` with no path, as CI does.
 34. A cloud agent container can be refused by an outside API (HTTP 451, restricted location): test against recorded replies, and the owner makes the first live run.
+48. CI's python job runs in uv's slim image, which has no git, so tests that call git failed only there: mark them `skipif(shutil.which("git") is None)`, as `test_stop_hook.py` does.
 
 ## AWS <!-- if:aws -->
 
