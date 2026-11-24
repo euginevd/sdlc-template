@@ -46,7 +46,7 @@ The starter's `api`; the tooling above doesn't need it.
 
 The project context in `docs/` that agents read and keep current.
 
-1. **intent.md**: what you want built and why, in your own words, with research: Problem, Proposed outcome, Affected users and systems, Constraints, Success criteria and Open questions; you write it, or answer in chat at kickoff and the agent writes it for you to check.
+1. **intent.md**: what you want built and why, in your own words, with research: Problem, Proposed outcome, Affected users and systems, Constraints, Success criteria and Open questions; you write it, or answer the `new-project` interview and the agent writes it for you to check.
 2. **spec.md**: the requirements and design agreed from `intent.md`: the business, stack, done-when, rules and what's left out; you approve (production).
 3. **features.md**: what each app does today, one row per feature, with its issue and PR; planned work is the open issues.
 4. **decisions.md**: the project's decision log (ADRs), one line each: the decisions in force, why, and what they replaced.
@@ -59,7 +59,7 @@ The project context in `docs/` that agents read and keep current.
 
 ### 2.3 Module docs
 
-1. **web/**: `design-system.md` and `mockups/`, the UI's look and each screen's mockup, `mvp.html` from kickoff among them; for a project with screens.
+1. **web/**: `design-system.md` and `mockups/`, the UI's look and each screen's mockup, `mvp.html` from the start among them; for a project with screens.
 2. **aws/**: `costs.md` and `lessons.md`, spend and AWS's lessons; for a project on AWS.
 
 ### 2.4 Guides (for people)
@@ -103,14 +103,16 @@ All core, except `cost-report.py`, which only an AWS project needs.
 10. **scripts/agent-evals.py**: runs the agent evals in `.claude/evals/` through Claude Code in plan mode, which changes nothing; CI's `agent-evals` workflow calls it.
 11. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
 12. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment (AWS module).
-13. **scripts/new-project.py**: the `new-project` skill's builder: copies the template to a new folder without the parts a project doesn't need (AWS, screens), and lists what still names them. Template only; a new project doesn't get it.
-14. **scripts/tests/**: tests for the scripts; they run with the apps' tests.
+13. **scripts/new-project.py**: the `new-project` skill's builder. Its manifest tags each file `production`, `aws`, `ui`, `public` or `template`, and a project gets only what its answers meet; a line ending in `<!-- if:aws -->` (or `if:!aws`, and so on) is kept only for a project with (or without) that part. Links to files a project doesn't get point at the template on GitHub. Template only.
+14. **scripts/autopilot.sh**: a prototype's long run: `start [hours]`, `stop "<why>"` and `status`. While it's on, the Stop hook sends the agent back to the next open issue.
+15. **scripts/tests/**: tests for the scripts; they run with the apps' tests.
+16. **profiles/prototype-AGENTS.md**: a prototype's `AGENTS.md`, shorter and autonomous, with the same rule numbers; its floor matches the full one word for word (`test_profiles.py`). Template only.
 
 ### 3.4 Agent setup (core)
 
 1. **.claude/settings.json**: Claude Code's shared settings: no AI attribution on commits or PRs, asking before each `git push` (production), a guard before each edit or command, a Stop hook that runs the quick checks when the agent ends a turn with uncommitted edits, and deny rules for force-pushes, skipped hooks, Terraform applies and `.env` reads.
-2. **.claude/skills/**: the steps the agent loads when it reaches them: `new-project` (template only) to make a repo, `kickoff`, `pull-request` and `deploy` (AWS module), the `review-security` and `review-design` reviews AGENTS.md rule 10 runs, and `new-app` for adding an app.
-3. **.claude/agents/verifier.md**: the subagent that runs the app to check a change. It and the two review skills run on Sonnet, a different model from the session that wrote the code, for a second opinion.
+2. **.claude/skills/**: the steps the agent loads when it reaches them: `new-project` (template only) to start a project, `pull-request` and `deploy` (AWS module), the `review-security` and `review-design` reviews AGENTS.md rule 10 runs.
+3. **.claude/agents/**: `plan-reviewer`, which checks an issue's design against the intent before code (gate G1, and the whole gate in a prototype), and `verifier`, which runs the app to check a change. It and the two review skills run on Sonnet, a different model from the session that wrote the code, for a second opinion.
 4. **.claude/evals/**: the agent evals' cases, each a prompt and the patterns its answer must and mustn't have, and the pinned Claude Code CLI that `scripts/agent-evals.py` runs them with.
 
 Local settings and worktrees are git-ignored.
@@ -122,7 +124,7 @@ Local settings and worktrees are git-ignored.
 
 ## 4. App code (modules)
 
-Each app is a module in its own folder in `apps/`, added with the `new-app` skill: Python has `pyproject.toml`, `src/<name>/` and `tests/`; Node has `package.json`, `src/` and `tests/`.
+Each app is a module in its own folder in `apps/`, joining the checks, CI and Dependabot in the PR that adds it: Python has `pyproject.toml`, `src/<name>/` and `tests/`; Node has `package.json`, `src/` and `tests/`.
 
 ### 4.1 The starter api (Python)
 
@@ -145,7 +147,7 @@ A change ships like this: issue → PR → `ci`, `security`, `codeql` and `rules
 
 ### 5.1 Workflows (core)
 
-1. **workflows/ci.yml**: lint, types and tests for only the apps a PR changes; actionlint, zizmor and shellcheck when workflows or scripts change; and the `kickoff` check for leftover *(to fill in)* lines.
+1. **workflows/ci.yml**: lint, types and tests for only the apps a PR changes; actionlint, zizmor and shellcheck when workflows or scripts change; and the `kickoff` check for leftover *(to fill in)* lines, kept under that name as a required check.
 2. **workflows/security.yml**: the push scan again, plus Checkov, Semgrep, `terraform validate` and TFLint; weekly too.
 3. **workflows/codeql.yml**: GitHub's code scanning on PRs, `main` and weekly.
 4. **workflows/rules.yml**: the hooks' reference and attribution checks again on every PR, as the required `rules` check, so a skipped hook can't get through, and `check-hooks.py` for the agent's hooks.

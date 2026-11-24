@@ -11,7 +11,7 @@ The template's lifecycle on one page: six stages, the security controls in each 
 | 5. Deploy | The agent opens the PR; the pipeline plans and applies Terraform | Protected `main`, security summary, cost comment, OIDC roles, read-only plan, signed images | **G2** merge, **G3** `dev`, **G4** `prod` |
 | 6. Maintain | Rescans and alerts find what changed; each finding becomes an issue from the Incident form | Weekly rescans, Dependabot, budget alert, access logs | **G5**: I check cost and alarms the day after |
 
-G0, kickoff, comes once before all six (the [`kickoff`](../.claude/skills/kickoff/SKILL.md) skill). Who approves each gate in each profile is the table in AGENTS.md rule 5.
+G0, the start, comes once before all six (the [`new-project`](../.claude/skills/new-project/SKILL.md) skill). A prototype passes every later gate with a check or the `plan-reviewer`, not a person. Who approves each gate in each profile is the table in AGENTS.md rule 5.
 
 ## Where each doc fits
 
@@ -19,7 +19,7 @@ G0, kickoff, comes once before all six (the [`kickoff`](../.claude/skills/kickof
 
 | Stage | Docs | Checklist controls |
 |---|---|---|
-| Plan | [intent](../docs/intent.md), GitHub issues; the `kickoff` skill once | None |
+| Plan | [intent](../docs/intent.md), GitHub issues; the `new-project` skill once | None |
 | Design | [spec](../docs/spec.md), [threat-model](../docs/threat-model.md), [costs](../docs/aws/costs.md), [design-system](../docs/web/design-system.md), [plan template](../docs/templates/plan.md), [decisions](../docs/decisions.md), [trade-offs](03-security-trade-offs.md) | 1–2 |
 | Build | [standards](../docs/standards.md), [lessons](../docs/lessons.md) | 3–5 |
 | Test | [`scripts/check.sh`](../scripts/check.sh) and the CI workflows | 6–11 |

@@ -22,9 +22,9 @@ Mistakes an agent has made, each with its one-line fix, by area ([AGENTS.md](../
 33. CI's pyright checks `tests` as well as `src`: run `uv run pyright` with no path, as CI does.
 34. A cloud agent container can be refused by an outside API (HTTP 451, restricted location): test against recorded replies, and the owner makes the first live run.
 
-## AWS
+## AWS <!-- if:aws -->
 
-Lessons 9 to 12, 14 and 28: [aws/lessons.md](aws/lessons.md).
+Lessons 9 to 12, 14 and 28: [aws/lessons.md](aws/lessons.md). <!-- if:aws -->
 
 ## Docs
 

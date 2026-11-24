@@ -1,6 +1,6 @@
 # Costs
 
-A starter: what the sample the template ships costs in `dev`, for kickoff to extend; part of the AWS module, so a project not on AWS deletes `docs/aws/`. Costs are approximate monthly figures. The day after each deploy, actual cost is compared with this file (the `deploy` skill 6).
+A starter: what the sample the template ships costs in `dev`, for the start to extend; part of the AWS module, which a project not on AWS doesn't get. Costs are approximate monthly figures. The day after each deploy, actual cost is compared with this file (the `deploy` skill 6).
 
 ## Resources
 

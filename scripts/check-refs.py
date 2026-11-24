@@ -72,7 +72,13 @@ def git(*args: str) -> str:
 
 
 def items(text: str, pattern: str) -> list[tuple[int, str]]:
-    return [(int(m[1]), m[2].strip()) for m in re.finditer(pattern, text, re.MULTILINE)]
+    """Numbered items; a line marked <!-- if:!part --> is the other wording of the item before it,
+    for a project without that part (scripts/new-project.py), so it isn't counted twice."""
+    return [
+        (int(m[1]), m[2].strip())
+        for m in re.finditer(pattern, text, re.MULTILINE)
+        if "<!-- if:!" not in m[2]
+    ]
 
 
 def expand(nums: str) -> list[int]:

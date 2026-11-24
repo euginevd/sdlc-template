@@ -28,7 +28,8 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 
 ## Terraform (AWS module)
 
-13. One root per unit in `infra/aws/<unit>/`, copied from `infra/aws/api`: `main.tf`, `variables.tf`, `outputs.tf`, `versions.tf` and the lock file. Pin Terraform and providers; never commit state.
+13. One root per unit in `infra/aws/<unit>/`, copied from `infra/aws/api`: `main.tf`, `variables.tf`, `outputs.tf`, `versions.tf` and the lock file. Pin Terraform and providers; never commit state. <!-- if:aws -->
+13. No infrastructure yet: the project has no cloud. Adding one starts from the template's AWS module and its standards. <!-- if:!aws -->
 14. No hardcoded IDs, regions, ARNs, project names or environments. Name resources `${var.project}-<unit>-<what>-${var.environment}`, give every IAM role the `${var.project}-boundary` boundary, and tag through `default_tags`.
 
 ## Languages
@@ -57,7 +58,7 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 
 25. WCAG 2.2 AA: text 4.5:1, controls and focus rings 3:1, targets at least 24×24px, a visible focus ring that sticky parts never hide, a file picker beside every drop zone, and sign-in that allows paste and password managers.
 26. Status is a word plus an icon, never colour alone. Under `prefers-reduced-motion`, motion becomes a fade or nothing, and nothing is shown only through animation.
-27. Styles use `docs/web/design-system.md`'s tokens as CSS variables, never raw values. Fonts and images are served with the app, never from a third-party CDN; images have explicit dimensions and alt text (empty when decorative).
+27. Styles use the design system's tokens as CSS variables, never raw values. Fonts and images are served with the app, never from a third-party CDN; images have explicit dimensions and alt text (empty when decorative).
 28. Every screen has a loading state in its own layout, an empty state that says what to do, and an error state with a retry.
 29. AI output is labelled: show what the agent decided, its reasons and sources, and how to ask for a person to review it.
 

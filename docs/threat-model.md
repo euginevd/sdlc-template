@@ -1,6 +1,6 @@
 # Threat model
 
-A starter: the model of the sample the template ships, for kickoff to extend; every project keeps it, and a prototype extends it only if asked. It answers the four threat-modelling questions: what are we building (the data flow), what can go wrong and what do we do about it (the risks and their controls), and did we do a good job (the review line). STRIDE on the data flow; each risk maps to the OWASP lists that fit the app: Top 10:2025 (A), API Security Top 10:2023 (API), LLM Top 10:2025 (LLM) and Agentic Top 10:2026 (ASI).
+A starter: the model of the sample the template ships, for the start to extend; a production project's, as a prototype has none. It answers the four threat-modelling questions: what are we building (the data flow), what can go wrong and what do we do about it (the risks and their controls), and did we do a good job (the review line). STRIDE on the data flow; each risk maps to the OWASP lists that fit the app: Top 10:2025 (A), API Security Top 10:2023 (API), LLM Top 10:2025 (LLM) and Agentic Top 10:2026 (ASI).
 
 Reviewed: *(to fill in)* the date, by whom, and the PR, each time a change touches users, data, auth or endpoints.
 

@@ -23,6 +23,7 @@ coverage/
 *.tsbuildinfo
 .claude/settings.local.json
 .claude/worktrees/
+.claude/autopilot
 .DS_Store
 # Browser test output
 test-results/

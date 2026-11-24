@@ -2,7 +2,7 @@
 
 Owner: *(to fill in)* · Status: *(to fill in)* Idea, Building or Live · Updated: *(to fill in)*
 
-What you want built and why, in your own words, written before kickoff and updated when it changes. Fill it in yourself, or answer its questions in chat at kickoff and the agent writes your answers in for you to check. The agent drafts [spec.md](spec.md) from it but never changes your words unasked; where the two differ, the spec is what gets built. Each later change has its own intent: a GitHub issue with the same headings. The repo may be public, so no real balances, keys or personal details: those stay in `local/`, which git ignores.
+What you want built and why, in your own words, written at the start and updated when it changes. The `new-project` interview asks its questions and the agent writes your answers in for you to check. The agent drafts [spec.md](spec.md) from it but never changes your words unasked; where the two differ, the spec is what gets built. Each later change has its own intent: a GitHub issue with the same headings. The repo may be public, so no real balances, keys or personal details: those stay in `local/`, which git ignores.
 
 ## Intent
 

@@ -26,7 +26,7 @@ You'll need: a GitHub account with the `gh` CLI, Git Bash or similar, and an AWS
 
 ## Quick start
 
-Open Claude Code in a clone of this repo and say *"Start a new project"*: it asks the name, your intent, the profile and which parts you need, then creates the repo with only those and sets it up ([guide 01](guides/01-using-the-template.md) section 2). Or by hand:
+Open Claude Code in a clone of this repo on your machine and say *"New project"*. It asks the name, your intent, the profile and which parts you need, all at once, then creates the repo with only the files those need, the docs and a backlog of issues. A prototype then builds the whole backlog on its own, for hours, with a check or a fresh reviewer passing each gate ([guide 01](guides/01-using-the-template.md) sections 2 and 4). Or by hand, copying everything:
 
 ```bash
 gh repo create my-project --template euginevd/sdlc-template --public --clone  # --private for a work project
@@ -48,12 +48,13 @@ You pick one at kickoff. The agent works on its own between gates and stops at t
 | | Prototype: speed first | Production: gates at key stages |
 |---|---|---|
 | For | No real users, customer data or payments | Anything that has them |
-| You approve | Each issue's spec and mockup, before code | Kickoff, and every plan |
+| You approve | Only the start's questions; checks and a fresh reviewer pass each gate | The start, and every plan |
 | A second reviewer approves | Nothing | Every PR and every apply, `dev` and `prod`, enforced by GitHub |
 | Environments | `dev` only | `dev`, then `prod` |
 | Tests | Main paths and anything sensitive, 50% coverage | Abuse cases too, 80% coverage |
 | When unsure | The agent decides, records it and says so | The agent asks |
-| Commits, PRs, merges | The agent, unasked | Only when you ask |
+| Commits, PRs, merges | The agent, unasked, issue after issue for hours | Only when you ask |
+| Files | The slim core, about 55 | Everything its parts need |
 
 A prototype still stops before spending past the spec's monthly limit, weakening its own floor (no direct AWS changes, secrets in output, skipped hooks or AI attribution), or taking real users, customer data or payments. Moving a prototype up: [guide 01](guides/01-using-the-template.md) section 7.
 
