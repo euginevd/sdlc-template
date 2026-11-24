@@ -14,6 +14,10 @@ Review what this branch changes, against the repo's own standards. You report; t
 1. The diff: `git diff origin/main...HEAD`, plus any uncommitted changes. Read each changed file around the change, not just the hunk.
 2. The standards, read first: `docs/threat-model.md` (its risks and controls), `docs/standards.md` 6 to 10 and 17 to 20, `docs/spec.md`'s Rules, and AGENTS.md rules 14, 16 and 17.
 3. The plan, if there is one (`docs/plan-<name>.md`): its Security risks section is what the change promised to control.
+4. The depth, by blast radius: the plan's Review level, or the highest that fits the diff.
+   - **High:** auth, money, personal data, IAM, a public endpoint or a new outside service. Every check, every caller of the changed code, and each abuse case in the threat model traced through the code.
+   - **Medium:** a new endpoint, data store, package or model call, or other app logic. Every check.
+   - **Low:** docs, copy, styles, tests or a refactor that changes no behaviour. Checks 4, 6 and 10.
 
 ## Check
 
@@ -32,7 +36,7 @@ A prototype with only the starter threat model and no plan skips 1 and 10, and t
 
 ## Report
 
-A list, most severe first; "No findings" if clean. Each finding:
+Start with the depth you used and why. Then a list, most severe first; "No findings" if clean; at most five low findings, the ones most worth fixing. Each finding:
 
 - **Severity:** critical (exploitable now, or a secret exposed), high (a missing control on a real risk), medium (a weak control or missing test), low (hardening).
 - **Where:** `path:line`.

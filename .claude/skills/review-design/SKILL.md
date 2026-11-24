@@ -34,7 +34,7 @@ Run the app locally and screenshot each changed screen, light and dark:
 
 ## Report
 
-A list, most severe first; "No findings" if clean. Each finding:
+A list, most severe first; "No findings" if clean; at most five low findings, the ones most worth fixing. Each finding:
 
 - **Severity:** high (blocks a user or fails WCAG AA), medium (off the mockup or tokens), low (polish).
 - **Where:** the screen, state and size, with the `path:line` that causes it.
