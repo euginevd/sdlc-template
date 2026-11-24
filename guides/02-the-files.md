@@ -94,7 +94,7 @@ All core, except `cost-report.py`, which only an AWS project needs.
 1. **scripts/setup.sh**: once per clone, on Windows, macOS or Linux: installs the tools and hooks, then `uv sync`; `--check` only reports.
 2. **scripts/check.sh**: runs what CI runs, for what changed, plus `itest` and `e2e` (Playwright, in `e2e/` once a project has screens) on request; CI's app jobs call it too, and the agent pastes its result when reporting done.
 3. **scripts/protect-main.sh**: once, by hand: locks `main`, squash-only merges, security features, apply environments that take `main` only; `production` adds a second reviewer.
-4. **scripts/agent-guard.sh**: the PreToolUse hook: before each edit or command, production denies touching `.env`.
+4. **scripts/agent-guard.sh**: the PreToolUse hook: before each edit or command, production denies touching `.env`, and editing an existing test asks first.
 5. **scripts/agent-stop-check.sh**: the Stop hook: runs `check.sh` and sends a failure back to the agent, once, so it can't loop.
 6. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open threads and alerts; replies and resolves threads.
 7. **scripts/check-refs.py**: fails when a numbered list skips a number, a reference names an item that doesn't exist, or an item cited elsewhere moved.

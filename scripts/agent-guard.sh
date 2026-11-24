@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Claude Code's PreToolUse hook: runs before the agent edits a file or runs a command, and enforces what
-# AGENTS.md otherwise only asks. Production denies touching `.env` (rule 4; a prototype may edit it).
+# AGENTS.md otherwise only asks. Production denies touching `.env` (rule 4; a prototype may edit it), and
+# editing an existing test asks a person first, so the agent fixes the code rather than the test (rule 13).
 # Deny rules and other agents: see guide 04, control 5.
 set -uo pipefail
 
@@ -39,4 +40,12 @@ if [ "$prototype" = false ]; then
     decide deny "Production never reads or edits .env (AGENTS.md rule 4), even from a shell command."
   fi
 fi
+
+[ -n "$rel" ] && [ -f "$root/$rel" ] || exit 0
+
+# 2. An existing test (#179): fix the code, not the test (AGENTS.md rule 13).
+case "/$rel" in
+  */tests/* | */test/* | */e2e/* | */test_*.py | */*_test.py | */*.test.ts | */*.test.tsx | */*.spec.ts | */*.spec.tsx)
+    decide ask "This edits an existing test: approve only if the test itself is wrong (AGENTS.md rule 13)." ;;
+esac
 exit 0

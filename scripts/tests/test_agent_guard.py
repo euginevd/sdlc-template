@@ -63,5 +63,30 @@ def test_a_prototype_may_edit_env(tmp_path: Path):
     assert decision(root, "Bash", command="cat .env") == "allow"
 
 
+@pytest.mark.parametrize(
+    "test_file",
+    [
+        "apps/api/tests/test_handler.py",
+        "scripts/tests/test_checks.py",
+        "e2e/status.spec.ts",
+        "apps/web/src/App.test.tsx",
+        "apps/api/handler_test.py",
+    ],
+)
+def test_editing_an_existing_test_asks_first(tmp_path: Path, test_file: str):
+    root = repo(tmp_path, "prototype")
+    (root / test_file).parent.mkdir(parents=True, exist_ok=True)
+    (root / test_file).write_text("x\n", encoding="utf-8")
+    assert decision(root, "Edit", file_path=test_file) == "ask"
+
+
+def test_a_new_test_and_app_code_need_no_question(tmp_path: Path):
+    root = repo(tmp_path, "production")
+    (root / "apps" / "api").mkdir(parents=True)
+    (root / "apps" / "api" / "handler.py").write_text("x\n", encoding="utf-8")
+    assert decision(root, "Write", file_path="apps/api/tests/test_new.py") == "allow"
+    assert decision(root, "Edit", file_path="apps/api/handler.py") == "allow"
+
+
 def test_no_profile_yet_counts_as_production(tmp_path: Path):
     assert decision(repo(tmp_path, "*(to fill in)*"), "Edit", file_path=".env") == "deny"
