@@ -72,9 +72,9 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 ## 10. Test: DAST, unauthenticated
 
 - **Does:** passively scans the running app for missing headers, verbose errors, open redirects and bad CORS or TLS, in about a minute.
-- **When:** after each apply to `dev`, in the `aws` workflow; ZAP's API scan once there's an OpenAPI spec.
-- **On a finding:** high risks block the `prod` deploy; the rest go in the run summary.
-- **Limits:** not in the template yet; add it before go-live. It sees only the public surface.
+- **When:** after each apply to `dev`, in the `aws` workflow: ZAP's baseline scan of the unit's `api_url`. ZAP's API scan once there's an OpenAPI spec.
+- **On a finding:** a FAIL rule fails the `dev` run, so it's fixed before a `prod` release (G4); warnings go in the run summary, and the full report is the run's `zap-<unit>` artifact. Open an issue from the Incident form for each real one.
+- **Limits:** it sees only the public surface, and only a unit with an `api_url` output. Passive only: an active scan, which attacks, is a deliberate step against `dev`, never `prod`.
 
 ## 11. Test: DAST, authenticated
 

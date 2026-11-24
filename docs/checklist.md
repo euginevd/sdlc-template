@@ -15,7 +15,7 @@ The guardrails by stage of the [secure agentic SDLC](../guides/06-secure-agentic
 | 7 | Test | SAST | Semgrep (`security.yml`), CodeQL (`codeql.yml`), and GitHub AI Scan, set by hand | Both |
 | 8 | Test | Supply chain security | Pins in the workflows, `exclude-newer` in `pyproject.toml`, `cooldown` in `dependabot.yml`, and the `sbom` job | Both |
 | 9 | Test | Unit tests and coverage; abuse cases in production | `bash scripts/check.sh`: pytest, ruff and pyright, also in `.github/workflows/ci.yml` | Both; the bar differs |
-| 10 | Test | DAST, unauthenticated | OWASP ZAP's baseline scan, per project | Production |
+| 10 | Test | DAST, unauthenticated | OWASP ZAP's baseline scan, in the `aws` workflow after each `dev` apply | Both |
 | 11 | Test | DAST, authenticated | OWASP ZAP with a test login, per project | Production |
 | 12 | Deploy | Branch protection | The `main` ruleset, set by `bash scripts/protect-main.sh` | Both |
 | 13 | Deploy | Peer review | A second reviewer, set by `bash scripts/protect-main.sh production` | Production |
