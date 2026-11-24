@@ -75,8 +75,11 @@ check_terraform() {
     run "terraform validate ${dir%/}" tf_validate "$dir"
   done
   if command -v tflint > /dev/null; then
-    run "tflint init" tflint --chdir=infra/aws --init --config "$PWD/infra/aws/.tflint.hcl" || return 0
-    run "tflint" tflint --chdir=infra/aws --recursive --config "$PWD/infra/aws/.tflint.hcl"
+    # tflint on Windows reads C:/repo, not Git Bash's /c/repo, which isn't converted when MSYS_NO_PATHCONV is set.
+    local config
+    config="$(pwd -W 2> /dev/null || pwd)/infra/aws/.tflint.hcl"
+    run "tflint init" tflint --chdir=infra/aws --init --config "$config" || return 0
+    run "tflint" tflint --chdir=infra/aws --recursive --config "$config"
   else
     echo "tflint isn't installed: run bash scripts/setup.sh"
     failed+=("tflint")
