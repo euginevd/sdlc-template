@@ -36,7 +36,7 @@ Gate G0, once per project. `docs/` starts by describing the health-check API the
 
 | You say | The agent | You |
 |---------|-----------|-----|
-| *"Kick off `<name>`: `<notes on the business, problem, users and stack>`"* | Checks the machine, reads `docs/intent.md`, and asks the profile and repo type if it doesn't say | Answer, then fill in `intent.md`, or answer its questions in chat and check what the agent writes |
+| *"Kick off `<name>`: `<notes on the business, problem, users and stack>`"* | Checks the machine, reads `docs/intent.md`, and asks the profile and repo type if it doesn't say | Answer, then fill in `intent.md`, or let it interview you, one question at a time, and check what it writes |
 | | Drafts `spec.md`, Business section included, from `intent.md`, asks about gaps, and opens the first item as a GitHub issue | Correct it until it's right |
 | | Runs a short spike on the deploy target: what each managed service refuses or limits, into `decisions.md` | Agree the target |
 | | With UI: drafts `docs/web/design-system.md` and mocks up the MVP's main screens in `docs/web/mockups/mvp.html` | Open the mockup; ask for changes, then approve |
@@ -66,12 +66,12 @@ The same loop, stopping at gates G1 to G4 ([AGENTS.md](../AGENTS.md) rule 5). Th
 
 | # | Gate | You say | The agent | You |
 |:-:|------|---------|-----------|-----|
-| 1 | G1 Plan | *"Plan `<the work>`"* | Updates the spec, writes the plan, the threat model and any mockups; no code, then stops | ↺ Ask for changes, then approve |
-| 2 | Build | *"Implement the plan"* | Builds each phase on one branch: abuse-case tests, local checks, a fresh review per phase | |
-| 3 | G2 PR | *"Commit and push"* | Pushes, opens a PR with its Security line, ↺ fixes what the checks find, then asks for review | The second reviewer approves |
-| 4 | G3 `dev` | *"Merge it"* | Squash-merges; the pipeline plans `dev` and waits; once applied, the agent smoke-tests and reports | The second reviewer approves the apply |
+| 1 | G1 Plan | *"Plan `<the work>`"* | Interviews you on what changes the build, updates the spec, writes the plan, the threat model and any mockups; no code, then stops | ↺ Ask for changes, then approve |
+| 2 | Build | `/clear`, then *"Implement the plan"* | In a fresh session, from the plan alone, builds each phase on one branch: abuse-case tests, local checks, a fresh review per phase | |
+| 3 | G2 PR | *"Commit and push"* | Asks you to approve the push, then pushes, opens a PR with its Security line, ↺ fixes what the checks find, then asks for review | The second reviewer approves |
+| 4 | G3 `dev` | *"Merge it"* | Squash-merges; the pipeline plans `dev` and waits; once applied, the pipeline smoke-tests and scans `dev` with ZAP, and the agent reports | The second reviewer approves the apply |
 | 5 | G4 Release | | Confirms the checklist's production rows are done | Run `gh workflow run aws.yml -f target=prod`; the second reviewer approves it |
-| 6 | G5 After | | The next day, checks actual cost and the alarms | Anything raised starts at step 1 |
+| 6 | G5 After | | The next day, checks actual cost and the alarms | Anything raised becomes an Incident issue and starts at step 1 |
 
 ## 6. Other changes
 

@@ -10,10 +10,10 @@ The guardrails by stage of the [secure agentic SDLC](../guides/06-secure-agentic
 | 2 | Design | Cost estimate | `docs/aws/costs.md` | Production; a prototype keeps the starter's |
 | 3 | Build, IDE | Secrets, SCA, IaC scanning | Gitleaks and Trivy, in `.lefthook/pre-push-scan.sh` | Both |
 | 4 | Build, repo | Push protection, SCA | GitHub push protection and Dependabot, turned on by `bash scripts/protect-main.sh` | Both |
-| 5 | Build, agent | Agent guardrails | `AGENTS.md`, the agent tool's permission settings and Stop hook, and for production the agent's own GitHub account | Both |
+| 5 | Build, agent | Agent guardrails | `AGENTS.md`, the agent tool's permission settings and hooks (guard, Stop), checked by `check-hooks.py`, and for production the agent's own GitHub account | Both |
 | 6 | Test | Secrets, SCA, IaC scanning | Gitleaks, Trivy and Checkov, in `.github/workflows/security.yml` | Both |
 | 7 | Test | SAST | Semgrep (`security.yml`), CodeQL (`codeql.yml`), and GitHub AI Scan, set by hand | Both |
-| 8 | Test | Supply chain security | Pins in the workflows, `exclude-newer` in `pyproject.toml`, `cooldown` in `dependabot.yml`, and the `sbom` job | Both |
+| 8 | Test | Supply chain security | Pins in the workflows, `exclude-newer` in `pyproject.toml`, `cooldown` in `dependabot.yml`, the `sbom` job, and signed image attestations in `images.yml` | Both |
 | 9 | Test | Unit tests and coverage; abuse cases in production | `bash scripts/check.sh`: pytest, ruff and pyright, also in `.github/workflows/ci.yml` | Both; the bar differs |
 | 10 | Test | DAST, unauthenticated | OWASP ZAP's baseline scan, in the `aws` workflow after each `dev` apply | Both |
 | 11 | Test | DAST, authenticated | OWASP ZAP with a test login, per project | Production |

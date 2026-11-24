@@ -145,12 +145,12 @@ A change ships like this: issue → PR → `ci`, `security`, `codeql` and `rules
 1. **workflows/ci.yml**: lint, types and tests for only the apps a PR changes; actionlint, zizmor and shellcheck when workflows or scripts change; and the `kickoff` check for leftover *(to fill in)* lines and docs over their length.
 2. **workflows/security.yml**: the push scan again, plus Checkov, Semgrep, `terraform validate` and TFLint; weekly too.
 3. **workflows/codeql.yml**: GitHub's code scanning on PRs, `main` and weekly.
-4. **workflows/rules.yml**: the hooks' reference and attribution checks again on every PR, as the required `rules` check, so a skipped hook can't get through.
+4. **workflows/rules.yml**: the hooks' reference and attribution checks again on every PR, as the required `rules` check, so a skipped hook can't get through, and `check-hooks.py` for the agent's hooks.
 
 ### 5.2 Workflows (AWS module)
 
-1. **workflows/aws.yml**: Terraform plan and cost on PRs, with one `plan-result` check the ruleset requires; on merge, applies the changed units to `dev`, and `prod` by hand.
-2. **workflows/images.yml**: builds, scans and pushes each app's image to ECR, with its SBOM; idle until an app has a Dockerfile.
+1. **workflows/aws.yml**: Terraform plan and cost on PRs, with one `plan-result` check the ruleset requires; on merge, applies the changed units to `dev`, smoke-tests them and runs ZAP's passive scan, and `prod` by hand.
+2. **workflows/images.yml**: builds, scans and pushes each app's image to ECR, with its SBOM and signed provenance and SBOM attestations; idle until an app has a Dockerfile.
 
 ### 5.3 GitHub settings (core)
 
