@@ -1,6 +1,7 @@
 """Tests for the rule checks: check-refs.py and check-attribution.py."""
 
 import importlib.util
+import shutil
 import subprocess
 from pathlib import Path
 from types import ModuleType
@@ -23,6 +24,10 @@ attribution = load("check-attribution")
 RULE = refs.LISTS["AGENTS.md rule"][3]
 MISTAKE = refs.LISTS["known mistake"][3]
 DOCS = refs.LISTS["pull-requests"][3] + refs.LISTS["code-standards"][3]
+# CI's python job runs in uv's slim image, which has no git; the rules workflow runs the real check.
+needs_git = pytest.mark.skipif(
+    shutil.which("git") is None, reason="no git here; rules.yml runs check-refs"
+)
 
 
 def test_expand_reads_lists_and_ranges():
@@ -76,6 +81,7 @@ def test_moves_spots_a_removed_item():
     assert refs.moves(old, new) == {2: None, 3: 2}
 
 
+@needs_git
 def test_changed_lines_marks_edits_and_treats_new_files_as_new(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
@@ -94,6 +100,7 @@ def test_changed_lines_marks_edits_and_treats_new_files_as_new(
     assert refs.changed_lines("HEAD", "new.md", {"f.md"}) is None
 
 
+@needs_git
 def test_repo_references_are_valid():
     assert refs.main(None) == 0
 
