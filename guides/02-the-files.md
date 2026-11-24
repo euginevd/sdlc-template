@@ -100,15 +100,17 @@ All core, except `cost-report.py`, which only an AWS project needs.
 7. **scripts/check-refs.py**: fails when a numbered list skips a number, a reference names an item that doesn't exist, or an item cited elsewhere moved.
 8. **scripts/check-attribution.py**: fails on an AI co-author or "Generated with" line in a commit message or PR description (AGENTS.md rule 15).
 9. **scripts/check-hooks.py**: fails when a Claude Code hook in `.claude/settings.json` no longer loads, runs a missing or broken script, or the guard stops denying a production `.env` edit, since a broken hook fails silently.
-10. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
-11. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment (AWS module).
-12. **scripts/tests/**: tests for the scripts; they run with the apps' tests.
+10. **scripts/agent-evals.py**: runs the agent evals in `.claude/evals/` through Claude Code in plan mode, which changes nothing; CI's `agent-evals` workflow calls it.
+11. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
+12. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment (AWS module).
+13. **scripts/tests/**: tests for the scripts; they run with the apps' tests.
 
 ### 3.4 Agent setup (core)
 
 1. **.claude/settings.json**: Claude Code's shared settings: no AI attribution on commits or PRs, asking before each `git push` (production), a guard before each edit or command, a Stop hook that runs the quick checks when the agent ends a turn with uncommitted edits, and deny rules for force-pushes, skipped hooks, Terraform applies and `.env` reads.
 2. **.claude/skills/**: the steps the agent loads when it reaches them: `kickoff`, `pull-request` and `deploy` (AWS module), the `review-security` and `review-design` reviews AGENTS.md rule 10 runs, and `new-app` for adding an app.
 3. **.claude/agents/verifier.md**: the subagent that runs the app to check a change. It and the two review skills run on Sonnet, a different model from the session that wrote the code, for a second opinion.
+4. **.claude/evals/**: the agent evals' cases, each a prompt and the patterns its answer must and mustn't have, and the pinned Claude Code CLI that `scripts/agent-evals.py` runs them with.
 
 Local settings and worktrees are git-ignored.
 
@@ -147,6 +149,7 @@ A change ships like this: issue → PR → `ci`, `security`, `codeql` and `rules
 3. **workflows/codeql.yml**: GitHub's code scanning on PRs, `main` and weekly.
 4. **workflows/rules.yml**: the hooks' reference and attribution checks again on every PR, as the required `rules` check, so a skipped hook can't get through, and `check-hooks.py` for the agent's hooks.
 5. **workflows/factory.yml**: an issue the owner labels `factory` becomes a draft PR, built by a cloud agent; off until an `ANTHROPIC_API_KEY` secret is set, and run as the agent's own GitHub App when there is one.
+6. **workflows/agent-evals.yml**: on a PR that changes `AGENTS.md`, `.claude/` or the standards, checks the agent still follows the rules; off until an `ANTHROPIC_API_KEY` secret is set, and not required.
 
 ### 5.2 Workflows (AWS module)
 
