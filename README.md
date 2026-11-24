@@ -46,7 +46,7 @@ You pick one at kickoff. The agent works on its own between gates and stops at t
 | | Prototype: speed first | Production: gates at key stages |
 |---|---|---|
 | For | No real users, customer data or payments | Anything that has them |
-| You approve | Each TODO item's spec and mockup, before code | Kickoff, and every plan |
+| You approve | Each issue's spec and mockup, before code | Kickoff, and every plan |
 | A second reviewer approves | Nothing | Every PR and every apply, `dev` and `prod`, enforced by GitHub |
 | Environments | `dev` only | `dev`, then `prod` |
 | Tests | Main paths and anything sensitive, 50% coverage | Abuse cases too, 80% coverage |
@@ -60,9 +60,9 @@ A prototype still stops before spending past the monthly limit in the spec, befo
 | | |
 |---|---|
 | [AGENTS.md](AGENTS.md) | The numbered rules every coding agent reads: gates per profile, the workflow, what to ask first and what never to do |
-| [docs/](docs/) | What the agent reads and keeps current: spec, features, decisions, known mistakes by area, threat model, costs, design system and go-live checklist. Each starts with a *(to fill in)* line for what your project decides |
+| [docs/](docs/) | What the agent reads and keeps current: spec, features, decisions, lessons by area, threat model, costs, design system and go-live checklist. Each starts with a *(to fill in)* line for what your project decides |
 | [apps/api/](apps/api/), [infra/aws/api/](infra/aws/api/) | The starter: a Lambda with a `/health` route and its Terraform, proving the pipeline end to end. Keep it, build on it or replace it |
-| [.github/workflows/](.github/workflows/) | `ci` for the apps a PR changes, `security` and `codeql` for the scans, `aws` for the Terraform plan, the cost comment and the apply |
+| [.github/workflows/](.github/workflows/) | `ci` for changed apps, `security` and `codeql` for scans, `rules` for rule checks, `images` for container images, `aws` for the plan, cost comment and apply |
 | [infra/aws/bootstrap/](infra/aws/bootstrap/) | One stack per AWS account, deployed by you: the GitHub sign-in, a read-only plan role, a bounded deploy role, a read-only troubleshoot role, the state bucket and a budget alert |
 | [scripts/](scripts/) | `setup.sh` installs and checks a machine (Windows, macOS, or an agent's Linux container), `protect-main.sh` locks down the repo, `pr-findings.sh` lists what a PR still has to fix |
 
@@ -80,11 +80,12 @@ What it doesn't cover is written down too: [guides/03-security-trade-offs.md](gu
 
 ## Guides
 
-1. [Using the template](guides/01-using-the-template.md): what you say and what the agent does, from an empty repo to a deployed app.
+1. [Using the template](guides/01-using-the-template.md): what you say and the agent does, from empty repo to deployed app.
 2. [The files](guides/02-the-files.md): what every file is and why it's there.
 3. [Security trade-offs](guides/03-security-trade-offs.md): the risks the template accepts, and the fix for each.
-4. [The guardrails](guides/04-the-guardrails.md): how each control in the checklist works, stage by stage.
-5. [Cleaning up AWS](guides/05-aws-cleanup.md): removing a project from AWS, and proving nothing is charged.
-6. [The secure agentic SDLC](guides/06-secure-agentic-sdlc.md): the six stages, with each stage's controls and gates.
+4. [The guardrails](guides/04-the-guardrails.md): how each checklist control works, by stage.
+5. [Cleaning up AWS](guides/05-aws-cleanup.md): removing a project and proving nothing is charged.
+6. [The secure agentic SDLC](guides/06-secure-agentic-sdlc.md): the six stages, their controls and gates.
+7. [Template decisions](guides/07-template-decisions.md): what audits found, and the decisions made.
 
 To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md); report vulnerabilities through [SECURITY.md](SECURITY.md). [MIT licence](LICENSE).

@@ -6,7 +6,7 @@ tools: Bash, Read, Grep, Glob
 
 You check that the change works when the app runs, not just in its tests. Report what you saw; the agent that wrote the code fixes it.
 
-1. Read the plan (`docs/plan-<name>.md`): its Files, phases and Proof. With no plan, read the TODO item and its rows in `docs/features.md`.
+1. Read the plan (`docs/plan-<name>.md`): its Files that change, Order of work and Proof. With no plan, read the issue and its rows in `docs/features.md`.
 2. Start each changed app with its Run line in `docs/spec.md`'s Stack, and wait until it answers. An app with no local server: run its tests and say so.
 3. Exercise the changed behaviour as a user would, then the two nearest flows it could break: the screen or endpoint before it and after it.
 4. Try one bad input and one signed-out call where the change takes input or needs sign-in.

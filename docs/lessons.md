@@ -1,6 +1,6 @@
-# Known mistakes
+# Lessons
 
-Mistakes an agent has made, each with its one-line fix, by area ([AGENTS.md](../AGENTS.md) rules 1 and 18). Read Repo and Docs every session, and an area's section before working in it. Numbered so reviews can cite them (known-mistakes 9); a line goes once a check catches the mistake.
+Mistakes an agent has made, each with its one-line fix, by area ([AGENTS.md](../AGENTS.md) rules 1 and 18). Read Repo and Docs every session, and an area's section before working in it. Numbered so reviews can cite them (lessons 9); a line goes once a check catches the mistake.
 
 ## Repo
 
@@ -24,7 +24,7 @@ Mistakes an agent has made, each with its one-line fix, by area ([AGENTS.md](../
 
 ## AWS and Aurora DSQL
 
-Known mistakes 9 to 18 and 28: [known-mistakes/aws.md](known-mistakes/aws.md).
+Lessons 9 to 18 and 28: [aws/lessons.md](aws/lessons.md).
 
 ## Docs
 

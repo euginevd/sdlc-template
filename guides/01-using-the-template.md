@@ -9,7 +9,7 @@ The agent asks for this first ([AGENTS.md](../AGENTS.md) rules 4 to 7). Where ea
 | | `prototype`: a working MVP, fast | `production`: gated |
 |---|---|---|
 | For | No real users, customer data or payments | Anything that has them |
-| You approve | Each TODO item's spec and mockup, before code | Kickoff and every plan; a second reviewer approves each PR and each apply, `dev` and `prod` |
+| You approve | Each issue's spec and mockup, before code | Kickoff and every plan; a second reviewer approves each PR and each apply, `dev` and `prod` |
 | Environments | `dev` only | `dev`, then `prod`, each in its own account |
 | Tests | Main paths and anything sensitive, 50% coverage | Abuse cases too, 80% coverage |
 | When unsure | The agent takes the simpler option and says so | The agent asks |
@@ -28,7 +28,7 @@ Once per project, by you. Steps 1 to 3 need the GitHub CLI, signed in with `gh a
 5. **Reviewers**, the one step that differs by profile:
    - `prototype`: none. Leave the reviewer off `aws-dev-apply`, so a merge deploys to `dev` unattended.
    - `production`: give a second reviewer write access, run `bash scripts/protect-main.sh production`, and make them the required reviewer on each apply environment, with *Prevent self-review* on.
-6. Keep `AGENTS.md`, `code-standards.md`, the workflows and the scripts as they are.
+6. Keep `AGENTS.md`, `standards.md`, the workflows and the scripts as they are.
 
 ## 3. Kick off
 
@@ -36,10 +36,10 @@ Gate G0, once per project. `docs/` starts by describing the health-check API the
 
 | You say | The agent | You |
 |---------|-----------|-----|
-| *"Kick off `<name>`: `<notes on the business, problem, users and stack>`"* | Checks the machine, reads `docs/project-brief.md`, and asks the profile and repo type if it doesn't say | Answer, then fill in the brief, or answer its questions in chat and check what the agent writes |
-| | Drafts `spec.md`, Business section included, from the brief, asks about gaps, and puts the first item in `TODO.md` | Correct it until it's right |
+| *"Kick off `<name>`: `<notes on the business, problem, users and stack>`"* | Checks the machine, reads `docs/intent.md`, and asks the profile and repo type if it doesn't say | Answer, then fill in `intent.md`, or answer its questions in chat and check what the agent writes |
+| | Drafts `spec.md`, Business section included, from `intent.md`, asks about gaps, and opens the first item as a GitHub issue | Correct it until it's right |
 | | Runs a short spike on the deploy target: what each managed service refuses or limits, into `decisions.md` | Agree the target |
-| | With UI: drafts `design-system.md` and mocks up the MVP's main screens in `docs/mockups/mvp.html` | Open the mockup; ask for changes, then approve |
+| | With UI: drafts `docs/web/design-system.md` and mocks up the MVP's main screens in `docs/web/mockups/mvp.html` | Open the mockup; ask for changes, then approve |
 | | Extends `threat-model.md` and `costs.md`; a prototype keeps the starter's | `production`: approve each |
 | | Records the profile, accepted trade-offs and code owner in `decisions.md` | Say which trade-offs you accept |
 | *"Rename the project"* | Renames the README, `spec.md` and `pyproject.toml` (then `uv lock`); a prototype sets `fail_under = 50` | Replace `LICENSE` and `guides/assets/`; a private project deletes `CONTRIBUTING.md` and `social.png` |
@@ -47,18 +47,18 @@ Gate G0, once per project. `docs/` starts by describing the health-check API the
 
 ## 4. Build a prototype
 
-One TODO item at a time. Once you approve its spec and mockup, nothing else waits for you: the agent decides what production would ask about, records it in `decisions.md`, and tells you in its report.
+One issue at a time. Once you approve its spec and mockup, nothing else waits for you: the agent decides what production would ask about, records it in `decisions.md`, and tells you in its report.
 
 | You say | The agent | You |
 |---------|-----------|-----|
-| *"Build `<the work>`"*, once you approve its spec and mockup | Builds on the session's one branch: code, main-path tests, local checks, `features.md` and `TODO.md` | Interrupt if the direction is wrong |
-| | New cloud service: deploys a walking skeleton to `dev` first, one service at a time ([docs/deploy.md](../docs/deploy.md)) | |
+| *"Build `<the work>`"*, once you approve its spec and mockup | Builds on the session's one branch: code, main-path tests, local checks and `features.md`; the PR closes the issue | Interrupt if the direction is wrong |
+| | New cloud service: deploys a walking skeleton to `dev` first, one service at a time (the [`deploy`](../.claude/skills/deploy/SKILL.md) skill) | |
 | | A fresh subagent reviews the whole branch with the `review-security` and, for UI, `review-design` skills, and the verifier runs the app; the agent fixes what it blocks and reports | Try it; ask for more |
 | | Once you say the batch is ready, or the session ends, and the local checks pass: commits, pushes (the pre-push scan runs), opens one PR, fixes the findings and squash-merges once checks pass | |
 | | The pipeline deploys to `dev`; first-deploy fixes stay on one branch until green, then it smoke-tests | Try it in `dev` |
 | | The day after a deploy, compares actual cost with `costs.md` | Read the report |
 
-It still stops before spending past the monthly limit in spec 10, before weakening its own floor (never touching AWS directly, secrets, hooks or attribution), and before real users, customer data or payments. A check that fails three times goes into `TODO.md` as blocked while it moves on. Ask for more whenever you want it: *"review the plan with me first"*, *"add a threat model"*, *"wait for me before merging"*.
+It still stops before spending past the monthly limit in spec 6, before weakening its own floor (never touching AWS directly, secrets, hooks or attribution), and before real users, customer data or payments. A check that fails three times becomes a `blocked` issue while it moves on. Ask for more whenever you want it: *"review the plan with me first"*, *"add a threat model"*, *"wait for me before merging"*.
 
 ## 5. Build for production
 
@@ -81,7 +81,7 @@ The same loop, stopping at gates G1 to G4 ([AGENTS.md](../AGENTS.md) rule 5). Th
 | Dependabot's weekly PRs | *"Check the Dependabot PRs"* | The agent fixes what the checks find |
 | A scan on `main` or the weekly scan fails | *"Fix the failed scan on main"* | The agent fixes each finding at its cause |
 | A new AWS service | Production: answer when the agent asks. A prototype's agent decides | It adds the permissions to `bootstrap.yaml`; you redeploy the stack before the merge |
-| The agent got something wrong | Tell it | It adds a line, or better a check, to `docs/known-mistakes.md` |
+| The agent got something wrong | Tell it | It adds a line, or better a check, to `docs/lessons.md` |
 
 ## 7. From prototype to production
 

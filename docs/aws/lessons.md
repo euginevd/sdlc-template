@@ -1,6 +1,6 @@
-# Known mistakes: AWS and Aurora DSQL
+# Lessons: AWS and Aurora DSQL
 
-Part of [known-mistakes.md](../known-mistakes.md), kept apart so it stays short. Read it before any AWS or DSQL work; numbers are shared with the main file.
+Part of [lessons.md](../lessons.md), kept apart so it stays short. Read it before any AWS or DSQL work; numbers are shared with the main file.
 
 ## AWS
 

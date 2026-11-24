@@ -1,4 +1,4 @@
-# Code standards
+# Standards
 
 How to write the code, numbered so reviews can cite them. `AGENTS.md` covers what to build and the workflow; these cover how.
 
@@ -7,7 +7,7 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 1. Keep it simple: the smallest change that meets the spec or plan, for cases that exist now. Measure before optimising.
 2. Names say what; comments say why, in one line. No dead code, unused imports or compat shims.
 3. Match the surrounding code, and use the framework's own way first, checked against the installed version's docs.
-4. One job per module and per function. Each external service is reached through one module, the only place with its settings.
+4. One job per module and per function, at complexity 10 at most (ruff enforces it). Each external service is reached through one module, the only place with its settings.
 5. Write a literal once. Settings come from environment variables, validated at startup.
 
 ## Errors and logs
@@ -23,10 +23,10 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 
 ## Tests
 
-11. Add tests with each change, including the abuse cases in `threat-model.md`. Stub models, cloud and paid services.
+11. Add tests with each change, including the abuse cases in `threat-model.md`. Stub models, cloud and paid services. Before a refactor, characterization tests pin today's behaviour.
 12. Keep test coverage at 80% or more; CI fails below it. A prototype's tests and coverage, in place of 11's abuse cases and this 80%: `AGENTS.md` rule 4.
 
-## Terraform
+## Terraform (AWS module)
 
 13. One root per unit in `infra/aws/<unit>/`, copied from `infra/aws/api`: `main.tf`, `variables.tf`, `outputs.tf`, `versions.tf` and the lock file. Pin Terraform and providers; never commit state.
 14. No hardcoded IDs, regions, ARNs, project names or environments. Name resources `${var.project}-<unit>-<what>-${var.environment}`, give every IAM role the `${var.project}-boundary` boundary, and tag through `default_tags`.
@@ -36,7 +36,7 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 15. Python: the newest version the deploy runtime supports, `uv run` for everything, `ruff` to lint and format, `pyright` in strict mode; one workspace member per app in the root `pyproject.toml`.
 16. TypeScript: strict mode, never `any`; ESLint with `jsx-a11y` and Prettier; `save-exact=true` and `min-release-age=7` in the app's `.npmrc`. The server for web pages sends a strict CSP with `frame-ancestors 'none'`, `nosniff` and `no-referrer`.
 
-## AI and agents
+## AI and agents (AI module)
 
 17. The model decides; deterministic code acts. Limits, payments and permissions are enforced in code, never in a prompt.
 18. Model output and uploaded content are untrusted: keep content apart from instructions, ask for structured output, and validate it against a schema.
@@ -44,24 +44,24 @@ How to write the code, numbered so reviews can cite them. `AGENTS.md` covers wha
 20. Prompts and model settings live in the repo; changing them is a code change. In production, evals run in CI against a held-out answer set the agent never sees, plus a red-team set of prompt-injection attacks, each with its OWASP ID. A case passes only when no action goes beyond what the input honestly supports.
 21. Instructions give the goal, the inputs and what done looks like, not the steps.
 
-## Containers
+## Containers (AWS module)
 
-22. Images are multi-stage, pinned by digest, run as a non-root user and have a `HEALTHCHECK`; local ports bind to `127.0.0.1`; a missing setting fails at start (`${VAR:?}`), and `.env.example` lists each one. A `.dockerignore` keeps `.env*` and `.git` out of every image. The `images` workflow builds each `apps/<app>/Dockerfile` from the repo root and scans it before pushing it to ECR as `<project>/<app>`.
+22. Images are multi-stage, pinned by digest, run as a non-root user and have a `HEALTHCHECK`; local ports bind to `127.0.0.1`; a missing setting fails at start (`${VAR:?}`), and `.env.example` lists each one. A `.dockerignore` keeps `.env*` and `.git` out of every image.
 
 ## Docs
 
-23. Each fact lives in one place; everywhere else links to it. Write what's true now; mark future work *(planned)*. Use numbered points or tables, each point or cell at most two short sentences. What an agent reads stays short: 1,000 words for a doc in `docs/`, 1,300 for `AGENTS.md`, and 3,500 for everything read every session (`AGENTS.md` rule 1) together; the README 1,200 and a guide 2,500. CI's `kickoff` check fails past that, so cut or link rather than add.
-24. Root files are uppercase (`README.md`, `AGENTS.md`); everything in `docs/` and `guides/` is lowercase kebab-case.
+23. Each fact lives in one place; everywhere else links to it. Write what's true now; mark future work *(planned)*. Use numbered points or tables, each point or cell at most two short sentences. What an agent reads stays short: 1,000 words for a doc in `docs/`, 1,300 for `AGENTS.md`, and 3,500 for everything read every session (`AGENTS.md` rule 1) together; the README 1,200. Guides have no limit. CI's `kickoff` check fails past that, so cut or link rather than add.
+24. Root files are uppercase, as tools expect (`README.md`, `AGENTS.md`); docs and guides lowercase kebab-case.
 
-## Web UI
+## Web UI (screens module)
 
 25. WCAG 2.2 AA: text 4.5:1, controls and focus rings 3:1, targets at least 24×24px, a visible focus ring that sticky parts never hide, a file picker beside every drop zone, and sign-in that allows paste and password managers.
 26. Status is a word plus an icon, never colour alone. Under `prefers-reduced-motion`, motion becomes a fade or nothing, and nothing is shown only through animation.
-27. Styles use `design-system.md`'s tokens as CSS variables, never raw values. Fonts and images are served with the app, never from a third-party CDN; images have explicit dimensions and alt text (empty when decorative).
+27. Styles use `docs/web/design-system.md`'s tokens as CSS variables, never raw values. Fonts and images are served with the app, never from a third-party CDN; images have explicit dimensions and alt text (empty when decorative).
 28. Every screen has a loading state in its own layout, an empty state that says what to do, and an error state with a retry.
 29. AI output is labelled: show what the agent decided, its reasons and sources, and how to ask for a person to review it.
 
-## Browser tests and MCP
+## Browser tests (screens module) and MCP
 
 30. Browser tests: Playwright, with axe, in `e2e/`. `bash scripts/check.sh e2e` runs them, starting and stopping the app with `e2e/package.json`'s `stack` and `stack:down` scripts.
-31. No MCP server without a decision in `decisions.md`; a shell script comes first, such as Playwright tests over Playwright MCP. An approved one is pinned (`AGENTS.md` rule 16), set in `.mcp.json`, limited to `localhost` or one environment, read-only where it can be, and reads no secrets or untrusted content such as web pages or issues. Prefer its code mode, if it has one, with the agent's code sandboxed to the server's limits.
+31. No MCP server without a decision in `decisions.md`; a shell script comes first, such as Playwright tests over Playwright MCP. An approved one is pinned (`AGENTS.md` rule 16), set in `.mcp.json`, limited to `localhost` or one environment, read-only where it can be, and reads no secrets or untrusted content such as web pages or issues. Prefer its code mode, if it has one.

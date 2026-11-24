@@ -1,6 +1,6 @@
 # Design system
 
-The template's house style: premium, minimal and quiet, with motion and imagery used on purpose. A project keeps it, swaps the tokens for its brand, or replaces it, and fills in "This project" at kickoff. Optional: delete it if the project has no UI. The UI rules every project follows are in `code-standards.md` (25–29).
+The template's house style: premium, minimal and quiet, with motion and imagery used on purpose. A project keeps it, swaps the tokens for its brand, or replaces it, and fills in "This project" at kickoff; part of the screens module, so a project with no screens deletes `docs/web/`. The UI rules every project follows are in `standards.md` (25–29).
 
 ## Principles
 
@@ -11,7 +11,7 @@ The template's house style: premium, minimal and quiet, with motion and imagery 
 
 ## Tokens
 
-Colours in OKLCH, light and dark, following the system setting with a toggle.
+Colours in OKLCH, light and dark, following the system setting with a toggle. Once an app has screens, its CSS variables are the source: change a token there, then this table to match.
 
 | Token | Light | Dark | Use |
 |-------|-------|------|-----|
