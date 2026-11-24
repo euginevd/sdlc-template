@@ -64,7 +64,7 @@ The project context in `docs/` that agents read and keep current.
 
 ### 2.4 Guides (for people)
 
-`guides/`: 01 using the template, 02 this tour, 03 accepted risks, 04 each guardrail, 05 removing a project from AWS, 06 the six lifecycle stages and their gates, 07 decisions on the template. `assets/` holds the README's images, `flow.html` that renders them, and `social.png`.
+`guides/`: 01 using the template, 02 this tour, 03 accepted risks, 04 each guardrail, 05 removing a project from AWS, 06 the six lifecycle stages and their gates, 07 decisions on the template, 08 the incident runbook. `assets/` holds the README's images, `flow.html` that renders them, and `social.png`.
 
 ### 2.5 Work queue
 

@@ -24,7 +24,7 @@ G0, kickoff, comes once before all six (the [`kickoff`](../.claude/skills/kickof
 | Build | [standards](../docs/standards.md), [lessons](../docs/lessons.md) | 3–5 |
 | Test | [`scripts/check.sh`](../scripts/check.sh) and the CI workflows | 6–11 |
 | Deploy | the `pull-request` and `deploy` skills, [checklist](../docs/checklist.md) before `prod` | 12–19 |
-| Maintain | [features](../docs/features.md), what's built; [AWS cleanup](05-aws-cleanup.md) when a project ends | 20–24 |
+| Maintain | [features](../docs/features.md), what's built; [incident runbook](08-incident-runbook.md) when something is compromised; [AWS cleanup](05-aws-cleanup.md) when a project ends | 20–24 |
 
 For auditors: the eight DevSecOps stages map onto these six. Plan stays Plan (its threat model and cost here sit in Design), Code joins Build, the CI scans join Test, Release joins Deploy, and Operate and Monitor become Maintain.
 

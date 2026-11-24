@@ -64,7 +64,7 @@ A prototype still stops before spending past the monthly limit in the spec, befo
 | [apps/api/](apps/api/), [infra/aws/api/](infra/aws/api/) | The starter: a Lambda with a `/health` route and its Terraform, proving the pipeline end to end. Keep it, build on it or replace it |
 | [.github/workflows/](.github/workflows/) | `ci` for changed apps, `security` and `codeql` for scans, `rules` for rule checks, `images` for container images, `aws` for the plan, cost comment and apply |
 | [infra/aws/bootstrap/](infra/aws/bootstrap/) | One stack per AWS account, deployed by you: the GitHub sign-in, a read-only plan role, a bounded deploy role, a read-only troubleshoot role, the state bucket and a budget alert |
-| [scripts/](scripts/) | `setup.sh` installs and checks a machine (Windows, macOS, or an agent's Linux container), `protect-main.sh` locks down the repo, `pr-findings.sh` lists what a PR still has to fix |
+| [scripts/](scripts/) | `setup.sh` installs and checks a machine, `protect-main.sh` locks down the repo, `pr-findings.sh` lists what a PR still has to fix |
 
 ## What always runs
 
@@ -72,7 +72,7 @@ The same in both profiles:
 
 1. **Before every push:** Gitleaks and Trivy scan the pushed commits, so a secret added and then removed is still caught.
 2. **On every PR:** secrets (Gitleaks), vulnerable packages and misconfiguration (Trivy, Checkov), static analysis (Semgrep, and CodeQL on public repos), `terraform validate`, tflint and a required Terraform plan, lint for workflows and scripts (actionlint, zizmor, shellcheck), checks that kickoff left nothing unfilled, references are right and nothing has AI attribution, and lint, types and tests for the apps it changes. One summary comment lists the findings, and the agent fixes from it.
-3. **On `main` and weekly:** the full scans again, so a vulnerability published after a merge still fails a run, plus a list of every package in the code (SBOM).
+3. **On `main` and weekly:** the full scans again, so a newly published vulnerability still fails a run, plus a list of every package in the code (SBOM).
 4. **Deploys:** only the pipeline touches AWS, signing in through GitHub OIDC with no stored keys. It plans with a read-only role and applies a saved plan, `dev` on merge and `prod` by hand.
 5. **Supply chain:** actions pinned by commit, scanner images by digest, and packages at least a week old before they're installed.
 
@@ -87,5 +87,6 @@ What it doesn't cover is written down too: [guides/03-security-trade-offs.md](gu
 5. [Cleaning up AWS](guides/05-aws-cleanup.md): removing a project and proving nothing is charged.
 6. [The secure agentic SDLC](guides/06-secure-agentic-sdlc.md): the six stages, their controls and gates.
 7. [Template decisions](guides/07-template-decisions.md): what audits found, and the decisions made.
+8. [Incident runbook](guides/08-incident-runbook.md): when a package, action or token is compromised.
 
 To contribute, read [CONTRIBUTING.md](CONTRIBUTING.md); report vulnerabilities through [SECURITY.md](SECURITY.md). [MIT licence](LICENSE).
