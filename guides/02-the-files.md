@@ -64,7 +64,7 @@ The project context in `docs/` that agents read and keep current.
 
 ### 2.4 Guides (for people)
 
-`guides/`: 01 using the template, 02 this tour, 03 accepted risks, 04 each guardrail, 05 removing a project from AWS, 06 the six lifecycle stages and their gates, 07 decisions on the template. `assets/` holds the README's images, `flow.html` that renders them, and `social.png`.
+`guides/`: 01 using the template, 02 this tour, 03 accepted risks, 04 each guardrail, 05 removing a project from AWS, 06 the six lifecycle stages and their gates, 07 decisions on the template, 08 the incident runbook. `assets/` holds the README's images, `flow.html` that renders them, and `social.png`.
 
 ### 2.5 Work queue
 
@@ -94,18 +94,21 @@ All core, except `cost-report.py`, which only an AWS project needs.
 1. **scripts/setup.sh**: once per clone, on Windows, macOS or Linux: installs the tools and hooks, then `uv sync`; `--check` only reports.
 2. **scripts/check.sh**: runs what CI runs, for what changed, plus `itest` and `e2e` (Playwright, in `e2e/` once a project has screens) on request; CI's app jobs call it too, and the agent pastes its result when reporting done.
 3. **scripts/protect-main.sh**: once, by hand: locks `main`, squash-only merges, security features, apply environments that take `main` only; `production` adds a second reviewer.
-4. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open threads and alerts; replies and resolves threads.
-5. **scripts/check-refs.py**: fails when a numbered list skips a number, a reference names an item that doesn't exist, or an item cited elsewhere moved.
-6. **scripts/check-attribution.py**: fails on an AI co-author or "Generated with" line in a commit message or PR description (AGENTS.md rule 15).
-7. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
-8. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment (AWS module).
-9. **scripts/tests/**: tests for the scripts; they run with the apps' tests.
+4. **scripts/agent-guard.sh**: the PreToolUse hook: before each edit or command, production denies touching `.env`, and editing an existing test or a check's own settings asks first.
+5. **scripts/agent-stop-check.sh**: the Stop hook: runs `check.sh` and sends a failure back to the agent, once, so it can't loop.
+6. **scripts/pr-findings.sh**: lists a PR's failed checks, security summary, open threads and alerts; replies and resolves threads.
+7. **scripts/check-refs.py**: fails when a numbered list skips a number, a reference names an item that doesn't exist, or an item cited elsewhere moved.
+8. **scripts/check-attribution.py**: fails on an AI co-author or "Generated with" line in a commit message or PR description (AGENTS.md rule 15).
+9. **scripts/check-hooks.py**: fails when a Claude Code hook in `.claude/settings.json` no longer loads, runs a missing or broken script, or the guard stops denying a production `.env` edit, since a broken hook fails silently.
+10. **scripts/security-report.py**: CI: scanner results as PR annotations and one summary comment.
+11. **scripts/cost-report.py**: CI: Infracost results as PR annotations and one cost comment (AWS module).
+12. **scripts/tests/**: tests for the scripts; they run with the apps' tests.
 
 ### 3.4 Agent setup (core)
 
-1. **.claude/settings.json**: Claude Code's shared settings: no AI attribution on commits or PRs, and deny rules for force-pushes, skipped hooks, Terraform applies and `.env` reads.
+1. **.claude/settings.json**: Claude Code's shared settings: no AI attribution on commits or PRs, asking before each `git push` (production), a guard before each edit or command, a Stop hook that runs the quick checks when the agent ends a turn with uncommitted edits, and deny rules for force-pushes, skipped hooks, Terraform applies and `.env` reads.
 2. **.claude/skills/**: the steps the agent loads when it reaches them: `kickoff`, `pull-request` and `deploy` (AWS module), the `review-security` and `review-design` reviews AGENTS.md rule 10 runs, and `new-app` for adding an app.
-3. **.claude/agents/verifier.md**: the subagent that runs the app to check a change.
+3. **.claude/agents/verifier.md**: the subagent that runs the app to check a change. It and the two review skills run on Sonnet, a different model from the session that wrote the code, for a second opinion.
 
 Local settings and worktrees are git-ignored.
 
@@ -151,7 +154,7 @@ A change ships like this: issue → PR → `ci`, `security`, `codeql` and `rules
 
 ### 5.3 GitHub settings (core)
 
-1. **ISSUE_TEMPLATE/intent.yml**: the form for a new issue, with `intent.md`'s headings, so each issue is one change's intent.
+1. **ISSUE_TEMPLATE/**: the forms for a new issue. `intent.yml` has `intent.md`'s headings, so each issue is one change's intent; `incident.yml` records an incident or finding and what stops a repeat, so Maintain feeds the next Plan.
 2. **pull_request_template.md**: pre-fills each PR: what changed, security, checks, and `Closes #<issue>`.
 3. **dependabot.yml**: weekly update PRs for actions, Python and Terraform, each release 7 days old; an app adds its own, such as npm or Docker.
 4. **CODEOWNERS** *(not included)*: requests reviewers per path; add it once a team shares the repo.

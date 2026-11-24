@@ -1,6 +1,7 @@
 ---
 name: review-security
 description: Security review of the branch's diff against this repo's threat model, standards and rules, before a PR or after each phase (AGENTS.md rule 10). Use when asked for a security review, or when the build reaches its review step. Reports findings; never edits code.
+model: sonnet  # A different model from the session that wrote the code, for a second opinion; haiku if that session runs Sonnet.
 allowed-tools: Read, Grep, Glob, Bash(git diff*), Bash(git log*), Bash(git show*), Bash(git status*)
 ---
 
@@ -13,6 +14,10 @@ Review what this branch changes, against the repo's own standards. You report; t
 1. The diff: `git diff origin/main...HEAD`, plus any uncommitted changes. Read each changed file around the change, not just the hunk.
 2. The standards, read first: `docs/threat-model.md` (its risks and controls), `docs/standards.md` 6 to 10 and 17 to 20, `docs/spec.md`'s Rules, and AGENTS.md rules 14, 16 and 17.
 3. The plan, if there is one (`docs/plan-<name>.md`): its Security risks section is what the change promised to control.
+4. The depth, by blast radius: the plan's Review level, or the highest that fits the diff.
+   - **High:** auth, money, personal data, IAM, a public endpoint or a new outside service. Every check, every caller of the changed code, and each abuse case in the threat model traced through the code.
+   - **Medium:** a new endpoint, data store, package or model call, or other app logic. Every check.
+   - **Low:** docs, copy, styles, tests or a refactor that changes no behaviour. Checks 4, 6 and 10.
 
 ## Check
 
@@ -22,16 +27,16 @@ A prototype with only the starter threat model and no plan skips 1 and 10, and t
 2. **Access:** every new endpoint checks authorisation on the server and denies by default (standards 10); nothing is open because only our code calls it.
 3. **Input and output:** input validated against a schema at the boundary, unknown fields rejected (9); each state-changing action emits an audit event (8); model output and uploads treated as untrusted and validated (18); limits and payments enforced in code, not a prompt (17).
 4. **Secrets and data:** no secret, key or token in code, Terraform, logs, error messages, URLs or test data; no real personal or financial data in a public repo (rule 17); logs redact at the source (8).
-5. **Failure:** security and payment checks fail closed (7); model calls have an explicit model ID, timeout, token limit and retry cap (19).
-6. **Supply chain:** each new package is real, maintained, pinned and at least 7 days old (rule 16); new actions pinned by SHA, images by digest.
+5. **Failure:** security and payment checks fail closed (7); no swallowed error: a `catch` or `except` that ignores it, only logs it, or returns a default hides a failure unless it says why; model calls have an explicit model ID, timeout, token limit and retry cap (19).
+6. **Supply chain:** each new package is real, maintained, pinned and at least 7 days old (rule 16); new actions pinned by SHA, images by digest; no workflow checks out a PR's code under `pull_request_target`, or restores a dependency cache in a job with `id-token: write`.
 7. **Infrastructure:** IAM roles carry the project boundary, no wildcards beyond what the profile allows (AGENTS.md rule 4), nothing public that the spec doesn't make public.
-8. **Tests:** each risk the change touches has a test; production adds the abuse cases in the threat model (standards 11).
+8. **Tests:** each risk the change touches has a test; production adds the abuse cases in the threat model (standards 11). Each test proves something: it asserts the result, would fail if the code broke, and doesn't mock the code under test; an empty, skipped or always-passing test is a finding.
 9. **Lessons:** the area's entries in `docs/lessons.md` aren't repeated.
 10. **Scope:** every changed file is in the plan's Files that change; anything else is a finding.
 
 ## Report
 
-A list, most severe first; "No findings" if clean. Each finding:
+Start with the depth you used and why. Then a list, most severe first; "No findings" if clean; at most five low findings, the ones most worth fixing. Each finding:
 
 - **Severity:** critical (exploitable now, or a secret exposed), high (a missing control on a real risk), medium (a weak control or missing test), low (hardening).
 - **Where:** `path:line`.

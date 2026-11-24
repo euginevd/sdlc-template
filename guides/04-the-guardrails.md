@@ -35,8 +35,9 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 ## 5. Build, agent: agent guardrails
 
 - **Does:** `AGENTS.md` holds the rules every agent reads (rules 4 and 14: never touch secrets, cloud resources or hooks). `.claude/settings.json` enforces what Claude Code can: it denies force-pushes, `--no-verify`, `terraform apply` and `destroy`, and `.env` reads (a prototype drops the last at kickoff), and turns off AI attribution on commits and PRs (rule 15).
-- **When:** in every session.
-- **On a finding:** hooks and required checks catch a broken rule: the commit hook and the `rules` check fail on AI attribution, and on a numbered reference that points at the wrong item. Add a lesson to `docs/lessons.md`.
+- **Hooks:** before each edit or command, `scripts/agent-guard.sh` denies touching `.env` in production, even through a shell command (a prototype may, by its profile), and asks you before an existing test or a check's own settings (ruff, ESLint, Prettier, tsconfig, TFLint, the hooks, the workflows, `check.sh`, `.claude/settings.json`) is edited, so the agent fixes the code rather than the test or the check.
+- **When:** in every session; Claude Code's Stop hook also runs the quick checks whenever the agent ends a turn with uncommitted edits, and sends a failure back, once, for it to fix.
+- **On a finding:** hooks and required checks catch a broken rule: the commit hook and the `rules` check fail on AI attribution, and on a numbered reference that points at the wrong item; the `rules` check also fails on a broken agent hook. Add a lesson to `docs/lessons.md`.
 - **Limits:** deny rules match how a command starts, so a reworded command can slip past; other agents need their own settings (trade-offs 2). The only AWS key on the agent's machine is the read-only troubleshoot user's (trade-offs 14); while it works as you on GitHub, its actions look like yours (trade-offs 1).
 
 ## 6. Test: secrets, SCA and IaC scanning
@@ -56,9 +57,9 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 ## 8. Test: supply chain security
 
-- **Does:** actions are pinned by commit and images by digest. Packages wait 7 days before use, unless a release fixes a named vulnerability (AGENTS.md rule 16). Trivy builds a CycloneDX SBOM from the lock files.
-- **When:** pins and the wait on every install; the SBOM on every push to `main`.
-- **On a finding:** nothing fails; these prevent. The SBOM is under the `main` run's Artifacts.
+- **Does:** actions are pinned by commit and images by digest. Packages wait 7 days before use, unless a release fixes a named vulnerability (AGENTS.md rule 16). `npm audit signatures` checks each web package's registry signature after `npm ci`. zizmor fails a workflow that checks out a PR's code under `pull_request_target`, or restores a dependency cache in a job that can get a cloud token (`id-token: write`). Trivy builds a CycloneDX SBOM from the lock files.
+- **When:** pins and the wait on every install; signatures on every web check; zizmor when a workflow changes; the SBOM on every push to `main`.
+- **On a finding:** a bad signature or a risky workflow fails its check; the rest prevent. The SBOM is under the `main` run's Artifacts.
 - **Limits:** the SBOM isn't signed and GitHub deletes it after 90 days; for production, keep it with a release or in S3. Signing, SLSA provenance and a licence policy aren't in the template yet.
 
 ## 9. Test: unit and abuse-case tests, coverage
@@ -170,5 +171,5 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 - **Does:** GuardDuty spots stolen credentials, mining and bad addresses. Alarms watch errors, `5xx`, throttling and latency.
 - **When:** all the time.
-- **On a finding:** follow the project's incident runbook: contain, rotate and restore.
+- **On a finding:** contain, rotate and restore ([guide 08](08-incident-runbook.md)), then open an issue from the Incident form so the fix and its check are planned.
 - **Limits:** not in the template yet. GuardDuty costs after 30 days, so ask first (AGENTS.md rule 4).

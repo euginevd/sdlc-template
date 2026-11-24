@@ -1,0 +1,38 @@
+# An incident or finding from the Maintain stage: an alarm, a scan, a bill or a user report. It becomes an issue
+# like any other, so what went wrong feeds the next Plan (guide 06). The repo may be public: no secrets, keys,
+# account IDs or personal data here; rotate a leaked secret first and say only that it was rotated.
+name: Incident or finding
+description: Something went wrong or was found after a deploy, and what stops it happening again.
+labels: ["incident"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What was seen, when, and how it was found (alarm, scan, bill, user).
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Who or what it affected, for how long, and whether any data or money was exposed.
+    validations:
+      required: true
+  - type: textarea
+    id: contained
+    attributes:
+      label: Contained
+      description: What was already done to stop it (rotated, rolled back, blocked), or "not yet".
+  - type: textarea
+    id: cause
+    attributes:
+      label: Cause
+      description: Why it happened, or "unknown" until found.
+  - type: textarea
+    id: prevent
+    attributes:
+      label: Fix and prevention
+      description: The fix, and the check, alarm or lesson that catches it next time (AGENTS.md rule 18).
+    validations:
+      required: true

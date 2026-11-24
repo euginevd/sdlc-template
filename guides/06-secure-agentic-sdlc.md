@@ -4,12 +4,12 @@ The template's lifecycle on one page: six stages, the security controls in each 
 
 | Stage | What happens | Security controls | Gate |
 |---|---|---|---|
-| 1. Plan | The oldest open GitHub issue, an intent like `intent.md`, becomes a feature; the agent asks the questions that change the build | Data classified; new AWS services and cost flagged | I accept the item |
+| 1. Plan | The oldest open GitHub issue, an intent like `intent.md`, becomes a feature; the agent interviews the user on what changes the build | Data classified; new AWS services and cost flagged | I accept the item |
 | 2. Design | The agent drafts the spec, plan, threat model and mockup | STRIDE threat model, ASVS level, cost estimate | **G1**: I approve before any code |
-| 3. Build | The agent codes each phase with tests on one branch; a fresh subagent reviews it with the review skills and the verifier runs it | Pre-push scan (Gitleaks, Trivy), agent deny rules, no secrets or cloud access | None: the checks decide |
+| 3. Build | A fresh session (`/clear`) codes each phase from the plan, with tests, on one branch; a fresh subagent reviews it with the review skills and the verifier runs it | Pre-push scan (Gitleaks, Trivy), agent deny rules and the Stop hook's checks, no secrets or cloud access | None: the checks decide |
 | 4. Test | Every push runs the checks; the agent fixes each failure at its cause | Tests and coverage, Semgrep, CodeQL, Trivy, Checkov, pinned supply chain | None: a failed check blocks the merge |
 | 5. Deploy | The agent opens the PR; the pipeline plans and applies Terraform | Protected `main`, security summary, cost comment, OIDC roles, read-only plan | **G2** merge, **G3** `dev`, **G4** `prod` |
-| 6. Maintain | Rescans and alerts find what changed; each finding becomes a new issue | Weekly rescans, Dependabot, budget alert, access logs | **G5**: I check cost and alarms the day after |
+| 6. Maintain | Rescans and alerts find what changed; each finding becomes an issue from the Incident form | Weekly rescans, Dependabot, budget alert, access logs | **G5**: I check cost and alarms the day after |
 
 G0, kickoff, comes once before all six (the [`kickoff`](../.claude/skills/kickoff/SKILL.md) skill). Who approves each gate in each profile is the table in AGENTS.md rule 5.
 
@@ -24,7 +24,7 @@ G0, kickoff, comes once before all six (the [`kickoff`](../.claude/skills/kickof
 | Build | [standards](../docs/standards.md), [lessons](../docs/lessons.md) | 3–5 |
 | Test | [`scripts/check.sh`](../scripts/check.sh) and the CI workflows | 6–11 |
 | Deploy | the `pull-request` and `deploy` skills, [checklist](../docs/checklist.md) before `prod` | 12–19 |
-| Maintain | [features](../docs/features.md), what's built; [AWS cleanup](05-aws-cleanup.md) when a project ends | 20–24 |
+| Maintain | [features](../docs/features.md), what's built; [incident runbook](08-incident-runbook.md) when something is compromised; [AWS cleanup](05-aws-cleanup.md) when a project ends | 20–24 |
 
 For auditors: the eight DevSecOps stages map onto these six. Plan stays Plan (its threat model and cost here sit in Design), Code joins Build, the CI scans join Test, Release joins Deploy, and Operate and Monitor become Maintain.
 

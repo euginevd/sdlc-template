@@ -5,17 +5,51 @@
     "pr": "",
     "sessionUrl": false
   },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/agent-guard.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/agent-stop-check.sh\"",
+            "timeout": 300,
+            "statusMessage": "Running the quick checks"
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
+    "ask": [
+      "Bash(git push*)"
+    ],
     "allow": [
+      "Bash(bash scripts/check.sh*)",
       "Bash(uv sync*)",
-      "Bash(uv run *)",
+      "Bash(uv run ruff*)",
+      "Bash(uv run pyright*)",
+      "Bash(uv run pytest*)",
       "Bash(uv lock*)",
       "Bash(terraform fmt*)",
       "Bash(terraform init -backend=false*)",
       "Bash(terraform validate*)",
       "Bash(npm ci*)",
       "Bash(npm test*)",
-      "Bash(npm run *)",
+      "Bash(npm run lint*)",
+      "Bash(npm run typecheck*)",
+      "Bash(npm run build*)",
       "Bash(git status*)",
       "Bash(git diff*)",
       "Bash(git log*)",

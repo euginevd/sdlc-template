@@ -1,6 +1,7 @@
 ---
 name: review-design
 description: Design review of a changed screen against its mockup, this repo's design system and its web UI standards (AGENTS.md rule 10). Use when a phase changes a page or component, or when asked for a design or accessibility review. Reports findings; never edits code.
+model: sonnet  # A different model from the session that wrote the code, for a second opinion; haiku if that session runs Sonnet.
 ---
 
 # Design review
@@ -33,7 +34,7 @@ Run the app locally and screenshot each changed screen, light and dark:
 
 ## Report
 
-A list, most severe first; "No findings" if clean. Each finding:
+A list, most severe first; "No findings" if clean; at most five low findings, the ones most worth fixing. Each finding:
 
 - **Severity:** high (blocks a user or fails WCAG AA), medium (off the mockup or tokens), low (polish).
 - **Where:** the screen, state and size, with the `path:line` that causes it.
