@@ -73,11 +73,22 @@ def test_a_prototype_may_edit_env(tmp_path: Path):
         "apps/api/handler_test.py",
     ],
 )
-def test_editing_an_existing_test_asks_first(tmp_path: Path, test_file: str):
-    root = repo(tmp_path, "prototype")
+def test_editing_an_existing_test_needs_no_question(tmp_path: Path, test_file: str):
+    root = repo(tmp_path, "production")
     (root / test_file).parent.mkdir(parents=True, exist_ok=True)
     (root / test_file).write_text("x\n", encoding="utf-8")
-    assert decision(root, "Edit", file_path=test_file) == "ask"
+    assert decision(root, "Edit", file_path=test_file) == "allow"
+
+
+@pytest.mark.parametrize(
+    "config",
+    ["pyproject.toml", ".github/workflows/ci.yml", ".claude/settings.json", "scripts/check.sh"],
+)
+def test_editing_a_checks_settings_needs_no_question(tmp_path: Path, config: str):
+    root = repo(tmp_path, "production")
+    (root / config).parent.mkdir(parents=True, exist_ok=True)
+    (root / config).write_text("x\n", encoding="utf-8")
+    assert decision(root, "Edit", file_path=config) == "allow"
 
 
 def test_a_new_test_and_app_code_need_no_question(tmp_path: Path):

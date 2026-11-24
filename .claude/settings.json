@@ -32,9 +32,6 @@
     ]
   },
   "permissions": {
-    "ask": [
-      "Bash(git push*)"
-    ],
     "allow": [
       "Bash(bash scripts/check.sh*)",
       "Bash(uv sync*)",

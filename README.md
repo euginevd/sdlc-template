@@ -70,7 +70,7 @@ A prototype still stops before spending past the spec's monthly limit, weakening
 
 The same in both profiles:
 
-1. **While the agent works:** Claude Code's hooks keep it out of `.env` in production, ask before it edits a test or check, and run the quick checks as each turn ends.
+1. **While the agent works:** Claude Code's hooks keep it out of `.env` in production and run the quick checks as each turn ends.
 2. **Before every push:** Gitleaks and Trivy scan the pushed commits, so a secret added and then removed is still caught.
 3. **On every PR:** secrets (Gitleaks), vulnerable packages and misconfiguration (Trivy, Checkov), static analysis (Semgrep, and CodeQL on public repos), `terraform validate`, tflint and a required Terraform plan, lint for workflows and scripts (actionlint, zizmor, shellcheck), rule checks (kickoff finished, references, agent hooks, no AI attribution), and lint, types and tests for the apps it changes. One comment lists the findings for the agent to fix.
 4. **On `main` and weekly:** the full scans again, so a newly published vulnerability still fails a run, and an SBOM.
