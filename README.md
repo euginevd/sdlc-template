@@ -20,9 +20,9 @@ Pick a prototype the agent builds and ships on its own, or a production system w
 
 Coding agents write code fast. What they don't bring is the rest: a spec to build against, a place to stop and ask, security scans, a safe way into AWS, and a record of what was decided. This template is that rest. Every agent reads the same numbered rules in [AGENTS.md](AGENTS.md), keeps the docs current as it works, and leaves AWS to a pipeline that scans, plans and applies for it.
 
-It's written for one developer, or a small team, on Windows with VS Code, deploying to AWS with Terraform. It works with any agent that reads `AGENTS.md`.
+It's for one developer or a small team, on Windows with VS Code, deploying to AWS with Terraform. It works with any agent that reads `AGENTS.md`.
 
-You'll need: a GitHub account with the `gh` CLI, Git Bash or similar, and an AWS account once you're ready to deploy. A private repo needs a paid GitHub plan (Pro or Team): on a free one GitHub enforces neither the `main` ruleset nor the deploy environments. `setup.sh` installs the rest (Gitleaks, Trivy, lefthook, uv and Terraform).
+You'll need: a GitHub account with the `gh` CLI, Git Bash or similar, and an AWS account once you're ready to deploy. A private repo needs a paid GitHub plan (Pro or Team) for the `main` ruleset and deploy environments. `setup.sh` installs the rest (Gitleaks, Trivy, lefthook, uv and Terraform).
 
 ## Quick start
 
@@ -53,7 +53,7 @@ You pick one at kickoff. The agent works on its own between gates and stops at t
 | When unsure | The agent decides, records it and says so | The agent asks |
 | Commits, PRs, merges | The agent, unasked | Only when you ask |
 
-A prototype still stops before spending past the monthly limit in the spec, before weakening its own floor (no direct AWS changes, no secrets in output, no skipped hooks, no AI attribution), and before real users, customer data or payments. New cloud services start as a small deploy to `dev`, and actual cost is checked the day after. Moving a prototype up: [guide 01](guides/01-using-the-template.md) section 7.
+A prototype still stops before spending past the spec's monthly limit, weakening its own floor (no direct AWS changes, secrets in output, skipped hooks or AI attribution), or taking real users, customer data or payments. Moving a prototype up: [guide 01](guides/01-using-the-template.md) section 7.
 
 ## What's inside
 
@@ -62,21 +62,22 @@ A prototype still stops before spending past the monthly limit in the spec, befo
 | [AGENTS.md](AGENTS.md) | The numbered rules every coding agent reads: gates per profile, the workflow, what to ask first and what never to do |
 | [docs/](docs/) | What the agent reads and keeps current: spec, features, decisions, lessons by area, threat model, costs, design system and go-live checklist. Each starts with a *(to fill in)* line for what your project decides |
 | [apps/api/](apps/api/), [infra/aws/api/](infra/aws/api/) | The starter: a Lambda with a `/health` route and its Terraform, proving the pipeline end to end. Keep it, build on it or replace it |
-| [.github/workflows/](.github/workflows/) | `ci` for changed apps, `security` and `codeql` for scans, `rules` for rule checks, `images` for container images, `aws` for the plan, cost comment and apply |
+| [.github/workflows/](.github/workflows/) | `ci` for changed apps, `security` and `codeql` for scans, `rules` for rule checks, `images` for signed container images, `aws` for the plan, cost comment, apply and `dev` scan |
 | [infra/aws/bootstrap/](infra/aws/bootstrap/) | One stack per AWS account, deployed by you: the GitHub sign-in, a read-only plan role, a bounded deploy role, a read-only troubleshoot role, the state bucket and a budget alert |
-| [scripts/](scripts/) | `setup.sh` installs and checks a machine, `protect-main.sh` locks down the repo, `pr-findings.sh` lists what a PR still has to fix |
+| [scripts/](scripts/) | `setup.sh` installs and checks a machine, `protect-main.sh` locks down the repo, `pr-findings.sh` lists what a PR still has to fix, and the agent's hooks |
 
 ## What always runs
 
 The same in both profiles:
 
-1. **Before every push:** Gitleaks and Trivy scan the pushed commits, so a secret added and then removed is still caught.
-2. **On every PR:** secrets (Gitleaks), vulnerable packages and misconfiguration (Trivy, Checkov), static analysis (Semgrep, and CodeQL on public repos), `terraform validate`, tflint and a required Terraform plan, lint for workflows and scripts (actionlint, zizmor, shellcheck), checks that kickoff left nothing unfilled, references are right and nothing has AI attribution, and lint, types and tests for the apps it changes. One summary comment lists the findings, and the agent fixes from it.
-3. **On `main` and weekly:** the full scans again, so a newly published vulnerability still fails a run, plus a list of every package in the code (SBOM).
-4. **Deploys:** only the pipeline touches AWS, signing in through GitHub OIDC with no stored keys. It plans with a read-only role and applies a saved plan, `dev` on merge and `prod` by hand.
-5. **Supply chain:** actions pinned by commit, scanner images by digest, and packages at least a week old before they're installed.
+1. **While the agent works:** Claude Code's hooks keep it out of `.env` in production, ask before it edits a test or check, and run the quick checks as each turn ends.
+2. **Before every push:** Gitleaks and Trivy scan the pushed commits, so a secret added and then removed is still caught.
+3. **On every PR:** secrets (Gitleaks), vulnerable packages and misconfiguration (Trivy, Checkov), static analysis (Semgrep, and CodeQL on public repos), `terraform validate`, tflint and a required Terraform plan, lint for workflows and scripts (actionlint, zizmor, shellcheck), rule checks (kickoff finished, references, agent hooks, no AI attribution), and lint, types and tests for the apps it changes. One comment lists the findings for the agent to fix.
+4. **On `main` and weekly:** the full scans again, so a newly published vulnerability still fails a run, and an SBOM.
+5. **Deploys:** only the pipeline touches AWS, signing in through GitHub OIDC with no stored keys. It plans with a read-only role and applies a saved plan, `dev` on merge and `prod` by hand. ZAP then scans `dev`, passively.
+6. **Supply chain:** actions pinned by commit, images by digest, packages at least a week old, and each pushed image signed with its provenance and SBOM.
 
-What it doesn't cover is written down too: [guides/03-security-trade-offs.md](guides/03-security-trade-offs.md) lists each risk the template accepts for speed, with the fix for production.
+What it doesn't cover is written down too: [guides/03-security-trade-offs.md](guides/03-security-trade-offs.md) lists each risk accepted for speed, with its fix.
 
 ## Guides
 
