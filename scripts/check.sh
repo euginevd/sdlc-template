@@ -65,6 +65,7 @@ check_e2e() {
 
 tf_validate() { terraform -chdir="$1" init -backend=false -input=false > /dev/null && terraform -chdir="$1" validate; }
 check_terraform() {
+  [ -d infra/aws ] || return 0
   if ! command -v terraform > /dev/null; then
     echo "terraform isn't installed: run bash scripts/setup.sh"
     failed+=("terraform")

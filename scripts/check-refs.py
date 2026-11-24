@@ -72,7 +72,13 @@ def git(*args: str) -> str:
 
 
 def items(text: str, pattern: str) -> list[tuple[int, str]]:
-    return [(int(m[1]), m[2].strip()) for m in re.finditer(pattern, text, re.MULTILINE)]
+    """Numbered items; a line marked <!-- if:!part --> is the other wording of the item before it,
+    for a project without that part (scripts/new-project.py), so it isn't counted twice."""
+    return [
+        (int(m[1]), m[2].strip())
+        for m in re.finditer(pattern, text, re.MULTILINE)
+        if "<!-- if:!" not in m[2]
+    ]
 
 
 def expand(nums: str) -> list[int]:
@@ -150,11 +156,20 @@ def numbering(sources: list[str], numbers: list[int], in_order: bool) -> list[st
     return [f"{where}: {n} is used more than once" for n in repeated]
 
 
+def fork_point(base: str | None) -> str | None:
+    """Where the branch left the base; None without one, as on a new repo's first push."""
+    if not base:
+        return None
+    try:
+        return git("merge-base", base, "HEAD").strip()
+    except subprocess.CalledProcessError:
+        return None
+
+
 def main(base: str | None) -> int:
     sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[union-attr]  # Windows consoles
     errors: list[str] = []
-    if base:
-        base = git("merge-base", base, "HEAD").strip()
+    base = fork_point(base)
     tracked = set(git("ls-files").splitlines())
     listed = git("ls-files", "--cached", "--others", "--exclude-standard").splitlines()
     # The tests cite made-up numbers on purpose.
@@ -164,7 +179,11 @@ def main(base: str | None) -> int:
         if Path(f).suffix in SCANNED and not f.startswith("scripts/tests/") and (ROOT / f).exists()
     ]
     texts = {f: (ROOT / f).read_text(encoding="utf-8") for f in files}
-    for name, (sources, item_pattern, in_order, patterns) in LISTS.items():
+    for name, (all_sources, item_pattern, in_order, patterns) in LISTS.items():
+        # A project without AWS deletes docs/aws/lessons.md and the deploy skill.
+        sources = [s for s in all_sources if s in texts]
+        if not sources:
+            continue
         new = [item for source in sources for item in items(texts[source], item_pattern)]
         numbers = [n for n, _ in new]
         errors += numbering(sources, numbers, in_order)

@@ -8,12 +8,20 @@
 # that isn't the author's, given after the last push, with every review thread resolved. Without it, the
 # prototype settings: no review needed (AGENTS.md rule 5).
 set -uo pipefail
+cd "$(dirname "$0")/.." || exit 1
 
 case "${1:-prototype}" in
   production) reviews=1; reviewed=true; targets=(dev prod) ;;
   prototype) reviews=0; reviewed=false; targets=(dev) ;;
   *) echo "Usage: bash scripts/protect-main.sh [production]"; exit 1 ;;
 esac
+
+# A project without AWS (new-project.py drops aws.yml) has no plan check, deploy actions or apply environments.
+aws=false
+[ -f .github/workflows/aws.yml ] && aws=true
+$aws || targets=()
+plan_check=""
+$aws && plan_check=', { "context": "plan-result" }'
 
 repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner) || exit 1
 public=$(gh repo view --json visibility --jq '.visibility == "PUBLIC"')
@@ -30,7 +38,11 @@ api -X PATCH "repos/$repo" -F allow_squash_merge=true -F allow_merge_commit=fals
 api -X PUT "repos/$repo/actions/permissions/workflow" -f default_workflow_permissions=read -F can_approve_pull_request_reviews=false
 # Only GitHub's actions and the two the deploy uses, each pinned to a full commit SHA.
 api -X PUT "repos/$repo/actions/permissions" -F enabled=true -f allowed_actions=selected -F sha_pinning_required=true
-api -X PUT "repos/$repo/actions/permissions/selected-actions" -F github_owned_allowed=true -F verified_allowed=false -f 'patterns_allowed[]=hashicorp/setup-terraform@*' -f 'patterns_allowed[]=aws-actions/configure-aws-credentials@*'
+if $aws; then
+  api -X PUT "repos/$repo/actions/permissions/selected-actions" -F github_owned_allowed=true -F verified_allowed=false -f 'patterns_allowed[]=hashicorp/setup-terraform@*' -f 'patterns_allowed[]=aws-actions/configure-aws-credentials@*'
+else
+  api -X PUT "repos/$repo/actions/permissions/selected-actions" -F github_owned_allowed=true -F verified_allowed=false
+fi
 # Dependabot alerts and security-update PRs.
 api -X PUT "repos/$repo/vulnerability-alerts"
 api -X PUT "repos/$repo/automated-security-fixes"
@@ -73,8 +85,7 @@ gh api "${target[@]}" --input - >/dev/null <<JSON || { echo "Could not set the r
         "required_status_checks": [
           { "context": "python" }, { "context": "web" }, { "context": "kickoff" },
           { "context": "workflows" }, { "context": "secrets" }, { "context": "packages-and-iac" },
-          { "context": "terraform" }, { "context": "code" }, { "context": "plan-result" },
-          { "context": "rules" }
+          { "context": "terraform" }, { "context": "code" }, { "context": "rules" }$plan_check
         ]
       }
     },
@@ -96,7 +107,7 @@ JSON
 # The deploy role trusts whatever runs in an apply environment, so each one takes main only: without that, a
 # PR that edits a workflow could deploy. A new environment is made that way; one that exists is checked and
 # left alone, so its reviewers and variables stay as you set them.
-for target in "${targets[@]}"; do
+for target in ${targets[@]+"${targets[@]}"}; do
   env="aws-$target-apply"
   if gh api "repos/$repo/environments/$env" >/dev/null 2>&1; then
     custom=$(gh api "repos/$repo/environments/$env" --jq '.deployment_branch_policy.custom_branch_policies // false')
@@ -122,7 +133,11 @@ fi
 if [ "$failed" -gt 0 ]; then
   echo "$failed settings failed on $repo; see the errors above."
 else
-  echo "Settings and ruleset 'main' applied to $repo: $reviews approval(s) needed to merge; ${targets[*]/#/aws-} apply from main only."
+  if $aws; then
+    echo "Settings and ruleset 'main' applied to $repo: $reviews approval(s) needed to merge; ${targets[*]/#/aws-} apply from main only."
+  else
+    echo "Settings and ruleset 'main' applied to $repo: $reviews approval(s) needed to merge; no AWS, so no apply environments."
+  fi
 fi
 if [ "${#by_hand[@]}" -gt 0 ]; then
   echo

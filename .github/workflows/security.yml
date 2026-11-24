@@ -58,6 +58,7 @@ jobs:
           name: security-trivy
           path: summary/
 
+  # A project without AWS has no infra/, so each step skips and the required check still passes.
   terraform:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -66,6 +67,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Checkov, Terraform and CloudFormation
+        if: hashFiles('infra/**') != ''
         run: |
           mkdir summary; code=0
           docker run --rm -v "$PWD:/repo" bridgecrew/checkov:3.4.3@sha256:bfe9d70bb7f044aba49bd99675813445f106dee6072da583f51008cb667f3a63 -d /repo/infra --quiet --compact -o cli -o json --output-file-path console,/repo/checkov.json || code=$?
@@ -74,7 +76,7 @@ jobs:
       # No AWS access and no state, so it runs before a project is bootstrapped; the aws workflow's plan needs both.
       # The image is the same version as TF_VERSION in aws.yml.
       - name: Terraform, format and validate
-        if: always()
+        if: always() && hashFiles('infra/aws/**/*.tf') != ''
         run: |
           tf() { docker run --rm -v "$PWD:/repo" -w "/repo/$1" hashicorp/terraform:1.17.1@sha256:a5d5a5a892c98f60fcbfa81eac2a40fc19e7b3fa7719bccae10ff6111d22524a "${@:2}"; }
           code=0
@@ -87,7 +89,7 @@ jobs:
       # AWS mistakes validate can't see, such as an invalid instance type or a retired Lambda runtime.
       # The token only lifts GitHub's rate limit on downloading the AWS ruleset, whose signature tflint checks.
       - name: tflint
-        if: always()
+        if: always() && hashFiles('infra/aws/**/*.tf') != ''
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |

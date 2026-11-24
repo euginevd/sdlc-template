@@ -11,7 +11,7 @@ Pick a prototype the agent builds and ships on its own, or a production system w
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="guides/assets/flow-dark.png">
-  <img src="guides/assets/flow.png" width="900" alt="Six stages, kick off to release, on two tracks. Prototype: one stop, your yes to each item; the agent drafts the docs at kickoff, builds with main-path tests at 50% coverage, merges on green checks and the pipeline applies to dev on merge; there is no prod. Production: you approve the spec, threat model and costs, then the plan; the agent builds with abuse-case tests at 80% coverage and a review per phase; a second reviewer approves the PR, the dev apply and the prod release. Always on in both: Gitleaks and Trivy before every push, Semgrep, Checkov, CodeQL and app tests on every PR, a full rescan and SBOM on main and weekly, pipeline-only deploys over OIDC with no stored keys, and actual cost checked the day after a deploy.">
+  <img src="guides/assets/flow.png" width="900" alt="Six stages, start to release, on two tracks. Prototype: you answer once at the start, then nothing waits for you; a reviewer agent passes each plan against your intent, the agent tests main paths at 50% coverage, merges on green checks and takes the next issue, and the pipeline applies to dev on merge; there is no prod. Production: you answer, then approve the spec, threat model and costs, then each plan; the agent tests abuse cases at 80% coverage with a review per phase; a second reviewer approves the PR, the dev apply and the prod release. Always on in both: Gitleaks and Trivy before every push, Semgrep, Checkov, CodeQL, workflow lint and tests on every PR, a full rescan and SBOM on main and weekly, pipeline-only deploys over OIDC with no stored keys, and actual cost checked the day after a deploy.">
 </picture>
 
 </div>
@@ -25,6 +25,8 @@ It's for one developer or a small team, on Windows with VS Code, deploying to AW
 You'll need: a GitHub account with the `gh` CLI, Git Bash or similar, and an AWS account once you're ready to deploy. A private repo needs a paid GitHub plan (Pro or Team) for the `main` ruleset and deploy environments. `setup.sh` installs the rest (Gitleaks, Trivy, lefthook, uv and Terraform).
 
 ## Quick start
+
+Open Claude Code in a clone of this repo on your machine and say *"New project"*. It asks the name, your intent, the profile and which parts you need, all at once, then creates the repo with only the files those need, the docs and a backlog of issues. A prototype then builds the whole backlog on its own, for hours, with a check or a fresh reviewer passing each gate ([guide 01](guides/01-using-the-template.md) sections 2 and 4). Or by hand, copying everything:
 
 ```bash
 gh repo create my-project --template euginevd/sdlc-template --public --clone  # --private for a work project
@@ -46,12 +48,13 @@ You pick one at kickoff. The agent works on its own between gates and stops at t
 | | Prototype: speed first | Production: gates at key stages |
 |---|---|---|
 | For | No real users, customer data or payments | Anything that has them |
-| You approve | Each issue's spec and mockup, before code | Kickoff, and every plan |
+| You approve | Only the start's questions; checks and a fresh reviewer pass each gate | The start, and every plan |
 | A second reviewer approves | Nothing | Every PR and every apply, `dev` and `prod`, enforced by GitHub |
 | Environments | `dev` only | `dev`, then `prod` |
 | Tests | Main paths and anything sensitive, 50% coverage | Abuse cases too, 80% coverage |
 | When unsure | The agent decides, records it and says so | The agent asks |
-| Commits, PRs, merges | The agent, unasked | Only when you ask |
+| Commits, PRs, merges | The agent, unasked, issue after issue for hours | Only when you ask |
+| Files | The slim core, about 55 | Everything its parts need |
 
 A prototype still stops before spending past the spec's monthly limit, weakening its own floor (no direct AWS changes, secrets in output, skipped hooks or AI attribution), or taking real users, customer data or payments. Moving a prototype up: [guide 01](guides/01-using-the-template.md) section 7.
 
@@ -70,7 +73,7 @@ A prototype still stops before spending past the spec's monthly limit, weakening
 
 The same in both profiles:
 
-1. **While the agent works:** Claude Code's hooks keep it out of `.env` in production, ask before it edits a test or check, and run the quick checks as each turn ends.
+1. **While the agent works:** Claude Code's hooks keep it out of `.env` in production and run the quick checks as each turn ends.
 2. **Before every push:** Gitleaks and Trivy scan the pushed commits, so a secret added and then removed is still caught.
 3. **On every PR:** secrets (Gitleaks), vulnerable packages and misconfiguration (Trivy, Checkov), static analysis (Semgrep, and CodeQL on public repos), `terraform validate`, tflint and a required Terraform plan, lint for workflows and scripts (actionlint, zizmor, shellcheck), rule checks (kickoff finished, references, agent hooks, no AI attribution), and lint, types and tests for the apps it changes. One comment lists the findings for the agent to fix.
 4. **On `main` and weekly:** the full scans again, so a newly published vulnerability still fails a run, and an SBOM.

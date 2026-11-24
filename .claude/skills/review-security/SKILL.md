@@ -12,7 +12,8 @@ Review what this branch changes, against the repo's own standards. You report; t
 ## Scope
 
 1. The diff: `git diff origin/main...HEAD`, plus any uncommitted changes. Read each changed file around the change, not just the hunk.
-2. The standards, read first: `docs/threat-model.md` (its risks and controls), `docs/standards.md` 6 to 10 and 17 to 20, `docs/spec.md`'s Rules, and AGENTS.md rules 14, 16 and 17.
+2. The standards, read first: `docs/threat-model.md` (its risks and controls), `docs/standards.md` 6 to 10 and 17 to 20, `docs/spec.md`'s Rules, and AGENTS.md rules 14, 16 and 17. <!-- if:production -->
+2. The standards, read first: `docs/standards.md` 6 to 10 and 17 to 20, `docs/spec.md`'s Rules, and AGENTS.md rules 14, 16 and 17. A prototype has no threat model: judge the risks from the change itself. <!-- if:!production -->
 3. The plan, if there is one (`docs/plan-<name>.md`): its Security risks section is what the change promised to control.
 4. The depth, by blast radius: the plan's Review level, or the highest that fits the diff.
    - **High:** auth, money, personal data, IAM, a public endpoint or a new outside service. Every check, every caller of the changed code, and each abuse case in the threat model traced through the code.

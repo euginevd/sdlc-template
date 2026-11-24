@@ -127,7 +127,10 @@ pinned() {
 report() {
   local missing=0 tool have want
   line() { printf '  %-11s %s\n' "$1" "$2"; }
-  for tool in git gh gitleaks trivy lefthook uv terraform tflint; do
+  local tools=(git gh gitleaks trivy lefthook uv)
+  # Terraform only for a project with AWS (new-project.py drops infra/ without it).
+  [ -d infra/aws ] && tools+=(terraform tflint)
+  for tool in "${tools[@]}"; do
     if ! command -v "$tool" >/dev/null; then
       line "$tool" "MISSING"
       missing=$((missing + 1))
@@ -195,8 +198,10 @@ install gitleaks Gitleaks.Gitleaks gitleaks || exit 1
 install trivy AquaSecurity.Trivy trivy || exit 1
 install uv astral-sh.uv uv || exit 1
 install lefthook evilmartians.lefthook lefthook || exit 1
-install terraform Hashicorp.Terraform hashicorp/tap/terraform || exit 1
-install tflint TerraformLinters.tflint tflint || exit 1
+if [ -d infra/aws ]; then
+  install terraform Hashicorp.Terraform hashicorp/tap/terraform || exit 1
+  install tflint TerraformLinters.tflint tflint || exit 1
+fi
 lefthook install || exit 1
 [ -f pyproject.toml ] && { uv sync || exit 1; }
 

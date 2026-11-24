@@ -1,6 +1,6 @@
 # Spec
 
-The requirements and design agreed from [intent.md](intent.md) at kickoff, and changed as each issue is approved ([AGENTS.md](../AGENTS.md) rules 4 and 8): the intent says what and why, this says what gets built. It starts out describing the template's sample, a health-check API. What each feature does is its row in [features.md](features.md), not a line here.
+The requirements and design agreed from [intent.md](intent.md) at the start, and changed as each issue is approved ([AGENTS.md](../AGENTS.md) rules 4 and 8): the intent says what and why, this says what gets built. It starts out describing the template's sample, a health-check API. What each feature does is its row in [features.md](features.md), not a line here.
 
 ## Business
 

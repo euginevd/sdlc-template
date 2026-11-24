@@ -9,15 +9,34 @@ The agent asks for this first ([AGENTS.md](../AGENTS.md) rules 4 to 7). Where ea
 | | `prototype`: a working MVP, fast | `production`: gated |
 |---|---|---|
 | For | No real users, customer data or payments | Anything that has them |
-| You approve | Each issue's spec and mockup, before code | Kickoff and every plan; a second reviewer approves each PR and each apply, `dev` and `prod` |
+| You approve | Nothing after the start's questions: checks and a fresh reviewer pass its gates | The start and every plan; a second reviewer approves each PR and each apply, `dev` and `prod` |
 | Environments | `dev` only | `dev`, then `prod`, each in its own account |
 | Tests | Main paths and anything sensitive, 50% coverage | Abuse cases too, 80% coverage |
 | When unsure | The agent takes the simpler option and says so | The agent asks |
+| Runs | For hours on its own, issue after issue, until the backlog or the time budget is done | One step at a time, as you ask |
 | Trade-offs | All accepted | Each fixed, or accepted by a named person |
 
 In both, one branch holds a session's work. A prototype's agent commits, pushes, opens the PR and merges on its own; in production it does each only when you ask. It runs local commands itself and gives you cloud commands as bash for AWS CloudShell; what it asks first and never does is in [AGENTS.md](../AGENTS.md) rules 4 and 14 to 17.
 
 ## 2. Set up the repo
+
+The easy way: open Claude Code in a clone of this template (`gh repo clone euginevd/sdlc-template`) on your own machine and say *"New project"*. The template's `new-project` skill (in `.claude/skills/`, left out of the projects it makes) is the only time you're asked anything:
+
+| Step | It asks or does |
+|------|-----------------|
+| 1 | Checks the template is up to date and `gh` is signed in |
+| 2 | The repo name, and checks it's free |
+| 3 | Your intent, heading by heading: problem, outcome, users, constraints, success, open questions, and what to borrow from |
+| 4 | Reads it back to you until it's right |
+| 5 to 7 | Prototype or production, public or private, and whether it needs AWS and screens, each with a recommendation |
+| 8 | The monthly spend limit, and for a prototype how long its run may take (8 hours unless you say) |
+| 9 | Production only: the business behind it, for the spec |
+| 10 | Shows a summary and waits for your yes |
+| 11 to 13 | Writes only the files your answers need ([`scripts/new-project.py`](../scripts/new-project.py)), then the spec, decisions, design system and mockup |
+| 14 to 15 | Runs `setup.sh`, creates the repo on GitHub, runs `protect-main.sh`, and turns the intent into GitHub issues in build order |
+| 16 to 17 | Production stops for your approval (gate G0). A prototype hands over: open the new folder, start Claude Code there and say *"Go"* |
+
+What each project gets: a slim prototype is about 55 files (the rules, seven docs, three workflows, the scripts and an empty `guides/` for its own guides); production adds the threat model, checklist, security guides and the rest of the pipeline; AWS and screens add their own. It needs your machine, as a cloud session can't create repos. The manual way, which copies everything:
 
 Once per project, by you. Steps 1 to 3 need the GitHub CLI, signed in with `gh auth login`.
 
@@ -44,35 +63,24 @@ Once per project, by you. Steps 1 to 3 need the GitHub CLI, signed in with `gh a
 
 7. Keep `AGENTS.md`, `standards.md`, the workflows and the scripts as they are.
 
-## 3. Kick off
+## 3. Gate G0, production
 
-Gate G0, once per project. `docs/` starts by describing the health-check API the template ships, with a *(to fill in)* line for each thing you decide. A prototype's agent fills them all in and keeps going; the *You* column is production's, and optional for a prototype. Once a profile is set, CI's `kickoff` check fails while any *(to fill in)* line is left.
-
-| You say | The agent | You |
-|---------|-----------|-----|
-| *"Kick off `<name>`: `<notes on the business, problem, users and stack>`"* | Checks the machine, reads `docs/intent.md`, and asks the profile and repo type if it doesn't say | Answer, then fill in `intent.md`, or let it interview you, one question at a time, and check what it writes |
-| | Drafts `spec.md`, Business section included, from `intent.md`, asks about gaps, and opens the first item as a GitHub issue | Correct it until it's right |
-| | Runs a short spike on the deploy target: what each managed service refuses or limits, into `decisions.md` | Agree the target |
-| | With UI: drafts `docs/web/design-system.md` and mocks up the MVP's main screens in `docs/web/mockups/mvp.html` | Open the mockup; ask for changes, then approve |
-| | Extends `threat-model.md` and `costs.md`; a prototype keeps the starter's | `production`: approve each |
-| | Records the profile, accepted trade-offs and code owner in `decisions.md` | Say which trade-offs you accept |
-| *"Rename the project"* | Renames the README, `spec.md` and `pyproject.toml` (then `uv lock`); a prototype sets `fail_under = 50` | Replace `LICENSE` and `guides/assets/`; a private project deletes `CONTRIBUTING.md` and `social.png` |
-| *"Commit and push"*, production only | Opens one PR with all of it | Approve it, then say *"Merge it"*. A prototype's agent does both unasked |
+The `new-project` skill drafts every doc a production project needs and stops. Before any issue is built, you approve `spec.md` with its Business section, `threat-model.md`, `docs/aws/costs.md` with AWS, the design system and the mockup with screens, and the trade-offs in `decisions.md`, each fixed or accepted by a named person. Then say *"Commit and push"* for its first PR. A prototype has no stop here: it goes straight to section 4.
 
 ## 4. Build a prototype
 
-One issue at a time. Once you approve its spec and mockup, nothing else waits for you: the agent decides what production would ask about, records it in `decisions.md`, and tells you in its report.
+Say *"Go"* in the new project, and the agent turns on its autopilot ([`scripts/autopilot.sh`](../scripts/autopilot.sh)) and builds the backlog, oldest issue first, without asking you anything. Each issue passes every gate, with a check or a fresh reviewer in your place:
 
-| You say | The agent | You |
-|---------|-----------|-----|
-| *"Build `<the work>`"*, once you approve its spec and mockup | Builds on the session's one branch: code, main-path tests, local checks and `features.md`; the PR closes the issue | Interrupt if the direction is wrong |
-| | New cloud service: deploys a walking skeleton to `dev` first, one service at a time (the [`deploy`](../.claude/skills/deploy/SKILL.md) skill) | |
-| | A fresh subagent reviews the whole branch with the `review-security` and, for UI, `review-design` skills, and the verifier runs the app; the agent fixes what it blocks and reports | Try it; ask for more |
-| | Once you say the batch is ready, or the session ends, and the local checks pass: commits, pushes (the pre-push scan runs), opens one PR, fixes the findings and squash-merges once checks pass | |
-| | The pipeline deploys to `dev`; first-deploy fixes stay on one branch until green, then it smoke-tests | Try it in `dev` |
-| | The day after a deploy, compares actual cost with `costs.md` | Read the report |
+| Stage | What the agent does | What passes the gate |
+|-------|---------------------|----------------------|
+| Plan | Settles the issue's scope from the intent, recording each call in `decisions.md` | It traces to the intent's success criteria |
+| Design (G1) | Writes the plan and any mockup | The `plan-reviewer` subagent, on a different model, finds nothing critical or high |
+| Build | Codes each phase with main-path tests on the issue's branch | The Stop hook's checks, `review-security`, `review-design` for screens, and the verifier running the app |
+| Test | Pushes (the pre-push scan runs) and opens the PR | The required CI checks; it fixes each failure at its cause |
+| Deploy (G2, G3) | Squash-merges on green; with AWS, the pipeline applies to `dev` and it smoke-tests | Green checks and the apply |
+| Maintain | Turns what went wrong into a check or a lesson, then takes the next issue | |
 
-It still stops before spending past the monthly limit in spec 6, before weakening its own floor (never touching AWS directly, secrets, hooks or attribution), and before real users, customer data or payments. A check that fails three times becomes a `blocked` issue while it moves on. Ask for more whenever you want it: *"review the plan with me first"*, *"add a threat model"*, *"wait for me before merging"*.
+Each time it finishes, the Stop hook sends it back to the next open issue, until the backlog is empty, the time budget is spent, or two turns in a row change nothing. A check that fails three times becomes a `blocked` issue while it moves on. It stops early only before spending past the limit in spec 6, weakening its own floor, or taking real users, customer data or payments, and says why. For a long run without permission prompts, start Claude Code in auto mode. When it stops, it reports what shipped, what's blocked and what it decided. Stop it yourself any time with *"Stop"*, or `bash scripts/autopilot.sh stop "<why>"`.
 
 ## 5. Build for production
 
@@ -101,7 +109,7 @@ The same loop, stopping at gates G1 to G4 ([AGENTS.md](../AGENTS.md) rule 5). Th
 
 Say *"Make this project production"*, and the agent does steps 1 to 3 on one branch:
 
-1. `Profile` in `spec.md` becomes `production`, with a new decision.
+1. From a clone of the template, `uv run --no-project python scripts/new-project.py ../<name> --upgrade --profile production` brings in what a prototype didn't get: the full `AGENTS.md`, `threat-model.md`, `checklist.md`, the security guides and the production workflows. It sets `Profile` to `production`, coverage back to 80 and the `.env` deny rules, keeps every file the project already has, and lists any the template now words differently for the agent to bring in line. The same with `--aws` or `--ui` adds a part later. Then a new decision records the move.
 2. It extends the threat model and costs for you to approve.
 3. `fail_under` goes back to 80, and it adds the skipped tests, abuse cases included.
 4. You go through the trade-offs: each gets its fix, or a named person accepts it.
