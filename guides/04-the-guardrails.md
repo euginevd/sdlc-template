@@ -57,10 +57,10 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 
 ## 8. Test: supply chain security
 
-- **Does:** actions are pinned by commit and images by digest. Packages wait 7 days before use, unless a release fixes a named vulnerability (AGENTS.md rule 16). `npm audit signatures` checks each web package's registry signature after `npm ci`. zizmor fails a workflow that checks out a PR's code under `pull_request_target`, or restores a dependency cache in a job that can get a cloud token (`id-token: write`). Trivy builds a CycloneDX SBOM from the lock files.
+- **Does:** actions are pinned by commit and images by digest. Packages wait 7 days before use, unless a release fixes a named vulnerability (AGENTS.md rule 16). `npm audit signatures` checks each web package's registry signature after `npm ci`. zizmor fails a workflow that checks out a PR's code under `pull_request_target`, or restores a dependency cache in a job that can get a cloud token (`id-token: write`). Trivy builds a CycloneDX SBOM from the lock files. Each image pushed to ECR gets two signed attestations tied to its digest: SLSA build provenance (this repo, workflow and commit built it) and its SBOM; check one with `gh attestation verify oci://<image> --repo <owner>/<repo>`.
 - **When:** pins and the wait on every install; signatures on every web check; zizmor when a workflow changes; the SBOM on every push to `main`.
 - **On a finding:** a bad signature or a risky workflow fails its check; the rest prevent. The SBOM is under the `main` run's Artifacts.
-- **Limits:** the SBOM isn't signed and GitHub deletes it after 90 days; for production, keep it with a release or in S3. Signing, SLSA provenance and a licence policy aren't in the template yet.
+- **Limits:** the lock-file SBOM isn't signed and GitHub deletes it after 90 days; for production, keep it with a release or in S3. Attestations need a public repo or GitHub Enterprise Cloud. Deploys don't yet refuse an image without them, and a licence policy isn't in the template yet.
 
 ## 9. Test: unit and abuse-case tests, coverage
 
@@ -72,9 +72,9 @@ Terms: SCA finds vulnerable packages; SAST finds flaws in your own code; DAST at
 ## 10. Test: DAST, unauthenticated
 
 - **Does:** passively scans the running app for missing headers, verbose errors, open redirects and bad CORS or TLS, in about a minute.
-- **When:** after each apply to `dev`, in the `aws` workflow; ZAP's API scan once there's an OpenAPI spec.
-- **On a finding:** high risks block the `prod` deploy; the rest go in the run summary.
-- **Limits:** not in the template yet; add it before go-live. It sees only the public surface.
+- **When:** after each apply to `dev`, in the `aws` workflow: ZAP's baseline scan of the unit's `api_url`. ZAP's API scan once there's an OpenAPI spec.
+- **On a finding:** a FAIL rule fails the `dev` run, so it's fixed before a `prod` release (G4); warnings go in the run summary, and the full report is the run's `zap-<unit>` artifact. Open an issue from the Incident form for each real one.
+- **Limits:** it sees only the public surface, and only a unit with an `api_url` output. Passive only: an active scan, which attacks, is a deliberate step against `dev`, never `prod`.
 
 ## 11. Test: DAST, authenticated
 
