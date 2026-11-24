@@ -28,7 +28,21 @@ Once per project, by you. Steps 1 to 3 need the GitHub CLI, signed in with `gh a
 5. **Reviewers**, the one step that differs by profile:
    - `prototype`: none. Leave the reviewer off `aws-dev-apply`, so a merge deploys to `dev` unattended.
    - `production`: give a second reviewer write access, run `bash scripts/protect-main.sh production`, and make them the required reviewer on each apply environment, with *Prevent self-review* on.
-6. Keep `AGENTS.md`, `standards.md`, the workflows and the scripts as they are.
+6. **Optional, the agent's own identity and the factory:** create a GitHub App (Settings → Developer settings → GitHub Apps) with Contents, Pull requests and Issues set to read and write and no webhook, and install it on this repo only. Save its Client ID as the `AGENT_APP_CLIENT_ID` variable and a private key as the `AGENT_APP_PRIVATE_KEY` secret; the factory's PRs then show as the agent and run CI (trade-offs 1). The factory itself turns on with an `ANTHROPIC_API_KEY` secret, and each run is charged to that key: label an issue `factory` and a cloud agent builds it into a draft PR. Only your label starts it.
+
+   ```bash
+   gh variable set AGENT_APP_CLIENT_ID --body <client-id>
+   ```
+
+   ```bash
+   gh secret set AGENT_APP_PRIVATE_KEY < <downloaded-key>.pem
+   ```
+
+   ```bash
+   gh secret set ANTHROPIC_API_KEY
+   ```
+
+7. Keep `AGENTS.md`, `standards.md`, the workflows and the scripts as they are.
 
 ## 3. Kick off
 

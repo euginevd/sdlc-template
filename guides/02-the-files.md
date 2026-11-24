@@ -146,6 +146,7 @@ A change ships like this: issue → PR → `ci`, `security`, `codeql` and `rules
 2. **workflows/security.yml**: the push scan again, plus Checkov, Semgrep, `terraform validate` and TFLint; weekly too.
 3. **workflows/codeql.yml**: GitHub's code scanning on PRs, `main` and weekly.
 4. **workflows/rules.yml**: the hooks' reference and attribution checks again on every PR, as the required `rules` check, so a skipped hook can't get through, and `check-hooks.py` for the agent's hooks.
+5. **workflows/factory.yml**: an issue the owner labels `factory` becomes a draft PR, built by a cloud agent; off until an `ANTHROPIC_API_KEY` secret is set, and run as the agent's own GitHub App when there is one.
 
 ### 5.2 Workflows (AWS module)
 
