@@ -1,4 +1,4 @@
-<!-- Template for docs/plan-<name>.md (AGENTS.md rule 9), in the four sections of Anthropic's plan.md: copy it, keep it to two pages at most, and delete this line and anything that doesn't apply. -->
+<!-- Template for docs/plan-<name>.md (AGENTS.md rule 9), in the four sections of Anthropic's plan.md: copy it, keep it to two pages at most, enough for a fresh session (`/clear`) to build from alone, and delete this line and anything that doesn't apply. -->
 # Plan: <name>
 
 Issue: #<number>. Spec items: <numbers>. Features: <numbers>. Threat-model risks: <IDs>. Profile: <prototype or production>.

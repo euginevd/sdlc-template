@@ -4,9 +4,9 @@ The template's lifecycle on one page: six stages, the security controls in each 
 
 | Stage | What happens | Security controls | Gate |
 |---|---|---|---|
-| 1. Plan | The oldest open GitHub issue, an intent like `intent.md`, becomes a feature; the agent asks the questions that change the build | Data classified; new AWS services and cost flagged | I accept the item |
+| 1. Plan | The oldest open GitHub issue, an intent like `intent.md`, becomes a feature; the agent interviews the user on what changes the build | Data classified; new AWS services and cost flagged | I accept the item |
 | 2. Design | The agent drafts the spec, plan, threat model and mockup | STRIDE threat model, ASVS level, cost estimate | **G1**: I approve before any code |
-| 3. Build | The agent codes each phase with tests on one branch; a fresh subagent reviews it with the review skills and the verifier runs it | Pre-push scan (Gitleaks, Trivy), agent deny rules and the Stop hook's checks, no secrets or cloud access | None: the checks decide |
+| 3. Build | A fresh session (`/clear`) codes each phase from the plan, with tests, on one branch; a fresh subagent reviews it with the review skills and the verifier runs it | Pre-push scan (Gitleaks, Trivy), agent deny rules and the Stop hook's checks, no secrets or cloud access | None: the checks decide |
 | 4. Test | Every push runs the checks; the agent fixes each failure at its cause | Tests and coverage, Semgrep, CodeQL, Trivy, Checkov, pinned supply chain | None: a failed check blocks the merge |
 | 5. Deploy | The agent opens the PR; the pipeline plans and applies Terraform | Protected `main`, security summary, cost comment, OIDC roles, read-only plan | **G2** merge, **G3** `dev`, **G4** `prod` |
 | 6. Maintain | Rescans and alerts find what changed; each finding becomes a new issue | Weekly rescans, Dependabot, budget alert, access logs | **G5**: I check cost and alarms the day after |
